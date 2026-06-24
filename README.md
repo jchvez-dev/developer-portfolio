@@ -10,18 +10,18 @@ This repository follows a strict **Spec-Driven Development (SDD)** methodology. 
 
 ### Directory Structure & Specifications
 
-The documentation is organized under the **`[.specs/](file:///home/jchavez/Projects/developer-portfolio/.specs/)`** folder in sequential reading order:
+The documentation is organized under the **[`.specs/`](.specs/)** folder in sequential reading order:
 
-1. **[01-Product-Requirements-Document.md](file:///home/jchavez/Projects/developer-portfolio/.specs/01-Product-Requirements-Document.md)**: Product goals, functional requirements, personas, and Definition of Done (DoD).
-2. **[02-Software-Architecture-Document.md](file:///home/jchavez/Projects/developer-portfolio/.specs/02-Software-Architecture-Document.md)**: Polyglot microservices layout, component specifications, S3 communication, and network perimeter isolation details.
-3. **[03-Frontend-Architecture-Design-Document.md](file:///home/jchavez/Projects/developer-portfolio/.specs/03-Frontend-Architecture-Design-Document.md)**: Detailed React client design, 60 FPS graphics engine powered by JS Proxies/EventEmitters, CKEditor inline bindings, and SSE token streaming reader.
-4. **[04-API-Specification.md](file:///home/jchavez/Projects/developer-portfolio/.specs/04-API-Specification.md)**: API contract detailing inputs/outputs, payloads, and the internal private gateway mesh.
-5. **[05-Data-Model-Test-Plan.md](file:///home/jchavez/Projects/developer-portfolio/.specs/05-Data-Model-Test-Plan.md)**: MinIO bucket hierarchies, CKEditor HTML whitelist patterns, integration checks, and stress testing instructions.
-6. **[06-Infrastructure-Specifications.md](file:///home/jchavez/Projects/developer-portfolio/.specs/06-Infrastructure-Specifications.md)**: DevOps rules, multi-stage Dockerfiles layout, volume hygiene, and docker-compose orchestration.
+1. **[01-Product-Requirements-Document.md](.specs/01-Product-Requirements-Document.md)**: Product goals, functional requirements, personas, and Definition of Done (DoD).
+2. **[02-Software-Architecture-Document.md](.specs/02-Software-Architecture-Document.md)**: Polyglot microservices layout, component specifications, S3 communication, and network perimeter isolation details.
+3. **[03-Frontend-Architecture-Design-Document.md](.specs/03-Frontend-Architecture-Design-Document.md)**: Detailed React client design, 60 FPS graphics engine powered by JS Proxies/EventEmitters, CKEditor inline bindings, and SSE token streaming reader.
+4. **[04-API-Specification.md](.specs/04-API-Specification.md)**: API contract detailing inputs/outputs, payloads, and the internal private gateway mesh.
+5. **[05-Data-Model-Test-Plan.md](.specs/05-Data-Model-Test-Plan.md)**: MinIO bucket hierarchies, CKEditor HTML whitelist patterns, integration checks, and stress testing instructions.
+6. **[06-Infrastructure-Specifications.md](.specs/06-Infrastructure-Specifications.md)**: DevOps rules, multi-stage Dockerfiles layout, volume hygiene, and docker-compose orchestration.
 
 ### AI Assistant Rules (`.agents/`)
 
-The **`[.agents/AGENTS.md](file:///home/jchavez/Projects/developer-portfolio/.agents/AGENTS.md)`** file contains custom project guidelines loaded automatically by agentic systems (like Antigravity) to enforce:
+The **[`.agents/AGENTS.md`](.agents/AGENTS.md)** file contains custom project guidelines loaded automatically by agentic systems (like Antigravity) to enforce:
 * Always consulting `.specs/` as the single source of truth before any codebase change.
 * Adhering to the isolated polyglot microservice boundaries.
 * Maintaining Docker security (non-root execution, private container meshes).
@@ -31,22 +31,88 @@ The **`[.agents/AGENTS.md](file:///home/jchavez/Projects/developer-portfolio/.ag
 
 ## Local Development Setup
 
-The infrastructure uses Docker to orchestrate services. Currently, the localized storage cluster is configured and ready to run.
+The infrastructure uses Docker to orchestrate services. The storage cluster and NestJS API gateway are configured and ready to run.
 
 ### Prerequisites
 
 * Docker Engine and Docker Compose installed locally.
-* A `.env` file configured in the root directory (based on `.env.example`).
+* A `.env` file configured in the root directory (copy from `.env.example`).
 
-### Launching the Storage Engine
+### Environment Variables
 
-The storage service runs a local MinIO S3-compliant instance. To start the storage engine and automatically provision the required buckets:
+| Variable | Default | Description |
+|---|---|---|
+| `NEST_PORT` | `4000` | Host port mapped to the NestJS API gateway |
+| `FRONTEND_PORT` | `3000` | Host port reserved for the React frontend (not yet wired) |
+| `MINIO_API_PORT` | `9000` | Host port for the MinIO S3 API |
+| `MINIO_CONSOLE_PORT` | `9001` | Host port for the MinIO web console |
+| `MINIO_ROOT_USER` | — | MinIO admin username (shared by storage and NestJS) |
+| `MINIO_ROOT_PASSWORD` | — | MinIO admin password (shared by storage and NestJS) |
+| `PHP_BACKEND_URL` | `http://backend-php:8000` | Internal URL for the PHP render engine |
+| `MINIO_ENDPOINT` | `storage` | MinIO hostname (`storage` in Docker, `localhost` on host) |
+| `MINIO_PORT` | `9000` | MinIO S3 port (internal container port) |
+| `MINIO_USE_SSL` | `false` | Enable TLS for MinIO SDK connections |
+| `CORS_ORIGINS` | `http://localhost:3000` | Comma-separated allowed browser origins |
+
+### Launching Services
+
+Start the storage engine, bucket provisioning, and API gateway:
+
+```bash
+docker compose up -d storage storage-init backend-nest
+```
+
+To start only the storage layer:
 
 ```bash
 docker compose up -d storage storage-init
 ```
 
+To start only the API gateway (requires storage to be running):
+
+```bash
+docker compose up -d backend-nest
+```
+
+### Service Endpoints
+
 Once running:
-* **S3 API Endpoint:** `http://localhost:9000` (used by applications to upload/download assets).
-* **MinIO Web Console:** `http://localhost:9001` (accessible via web browser).
-* **Credentials:** Log in to the Web Console using the `MINIO_ROOT_USER` and `MINIO_ROOT_PASSWORD` defined in your `.env` file.
+
+| Service | URL | Notes |
+|---|---|---|
+| **NestJS API** | `http://localhost:4000/api/v1` | Public API gateway |
+| **Health check** | `http://localhost:4000/api/v1/health` | Smoke-test endpoint |
+| **MinIO S3 API** | `http://localhost:9000` | Used by services to upload/download assets |
+| **MinIO Console** | `http://localhost:9001` | Web UI; log in with `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD` |
+
+Verify the API gateway is healthy:
+
+```bash
+curl http://localhost:4000/api/v1/health
+```
+
+Expected response:
+
+```json
+{"status":"ok","service":"portafolio-nest","timestamp":"..."}
+```
+
+### Project Structure
+
+```
+backend-nest/     NestJS API gateway (port 4000)
+backend-php/    PHP-FPM + Imagick render engine (internal only)
+frontend/       React SPA (port 3000)
+docker-compose.yml
+.env
+```
+
+### Running Tests (backend-nest)
+
+From the host or inside the container:
+
+```bash
+cd backend-nest
+npm test
+npm run test:e2e
+```
