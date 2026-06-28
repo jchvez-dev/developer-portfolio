@@ -31,7 +31,7 @@ The **[`.agents/AGENTS.md`](.agents/AGENTS.md)** file contains custom project gu
 
 ## Local Development Setup
 
-The infrastructure uses Docker to orchestrate services. The storage cluster and NestJS API gateway are configured and ready to run.
+The infrastructure uses Docker to orchestrate all services. The storage cluster, NestJS API gateway, and PHP render engine are configured and ready to run.
 
 ### Prerequisites
 
@@ -56,10 +56,10 @@ The infrastructure uses Docker to orchestrate services. The storage cluster and 
 
 ### Launching Services
 
-Start the storage engine, bucket provisioning, and API gateway:
+Start all services (storage, API gateway, and PHP render engine):
 
 ```bash
-docker compose up -d storage storage-init backend-nest
+docker compose up -d
 ```
 
 To start only the storage layer:
@@ -74,16 +74,23 @@ To start only the API gateway (requires storage to be running):
 docker compose up -d backend-nest
 ```
 
+To start only the PHP render engine (requires storage to be running):
+
+```bash
+docker compose up -d backend-php
+```
+
 ### Service Endpoints
 
 Once running:
 
 | Service | URL | Notes |
-|---|---|---|
+|---|---|---|---|
 | **NestJS API** | `http://localhost:4000/api/v1` | Public API gateway |
 | **Health check** | `http://localhost:4000/api/v1/health` | Smoke-test endpoint |
 | **MinIO S3 API** | `http://localhost:9000` | Used by services to upload/download assets |
 | **MinIO Console** | `http://localhost:9001` | Web UI; log in with `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD` |
+| **PHP Render** | `http://backend-php:8000` (internal network only) | `POST /internal/render`, no host port exposed |
 
 Verify the API gateway is healthy:
 
@@ -97,12 +104,27 @@ Expected response:
 {"status":"ok","service":"portafolio-nest","timestamp":"..."}
 ```
 
+Verify internal mesh connectivity from NestJS to the PHP render engine:
+
+```bash
+docker compose exec backend-nest curl -s http://backend-php:8000/internal/render \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -d '{"jobId":"mesh-test","definition":{"dimensions":{"w":1200,"h":630},"elements":[]}}'
+```
+
+Expected response:
+
+```json
+{"status":"completed","objectKey":"dummy-key.png","executionTimeMs":0}
+```
+
 ### Project Structure
 
 ```
 backend-nest/     NestJS API gateway (port 4000)
-backend-php/    PHP-FPM + Imagick render engine (internal only)
-frontend/       React SPA (port 3000)
+backend-php/     PHP-FPM + Imagick render engine (internal only)
+frontend/        React SPA (port 3000)
 docker-compose.yml
 .env
 ```
@@ -115,4 +137,12 @@ From the host or inside the container:
 cd backend-nest
 npm test
 npm run test:e2e
+```
+
+### Running Tests (backend-php)
+
+Inside the running container:
+
+```bash
+docker compose exec backend-php vendor/bin/phpunit
 ```

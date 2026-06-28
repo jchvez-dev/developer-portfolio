@@ -1,0 +1,25 @@
+FROM php:8.3-cli-alpine
+
+WORKDIR /app
+
+RUN apk add --no-cache imagemagick imagemagick-dev \
+    && apk add --no-cache --virtual .build-deps autoconf build-base \
+    && pecl channel-update pecl.php.net \
+    && pecl install imagick \
+    && docker-php-ext-enable imagick \
+    && apk del .build-deps
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+COPY . .
+
+RUN composer install --no-interaction --prefer-dist \
+    && chown -R www-data:www-data /app
+
+USER www-data
+
+EXPOSE 8000
+
+CMD ["php", "-S", "0.0.0.0:8000", "-t", "public"]
