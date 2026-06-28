@@ -65,3 +65,20 @@ services:
       - CORS_ORIGINS=${CORS_ORIGINS}
     depends_on:
       - storage
+
+  backend-php:
+    build:
+      context: ./backend-php
+      dockerfile: Dockerfile.dev
+    container_name: portafolio-php
+    volumes:
+      - ./backend-php:/app
+      - /app/vendor
+    networks:
+      - portafolio-network
+    environment:
+      - MINIO_ENDPOINT=http://storage:9000
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    depends_on:
+      - storage
