@@ -68,6 +68,12 @@ To start only the storage layer:
 docker compose up -d storage storage-init
 ```
 
+To start the frontend development server (requires the API gateway to be running):
+
+```bash
+docker compose up frontend
+```
+
 To start only the API gateway (requires storage to be running):
 
 ```bash
@@ -86,6 +92,7 @@ Once running:
 
 | Service | URL | Notes |
 |---|---|---|---|
+| **Frontend** | `http://localhost:3000` | React SPA with Tailwind CSS |
 | **NestJS API** | `http://localhost:4000/api/v1` | Public API gateway |
 | **Health check** | `http://localhost:4000/api/v1/health` | Smoke-test endpoint |
 | **MinIO S3 API** | `http://localhost:9000` | Used by services to upload/download assets |
