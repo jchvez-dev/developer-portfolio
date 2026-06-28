@@ -41,6 +41,23 @@ services:
       exit 0;
       "
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: portafolio-frontend
+    ports:
+      - "${FRONTEND_PORT}:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - portafolio-network
+    environment:
+      - NODE_ENV=${NODE_ENV}
+    depends_on:
+      - backend-nest
+
   backend-nest:
     build:
       context: ./backend-nest
