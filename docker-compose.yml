@@ -37,6 +37,7 @@ services:
       /usr/bin/mc mb --ignore-existing local_cluster/system-assets;
       /usr/bin/mc mb --ignore-existing local_cluster/user-uploads;
       /usr/bin/mc mb --ignore-existing local_cluster/production-exports;
+      /usr/bin/mc anonymous set public local_cluster/production-exports;
       echo 'All buckets provisioned successfully!';
       exit 0;
       "
@@ -72,6 +73,7 @@ services:
       - portafolio-network
     environment:
       - NODE_ENV=${NODE_ENV}
+      - MINIO_PUBLIC_URL=${MINIO_PUBLIC_URL}
       - NEST_PORT=4000
       - FRONTEND_PORT=${FRONTEND_PORT}
       - MINIO_API_PORT=${MINIO_API_PORT}
