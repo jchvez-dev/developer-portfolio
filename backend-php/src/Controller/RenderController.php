@@ -18,12 +18,14 @@ class RenderController
         $jobId = $body['jobId'] ?? 'unknown';
         $definition = $body['definition'] ?? [];
 
+        $start = microtime(true);
         $objectKey = $this->imageEngine->process($definition);
+        $elapsed = (int) ((microtime(true) - $start) * 1000);
 
         return [
             'status' => 'completed',
             'objectKey' => $objectKey,
-            'executionTimeMs' => 0,
+            'executionTimeMs' => $elapsed,
         ];
     }
 }
