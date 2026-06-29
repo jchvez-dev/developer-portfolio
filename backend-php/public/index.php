@@ -10,10 +10,18 @@ $method = $_SERVER['REQUEST_METHOD'];
 header('Content-Type: application/json');
 
 if ($uri === '/internal/render' && $method === 'POST') {
-    $body = json_decode(file_get_contents('php://input'), true) ?? [];
-    $controller = new RenderController();
-    $response = $controller->handle($body);
-    echo json_encode($response);
+    try {
+        $body = json_decode(file_get_contents('php://input'), true) ?? [];
+        $controller = new RenderController();
+        $response = $controller->handle($body);
+        echo json_encode($response);
+    } catch (\Throwable $e) {
+        http_response_code(422);
+        echo json_encode([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+        ]);
+    }
     exit;
 }
 

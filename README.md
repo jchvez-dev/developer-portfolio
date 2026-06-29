@@ -52,6 +52,7 @@ The infrastructure uses Docker to orchestrate all services. The storage cluster,
 | `MINIO_ENDPOINT` | `storage` | MinIO hostname (`storage` in Docker, `localhost` on host) |
 | `MINIO_PORT` | `9000` | MinIO S3 port (internal container port) |
 | `MINIO_USE_SSL` | `false` | Enable TLS for MinIO SDK connections |
+| `MINIO_PUBLIC_URL` | `http://localhost:9000` | Public URL for MinIO downloads (change in production) |
 | `CORS_ORIGINS` | `http://localhost:3000` | Comma-separated allowed browser origins |
 
 ### Launching Services
@@ -95,6 +96,7 @@ Once running:
 | **Frontend** | `http://localhost:3000` | React SPA with Tailwind CSS |
 | **NestJS API** | `http://localhost:4000/api/v1` | Public API gateway |
 | **Health check** | `http://localhost:4000/api/v1/health` | Smoke-test endpoint |
+| **Canvas Export** | `http://localhost:4000/api/v1/canvas/export` | `POST` — Export canvas layout as image |
 | **MinIO S3 API** | `http://localhost:9000` | Used by services to upload/download assets |
 | **MinIO Console** | `http://localhost:9001` | Web UI; log in with `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD` |
 | **PHP Render** | `http://backend-php:8000` (internal network only) | `POST /internal/render`, no host port exposed |
@@ -123,7 +125,7 @@ docker compose exec backend-nest curl -s http://backend-php:8000/internal/render
 Expected response:
 
 ```json
-{"status":"completed","objectKey":"dummy-key.png","executionTimeMs":0}
+{"status":"completed","objectKey":"mesh-test-result.png","executionTimeMs":23}
 ```
 
 ### Project Structure
