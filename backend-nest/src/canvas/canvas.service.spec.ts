@@ -104,7 +104,8 @@ describe('CanvasService', () => {
       await expect(service.export(validDto)).rejects.toMatchObject({
         response: {
           statusCode: HttpStatus.SERVICE_UNAVAILABLE,
-          message: 'Downstream processing failure on image microservice container node.',
+          message:
+            'Downstream processing failure on image microservice container node.',
         },
       });
     });

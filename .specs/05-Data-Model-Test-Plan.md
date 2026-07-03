@@ -14,8 +14,8 @@ minio-root/
 ```
 
 ### 1.1 Object Naming & Path Conventions
-- **User Asset Path:** `user-uploads/{session_id}/{uuid_v4}.{extension}`
-    - _Example:_ `user-uploads/sess_89412/a1b2c3d4-e5f6-7a8b-9c0d-e1f2a3b4c5d6.jpg`
+- **User Asset Path:** `user-uploads/{session_id}/{uuid_v4}.webp`
+    - _Example:_ `user-uploads/sess_89412/a1b2c3d4-e5f6-7a8b-9c0d-e1f2a3b4c5d6.webp`
 - **Compiled Output Path:** `production-exports/{job_id}.png`
     - _Example:_ `production-exports/canvas_job_8973129.png`
 
@@ -57,3 +57,29 @@ This verification matrix targets integration bottlenecks, microservice handshake
 - **Test Case NFT-1: Heavy Graphic Thread Isolation**
     - _Method:_ Execute a load test script sending 50 concurrent image compilation tasks to the API gateway while continuously prompting the AI Career Assistant chat node.
     - _Success Threshold:_ The AI Assistant token streaming experience maintains an uninterrupted, non-blocking flow (`< 200ms` initial response time), confirming that PHP-FPM's CPU-bound work does not lock the Node.js main thread loop.
+
+### 3.4 Upload Test Suite (User Asset Pipeline)
+- **Test Case UT-1: Valid Image Upload**
+    - _Objective:_ Verify full pipeline accepts a valid PNG, processes it, and stores the result in MinIO as WebP.
+    - _Method:_ POST multipart with a valid PNG file to `/api/v1/canvas/upload`.
+    - _Expected:_ 201 response with `assetUrl` pointing to the `user-uploads/` bucket. Stored file is WebP format, max dimension 1920px.
+
+- **Test Case UT-2: File Type Rejection**
+    - _Objective:_ Reject non-image file uploads.
+    - _Method:_ POST multipart with a `.txt` file to `/api/v1/canvas/upload`.
+    - _Expected:_ 422 response with a file type validation error message.
+
+- **Test Case UT-3: File Size Exceeds Limit**
+    - _Objective:_ Reject files exceeding the 10MB size limit.
+    - _Method:_ POST multipart with a file larger than 10MB.
+    - _Expected:_ 422 response with a size validation error message.
+
+- **Test Case UT-4: Resize Enforcement**
+    - _Objective:_ Verify that large source images are resized to a maximum of 1920px on the longest side.
+    - _Method:_ Upload a 4000x3000px image via the upload pipeline.
+    - _Expected:_ The stored image in MinIO has a width of 1920px (maintaining aspect ratio) and is in WebP format.
+
+- **Test Case UT-5: Internal Processing Isolation**
+    - _Objective:_ Confirm that `/internal/process-upload` is not accessible from outside the Docker network.
+    - _Method:_ Execute `curl http://localhost:8000/internal/process-upload` from the host machine.
+    - _Expected:_ Connection refused.

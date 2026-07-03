@@ -2,7 +2,7 @@ FROM php:8.4-cli-alpine
 
 WORKDIR /app
 
-RUN apk add --no-cache imagemagick imagemagick-dev font-dejavu libjpeg-turbo libjpeg-turbo-dev \
+RUN apk add --no-cache imagemagick imagemagick-dev font-dejavu libjpeg-turbo libjpeg-turbo-dev libwebp libwebp-dev \
     && apk add --no-cache --virtual .build-deps autoconf build-base \
     && pecl channel-update pecl.php.net \
     && pecl install imagick \

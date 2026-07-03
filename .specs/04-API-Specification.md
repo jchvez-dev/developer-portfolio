@@ -11,7 +11,9 @@
 |---|---|---|---|---|
 |**AI Assistant**|`POST`|`/chat`|Public|Initiates a token-streaming career consultation.|
 |**Canvas Studio**|`POST`|`/canvas/export`|Public|Accepts layout JSON payload and triggers image composition.|
+|**Canvas Studio**|`POST`|`/canvas/upload`|Public|Uploads a user image asset for use in canvas layers.|
 |**Canvas Engine**|`POST`|`/internal/render`|Internal|Private PHP pipeline that compiles layers into binary assets.|
+|**Canvas Engine**|`POST`|`/internal/process-upload`|Internal|Private PHP pipeline that processes and stores uploaded images.|
 |**System Core**|`POST`|`/contact`|Public|Submits verified contact forms to the engineering lead.|
 
 ## 3. Detailed Endpoint Specifications
@@ -146,6 +148,71 @@ NestJS acts as the secure API proxy, appending internal tracking IDs and sanitiz
   "status": "completed",
   "objectKey": "production-exports/verified-postcard-xyz.png",
   "executionTimeMs": 245
+}
+```
+
+### 3.5 User Asset Upload
+- **Path:** `/canvas/upload`
+- **Method:** `POST`
+- **Headers:** `Content-Type: multipart/form-data`
+
+#### Request Payload (`multipart/form-data`)
+
+|Field|Type|Description|
+|---|---|---|
+|`image`|`file`|Archivo de imagen (max 10MB, tipos permitidos: jpg, png, webp, gif)|
+|`sessionId`|`string`|Identificador de sesion (opcional, se genera UUID si no se provee)|
+
+#### Expected Success Response (`201 Created`)
+
+```json
+{
+  "success": true,
+  "assetUrl": "http://localhost:9000/user-uploads/sess_abc123/a1b2c3d4-e5f6-7a8b-9c0d-e1f2a3b4c5d6.webp",
+  "sessionId": "sess_abc123"
+}
+```
+
+#### Error Response (`422 Unprocessable Entity`)
+
+```json
+{
+  "statusCode": 422,
+  "error": "Unprocessable Entity",
+  "message": [
+    "File size exceeds maximum allowed limit of 10MB.",
+    "Invalid file type. Allowed types: jpg, png, webp, gif."
+  ]
+}
+```
+
+### 3.6 Microservice Private Mesh: Internal Process Upload
+- **Path:** `/internal/process-upload`
+- **Method:** `POST`
+- **Access Control:** Isolated inside Docker network. External requests hit connection drop rules.
+- **Content-Type:** `multipart/form-data`
+
+#### Request Payload (`multipart/form-data`)
+
+|Field|Type|Description|
+|---|---|---|
+|`file`|`file`|Binary original de la imagen|
+|`jobId`|`string`|Tracking ID generado por NestJS|
+
+#### Processing Pipeline
+1. PHP receives binary image via FormData.
+2. Opens with Imagick.
+3. Resizes the image so the longest side does not exceed 1920px, maintaining aspect ratio.
+4. Converts to WebP format at quality 80.
+5. Uploads processed image to MinIO bucket `user-uploads/{sessionId}/{uuid}.webp`.
+
+#### Expected Success Response (`200 OK`)
+
+```json
+{
+  "status": "completed",
+  "objectKey": "user-uploads/sess_abc123/a1b2c3d4-e5f6-7a8b-9c0d-e1f2a3b4c5d6.webp",
+  "executionTimeMs": 120
 }
 ```
 
