@@ -40,7 +40,7 @@ describe('CanvasController', () => {
 
     mockCanvasService.export.mockResolvedValue(expected);
 
-    const result = await controller.export(dto as any);
+    const result = await controller.export(dto);
 
     expect(result).toEqual(expected);
     expect(service.export).toHaveBeenCalledWith(dto);

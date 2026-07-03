@@ -9,29 +9,29 @@ This system implements a **Polyglot Microservices Architecture** orchestrated en
 3. **Heavy Compute Engine (PHP-FPM + Imagick):** CPU-bound synchronous microservice isolated from external exposure, dedicated solely to graphic processing and rasterization.
 4. **Object Storage (MinIO):** Local S3-compliant persistent layer for high-throughput asset distribution.
 
-Plaintext
+```Plaintext
 
-```
-       [ Public Client Browser ]
+        [ Public Client Browser ]
                    │
          PORTS 3000 (UI) / 4000 (API)
                    │
   ┌────────────────VIRTUAL DOCKER NETWORK BRIDGE──────────┐
-  │                                                        │
-  │   ┌────────────────┐            ┌─────────────────┐    │
-  │   │                │   HTTP     │                 │    │
-  │   │  Frontend App  ├───────────►│   API Gateway   │    │
-  │   │    (React)     │            │    (NestJS)     │    │
-  │   └────────────────┘            └────┬────────┬───┘    │
-  │                                      │        │        │
-  │                         Internal HTTP│        │S3 SDK  │
-  │                         (Port 8000)  │        │        │
-  │                                      ▼        ▼        │
-  │   ┌────────────────┐            ┌────┴────────┴───┐    │
-  │   │ Image Engine   │   S3 SDK   │ Object Storage  │    │
-  │   │   (PHP-FPM)    ├───────────►│     (MinIO)     │    │
-  │   └────────────────┘            └─────────────────┘    │
-  └────────────────────────────────────────────────────────┘
+  │                                                       │
+  │   ┌────────────────┐     HTTP      ┌──────────────┐   │
+  │   │  Frontend App  ├──────────────►│ API Gateway  │   │
+  │   │    (React)     │               │  (NestJS)    │   │
+  │   └────────────────┘               └──────┬───┬───┘   │
+  │                                           │   │       │
+  │                                Internal   │   │S3 SDK │
+  │                                HTTP       │   │       │
+  │                                (8000)     │   │       │
+  │                                           ▼   ▼       │
+  │   ┌────────────────┐               ┌────────────────┐ │
+  │   │  Image Engine  │◄──────────────┤    Object      │ │
+  │   │   (PHP-FPM)    ├──────────────►│    Storage     │ │
+  │   └────────────────┘     S3 SDK    │    (MinIO)     │ │
+  │                                    └────────────────┘ │
+  └───────────────────────────────────────────────────────┘
 ```
 
 ## 2. Component Design & Responsibilities
@@ -78,8 +78,14 @@ Instead of using public live cloud bucket services during local development phas
 - _Rationale:_ Guarantees the entire environment works 100% offline, requires zero configuration overhead upon initial git cloning, and ensures that the system interfaces with standard AWS S3 SDK integration layers, creating a seamless migration pathway to AWS or cloud vendors without altering a single line of backend logic.
 
 ## 4. Data Persistence & Data Flow Architecture
-### 4.1 "Mini-Canva Studio" Image Generation Life Cycle
-1. **Layout Compilation:** Client clicks "Export" ➔ Frontend extracts canvas states and maps layers to a strict structural JSON schema ➔ Payload posted to `NestJS:4000/api/canvas/export`.
-2. **Schema Validation & Verification:** NestJS validates structure ➔ Forwards the verified layout map via internal network request to `http://backend-php:8000/internal/render`.
-3. **Rasterization Phase:** PHP parsing engine receives JSON ➔ Reads resource assets from MinIO ➔ Imagick compiles vector paths, textures, and typography layouts into a physical image stream.
-4. **Upload & Return:** PHP pushes the generated binary to `MinIO:9000/production-exports` ➔ Returns the tracking hash identifier back to NestJS ➔ NestJS returns an S3 presigned-download URL back to the React UI for client retrieval.
+### 4.1 "Mini-Canva Studio" Image Export Life Cycle
+1. **Layout Compilation:** Client clicks "Export" -> Frontend extracts canvas states and maps layers to a strict structural JSON schema -> Payload posted to `NestJS:4000/api/v1/canvas/export`.
+2. **Schema Validation & Verification:** NestJS validates structure -> Forwards the verified layout map via internal network request to `http://backend-php:8000/internal/render`.
+3. **Rasterization Phase:** PHP parsing engine receives JSON -> Reads resource assets from MinIO -> Imagick compiles vector paths, textures, and typography layouts into a physical image stream.
+4. **Upload & Return:** PHP pushes the generated binary to `MinIO:9000/production-exports` -> Returns the tracking hash identifier back to NestJS -> NestJS returns the public download URL back to the React UI for client retrieval.
+
+### 4.2 "User Asset Upload" Image Processing Life Cycle
+1. **User Upload:** Client selects an image file in the Mini-Canva Studio -> Frontend builds FormData with file + sessionId -> POST to `NestJS:4000/api/v1/canvas/upload`.
+2. **Validation & Proxy:** NestJS validates file type and size -> Generates UUID and session tracking -> Forwards binary via FormData to `http://backend-php:8000/internal/process-upload`.
+3. **Processing Phase:** PHP receives binary -> Opens with Imagick -> Resizes (max 1920px longest side, maintaining aspect ratio) -> Converts to WebP quality 80 -> Uploads result to `MinIO:9000/user-uploads/{sessionId}/{uuid}.webp`.
+4. **Return Phase:** PHP returns objectKey to NestJS -> NestJS constructs public URL -> Returns `{ success, assetUrl, sessionId }` to the React UI.

@@ -1,8 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
@@ -35,7 +31,8 @@ export class CanvasService {
           timestamp: new Date().toISOString(),
           path: '/api/v1/canvas/export',
           message:
-            phpMessage ?? 'Downstream processing failure on image microservice container node.',
+            phpMessage ??
+            'Downstream processing failure on image microservice container node.',
         },
         error.response?.status ?? HttpStatus.SERVICE_UNAVAILABLE,
       );

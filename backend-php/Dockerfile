@@ -14,12 +14,12 @@ FROM php:8.4-cli-alpine
 
 WORKDIR /app
 
-RUN apk add --no-cache imagemagick imagemagick-dev font-dejavu libjpeg-turbo libjpeg-turbo-dev \
+RUN apk add --no-cache imagemagick imagemagick-dev font-dejavu libjpeg-turbo libjpeg-turbo-dev libwebp libwebp-dev \
     && apk add --no-cache --virtual .build-deps autoconf build-base \
     && pecl channel-update pecl.php.net \
     && pecl install imagick \
     && docker-php-ext-enable imagick \
-    && apk del imagemagick-dev \
+    && apk del imagemagick-dev libwebp-dev \
     && apk del .build-deps
 
 COPY --from=builder /app/vendor ./vendor
