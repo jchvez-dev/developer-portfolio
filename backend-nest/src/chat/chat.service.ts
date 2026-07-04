@@ -97,7 +97,7 @@ ${cvContent}`;
 
     const stream = await this.groq.chat.completions.create({
       model: this.model,
-      messages: messages as any,
+      messages: messages,
       stream: true,
     });
 

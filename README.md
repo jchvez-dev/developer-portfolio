@@ -31,7 +31,7 @@ The **[`.agents/AGENTS.md`](.agents/AGENTS.md)** file contains custom project gu
 
 ## Local Development Setup
 
-The infrastructure uses Docker to orchestrate all services. The storage cluster, NestJS API gateway, and PHP render engine are configured and ready to run.
+The infrastructure uses Docker to orchestrate all services. The storage cluster, NestJS API gateway, PHP render engine, and Mailpit SMTP server are configured and ready to run.
 
 ### Prerequisites
 
@@ -56,6 +56,11 @@ The infrastructure uses Docker to orchestrate all services. The storage cluster,
 | `CORS_ORIGINS` | `http://localhost:3000` | Comma-separated allowed browser origins |
 | `GROQ_API_KEY` | — | API key for Groq LLM provider (AI Career Assistant) |
 | `GROQ_MODEL` | `llama-3.1-8b-instant` | Groq model for chat completions |
+| `SMTP_HOST` | `mailpit` | SMTP server hostname (`mailpit` in dev, real SMTP in prod) |
+| `SMTP_PORT` | `1025` | SMTP server port (587 for TLS in production) |
+| `SMTP_USER` | — | SMTP username (leave empty for Mailpit) |
+| `SMTP_PASS` | — | SMTP password (leave empty for Mailpit) |
+| `CONTACT_EMAIL` | `juan@example.com` | Email address to receive contact form submissions |
 
 ### Launching Services
 
@@ -101,9 +106,11 @@ Once running:
 | **Canvas Export** | `http://localhost:4000/api/v1/canvas/export` | `POST` — Export canvas layout as image |
 | **Canvas Upload** | `http://localhost:4000/api/v1/canvas/upload` | `POST` (multipart) — Upload user images, processed via PHP/Imagick |
 | **AI Chat** | `http://localhost:4000/api/v1/chat` | `POST` — Chat with Groq LLM (SSE token streaming) |
+| **Contact Form** | `http://localhost:4000/api/v1/contact` | `POST` — Submit contact form with anti-spam (honeypot + rate limiting) |
 | **MinIO S3 API** | `http://localhost:9000` | Used by services to upload/download assets |
 | **MinIO Console** | `http://localhost:9001` | Web UI; log in with `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD` |
 | **PHP Render** | `http://backend-php:8000` (internal network only) | `POST /internal/render`, no host port exposed |
+| **Mailpit UI** | `http://localhost:8025` | Web UI for inspecting captured emails in dev |
 
 Verify the API gateway is healthy:
 

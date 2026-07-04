@@ -1,13 +1,18 @@
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ChatService } from './chat.service';
+import { ContactService } from './contact.service';
 
-describe('ChatService', () => {
-  let service: ChatService;
+describe('ContactService', () => {
+  let service: ContactService;
 
   const mockConfig = {
-    groqApiKey: 'test-key',
-    groqModel: 'llama3-8b-8192',
+    smtp: {
+      host: 'mailpit',
+      port: 1025,
+      user: '',
+      pass: '',
+      contactEmail: 'juan@example.com',
+    },
     minio: {
       endpoint: 'storage',
       port: 9000,
@@ -21,7 +26,7 @@ describe('ChatService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        ChatService,
+        ContactService,
         {
           provide: ConfigService,
           useValue: {
@@ -33,7 +38,7 @@ describe('ChatService', () => {
       ],
     }).compile();
 
-    service = module.get<ChatService>(ChatService);
+    service = module.get<ContactService>(ContactService);
   });
 
   it('should be defined', () => {
