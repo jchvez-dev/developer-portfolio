@@ -1,0 +1,145 @@
+# Project Checklist
+
+> Current implementation status of the Developer Portfolio project.
+> Last updated: 2026-07-04
+
+---
+
+## Infrastructure
+
+- [x] `docker-compose.yml` with 5 services (frontend, nest, php, minio, storage-init)
+- [x] `frontend/Dockerfile` (multi-stage prod with nginx)
+- [x] `frontend/Dockerfile.dev` (dev with Vite live-reload)
+- [x] `backend-nest/Dockerfile` (multi-stage prod, node user)
+- [x] `backend-nest/Dockerfile.dev` (dev with nest start --watch)
+- [x] `backend-php/Dockerfile` (multi-stage prod, PHP 8.4 + Imagick, www-data user)
+- [x] `backend-php/Dockerfile.dev` (dev with PHP CLI + composer)
+- [x] `portafolio-network` (bridge driver)
+- [x] `minio-data` volume for persistence
+- [x] MinIO buckets: `system-assets`, `user-uploads`, `production-exports`, `chat-history`
+- [x] PHP container has no public ports (NFR-4.4)
+- [x] Anonymous volume bindings for node_modules and vendor
+- [x] `.env.example` with documented environment variables
+- [x] `.gitignore` global and per-service
+
+---
+
+## NestJS API Gateway (backend-nest)
+
+### Core
+- [x] Bootstrap with CORS, global prefix `api/v1`, ValidationPipe
+- [x] ConfigModule loading environment variables
+
+### Health
+- [x] `GET /api/v1/health` - readiness check
+
+### Canvas Export (FR-2.4)
+- [x] `POST /api/v1/canvas/export` - receives layout, forwards to PHP, returns download URL
+- [x] `ExportCanvasDto` with validation (dimensions 1-3840x2160, layer properties)
+- [x] Internal format transformation for PHP
+- [x] Error handling with downstream PHP failures
+
+### Upload (FR-2.4)
+- [x] `POST /api/v1/canvas/upload` - multipart, forwards to PHP, returns asset URL
+- [x] MIME type validation (jpeg, png, webp, gif)
+- [x] Max file size validation (10MB)
+
+### Chatbot (FR-3.1, FR-3.2, FR-3.3)
+- [x] `POST /api/v1/chat` - SSE streaming from Groq LLM
+- [x] CV loaded from MinIO as system prompt
+- [x] Conversation persistence in MinIO (`chat-history/conversations/`)
+- [x] Contextual restriction: only answers based on CV
+- [x] Error handling with SSE error message
+
+### Contact (API Spec)
+- [ ] `POST /api/v1/contact` - **NOT IMPLEMENTED**
+
+---
+
+## PHP Compute Engine (backend-php)
+
+### Render (FR-2.4)
+- [x] `POST /internal/render` - creates canvas with Imagick
+- [x] `ImageEngine::drawImage()` - image compositing from S3 or HTTP
+- [x] `ImageEngine::renderText()` - text rendering with ImagickDraw
+- [x] Uploads result PNG to MinIO `production-exports/`
+
+### Process Upload
+- [x] `POST /internal/process-upload` - processes multipart file
+- [x] `ImageProcessor::resizeIfNeeded()` - resizes to max 1920px
+- [x] Converts to WebP quality 80
+- [x] Uploads to MinIO `user-uploads/{sessionId}/{uuid}.webp`
+
+### Routing
+- [x] `public/index.php` - basic router for internal endpoints
+
+---
+
+## Frontend React (frontend/)
+
+### Core
+- [ ] Vite + React 19 + TypeScript configured
+- [ ] Tailwind CSS v4 configured
+- [ ] Routing system (React Router)
+- [ ] Main layout (header, footer, navigation)
+- [ ] Context providers (theme, session, etc.)
+
+### Landing Page (FR-1.1)
+- [ ] Value proposition display
+- [ ] "About me" section with CV summary
+- [ ] Projects/technologies section
+- [ ] Contact form (FR-1.2)
+- [ ] Call-to-action towards Studio or Chat
+
+### Canvas Studio (FR-2.1, FR-2.2, FR-2.3)
+- [ ] Canvas area with Proxy + EventEmitter (60 FPS)
+- [ ] Layer drag & drop
+- [ ] Layer panel (list, reorder, delete)
+- [ ] Toolbar (select, text, image, zoom, etc.)
+- [ ] CKEditor 5 integration for rich text
+- [ ] Layer properties (position, size, color, font)
+- [ ] Export to image via `POST /api/v1/canvas/export`
+- [ ] Asset upload via `POST /api/v1/canvas/upload`
+
+### AI Career Assistant (FR-3.1, FR-3.2, FR-3.3)
+- [ ] Floating chat widget (persistent across pages)
+- [ ] SSE streaming UI with typing indicator
+- [ ] Real-time token rendering
+- [ ] Conversation management (new, history)
+- [ ] Error handling in UI
+
+---
+
+## Assets
+
+- [x] `cv-juan-chavez.md` uploaded to MinIO bucket `system-assets` (manual)
+
+---
+
+## Testing
+
+### NestJS
+- [x] `health.controller.spec.ts`
+- [x] `canvas.controller.spec.ts`, `canvas.service.spec.ts`
+- [x] `upload.controller.spec.ts`, `upload.service.spec.ts`
+- [x] `chat.controller.spec.ts`, `chat.service.spec.ts`
+- [x] `app.e2e-spec.ts`
+
+### PHP
+- [x] `RenderControllerTest.php`
+- [x] `UploadControllerTest.php`
+- [x] `ImageEngineTest.php`
+- [x] `ImageProcessorTest.php`
+
+### Frontend
+- [ ] Testing setup (Vitest + Testing Library)
+- [ ] Component tests
+
+---
+
+## Tech Debt / Improvements
+
+- [ ] Create Makefile with common commands (up, down, build, test, lint)
+- [ ] Add `typecheck` script to frontend (`tsc --noEmit`)
+- [ ] Review `deleteOutDir` in nest-cli.json (should be `true` for clean builds)
+- [ ] Verify GROQ_MODEL in `.env` matches the actual available model
