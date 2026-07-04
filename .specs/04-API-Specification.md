@@ -8,13 +8,13 @@
 ## 2. Endpoint Summary Matrix
 
 |**Module**|**Method**|**Path**|**Access**|**Description**|
-|---|---|---|---|---|
+|---|---|---|---|---|---|
 |**AI Assistant**|`POST`|`/chat`|Public|Initiates a token-streaming career consultation.|
 |**Canvas Studio**|`POST`|`/canvas/export`|Public|Accepts layout JSON payload and triggers image composition.|
 |**Canvas Studio**|`POST`|`/canvas/upload`|Public|Uploads a user image asset for use in canvas layers.|
 |**Canvas Engine**|`POST`|`/internal/render`|Internal|Private PHP pipeline that compiles layers into binary assets.|
 |**Canvas Engine**|`POST`|`/internal/process-upload`|Internal|Private PHP pipeline that processes and stores uploaded images.|
-|**System Core**|`POST`|`/contact`|Public|Submits verified contact forms to the engineering lead.|
+|**System Core**|`POST`|`/contact`|Public|Submits verified contact forms with anti-spam protection to the engineering lead.|
 
 ## 3. Detailed Endpoint Specifications
 ### 3.1 AI Career Assistant
@@ -213,6 +213,66 @@ NestJS acts as the secure API proxy, appending internal tracking IDs and sanitiz
   "status": "completed",
   "objectKey": "user-uploads/sess_abc123/a1b2c3d4-e5f6-7a8b-9c0d-e1f2a3b4c5d6.webp",
   "executionTimeMs": 120
+}
+```
+
+### 3.7 Contact Form Submission
+- **Path:** `/contact`
+- **Method:** `POST`
+- **Access:** Public
+
+#### Anti-Spam Protection
+- **Honeypot:** A hidden field `honeypot` is included in the form. If it contains a value, the submission is silently accepted (HTTP 201) but not processed or persisted.
+- **Rate Limiting:** Maximum 5 requests per IP address per hour. Exceeding this returns HTTP 429.
+
+#### Request Payload (`application/json`)
+```json
+{
+  "name": "Juan Perez",
+  "email": "juan@example.com",
+  "subject": "Collaboration Inquiry",
+  "message": "Hi Juan, I would like to discuss a potential collaboration.",
+  "honeypot": ""
+}
+```
+
+|Field|Type|Required|Validation|
+|---|---|---|---|
+|`name`|`string`|Yes|1-100 characters, not empty|
+|`email`|`string`|Yes|Valid email format|
+|`subject`|`string`|No|Max 200 characters|
+|`message`|`string`|Yes|10-5000 characters|
+|`honeypot`|`string`|No|If non-empty, submission is silently discarded|
+
+#### Expected Success Response (`201 Created`)
+```json
+{
+  "success": true,
+  "messageId": "a1b2c3d4-e5f6-7a8b-9c0d-e1f2a3b4c5d6"
+}
+```
+
+#### Error Responses
+
+**422 Unprocessable Entity** (validation failure)
+```json
+{
+  "statusCode": 422,
+  "error": "Unprocessable Entity",
+  "message": [
+    "name must be a string",
+    "email must be a valid email address",
+    "message must be between 10 and 5000 characters"
+  ]
+}
+```
+
+**429 Too Many Requests** (rate limit exceeded)
+```json
+{
+  "statusCode": 429,
+  "error": "Too Many Requests",
+  "message": "Rate limit exceeded. Please try again later."
 }
 ```
 

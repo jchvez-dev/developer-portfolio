@@ -8,6 +8,7 @@ This system implements a **Polyglot Microservices Architecture** orchestrated en
 2. **API Gateway & AI Orchestrator (NestJS):** I/O-bound, high-concurrency node handling client ingress, input validation, and LLM text streaming tokens.
 3. **Heavy Compute Engine (PHP-FPM + Imagick):** CPU-bound synchronous microservice isolated from external exposure, dedicated solely to graphic processing and rasterization.
 4. **Object Storage (MinIO):** Local S3-compliant persistent layer for high-throughput asset distribution.
+5. **Mailpit (SMTP):** Local fake SMTP server for capturing email notifications during development, with a web UI at `http://localhost:8025`.
 
 ```Plaintext
 
@@ -15,23 +16,30 @@ This system implements a **Polyglot Microservices Architecture** orchestrated en
                    │
          PORTS 3000 (UI) / 4000 (API)
                    │
-  ┌────────────────VIRTUAL DOCKER NETWORK BRIDGE──────────┐
-  │                                                       │
-  │   ┌────────────────┐     HTTP      ┌──────────────┐   │
-  │   │  Frontend App  ├──────────────►│ API Gateway  │   │
-  │   │    (React)     │               │  (NestJS)    │   │
-  │   └────────────────┘               └──────┬───┬───┘   │
-  │                                           │   │       │
-  │                                Internal   │   │S3 SDK │
-  │                                HTTP       │   │       │
-  │                                (8000)     │   │       │
-  │                                           ▼   ▼       │
-  │   ┌────────────────┐               ┌────────────────┐ │
-  │   │  Image Engine  │◄──────────────┤    Object      │ │
-  │   │   (PHP-FPM)    ├──────────────►│    Storage     │ │
-  │   └────────────────┘     S3 SDK    │    (MinIO)     │ │
-  │                                    └────────────────┘ │
-  └───────────────────────────────────────────────────────┘
+  ┌────────────────VIRTUAL DOCKER NETWORK BRIDGE────────────────┐
+  │                                                             │
+  │   ┌────────────────┐     HTTP      ┌──────────────┐         │
+  │   │  Frontend App  ├──────────────►│ API Gateway  │         │
+  │   │    (React)     │               │  (NestJS)    │         │
+  │   └────────────────┘               └──────┬───┬───┘         │
+  │                                           │   │             │
+  │                                Internal   │   │S3 SDK       │
+  │                                HTTP       │   │             │
+  │                                (8000)     │   │             │
+  │                                           ▼   ▼             │
+  │   ┌────────────────┐               ┌────────────────┐       │
+  │   │  Image Engine  │◄──────────────┤    Object      │       │
+  │   │   (PHP-FPM)    ├──────────────►│    Storage     │       │
+  │   └────────────────┘     S3 SDK    │    (MinIO)     │       │
+  │                                    └────────────────┘       │
+  │                                           │                 │
+  │                                           │ SMTP            │
+  │                                           ▼                 │
+  │                                    ┌────────────────┐       │
+  │                                    │    Mailpit     │       │
+  │                                    │  (Dev SMTP)    │       │
+  │                                    └────────────────┘       │
+  └─────────────────────────────────────────────────────────────┘
 ```
 
 ## 2. Component Design & Responsibilities
@@ -63,7 +71,14 @@ This system implements a **Polyglot Microservices Architecture** orchestrated en
 - **Runtime:** MinIO Release Binary.
 - **Core Responsibilities:**
     - Expose a fully S3-compliant API endpoint for localized development.
-    - Isolate file assets into distinct access-controlled buckets: `system-assets`, `user-uploads`, `production-exports`, and `chat-history`.
+    - Isolate file assets into distinct access-controlled buckets: `system-assets`, `user-uploads`, `production-exports`, `chat-history`, and `contact-messages`.
+
+### 2.5 Mailpit Container (`mailpit`)
+- **Runtime:** axllent/mailpit:latest (Alpine).
+- **Core Responsibilities:**
+    - Provide a local SMTP server on port 1025 for capturing outgoing emails during development.
+    - Expose a web UI on port 8025 for inspecting captured emails (subject, body, headers, attachments).
+    - Accept all incoming SMTP connections without authentication (development only).
 
 ## 3. Core Architectural Patterns & Rationales
 ### 3.1 Separation of CPU-Bound vs. I/O-Bound Compute Nodes
@@ -89,3 +104,11 @@ Instead of using public live cloud bucket services during local development phas
 2. **Validation & Proxy:** NestJS validates file type and size -> Generates UUID and session tracking -> Forwards binary via FormData to `http://backend-php:8000/internal/process-upload`.
 3. **Processing Phase:** PHP receives binary -> Opens with Imagick -> Resizes (max 1920px longest side, maintaining aspect ratio) -> Converts to WebP quality 80 -> Uploads result to `MinIO:9000/user-uploads/{sessionId}/{uuid}.webp`.
 4. **Return Phase:** PHP returns objectKey to NestJS -> NestJS constructs public URL -> Returns `{ success, assetUrl, sessionId }` to the React UI.
+
+### 4.3 "Contact Form" Submission Life Cycle
+1. **Form Submission:** Client fills contact form (name, email, subject, message) -> POST to `NestJS:4000/api/v1/contact`.
+2. **Anti-Spam Checks:** NestJS checks honeypot field (silent discard if filled) and enforces rate limiting (max 5 requests per IP per hour).
+3. **Validation:** NestJS validates payload with class-validator (name required, email valid, message required).
+4. **Persistence:** NestJS stores the contact message in `MinIO:9000/contact-messages/{uuid}.json` for record-keeping.
+5. **Email Notification:** NestJS sends an email via SMTP (`mailpit:1025` in dev) to the configured `CONTACT_EMAIL` with the form data.
+6. **Response:** Returns `{ success: true, messageId: "uuid" }` to the client with HTTP 201 Created.

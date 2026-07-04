@@ -28,7 +28,11 @@ The product is a highly interactive web platform that serves as a high-tier, Sen
 ## 3. Functional Requirements (FR)
 ### 3.1 Module 1: Core Portfolio Shell & UI
 - **FR-1.1:** The system must clearly display the core value proposition, mastered technical stacks, and comprehensive case studies of past high-impact professional projects.
-- **FR-1.2:** The system must provide a standard contact form protected against automated spam and abusing.
+- **FR-1.2:** The system must provide a standard contact form with fields (name, email, subject, message) protected against automated spam using:
+  - **Honeypot field:** A hidden field invisible to humans that bots auto-fill; submission is silently discarded if the honeypot has a value.
+  - **Rate limiting:** Maximum 5 submissions per IP address per hour to prevent abuse.
+  - **Email notification:** Upon successful submission, the system must send an email notification (via SMTP) to the engineering lead with the contact details.
+  - **Persistence:** Contact messages must be stored in MinIO (`contact-messages/`) for record-keeping.
 
 ### 3.2 Module 2: Mini-Canva Studio (Graphical Editor)
 - **FR-2.1 - Interactive Canvas:** Users must be able to drag, drop, and absolute-position design layers (background image templates, bounding text boxes) inside a relative coordinate system canvas.
