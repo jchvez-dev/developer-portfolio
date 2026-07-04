@@ -32,5 +32,5 @@ These rules guide the AI coding assistant (Antigravity) on coding style, archite
 * **PR Templates:** All Pull Request descriptions must follow the standard structure of `What`, `Why`, `How`, and `Verification` separated by horizontal rules (`---`).
 
 ### 6. State Awareness
-* **Checklist:** Before starting any work, read `CHECKLIST.md` at the project root to understand the current implementation status. Update it as tasks are completed or new gaps are identified.
+* **Checklist:** Before starting any work, read `.specs/CHECKLIST.md` to understand the current implementation status. Update it as tasks are completed or new gaps are identified.
 

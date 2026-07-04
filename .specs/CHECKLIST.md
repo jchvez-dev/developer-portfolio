@@ -7,7 +7,7 @@
 
 ## Infrastructure
 
-- [x] `docker-compose.yml` with 5 services (frontend, nest, php, minio, storage-init)
+- [x] `docker-compose.yml` with 6 services (frontend, nest, php, minio, storage-init, mailpit)
 - [x] `frontend/Dockerfile` (multi-stage prod with nginx)
 - [x] `frontend/Dockerfile.dev` (dev with Vite live-reload)
 - [x] `backend-nest/Dockerfile` (multi-stage prod, node user)
@@ -16,11 +16,12 @@
 - [x] `backend-php/Dockerfile.dev` (dev with PHP CLI + composer)
 - [x] `portafolio-network` (bridge driver)
 - [x] `minio-data` volume for persistence
-- [x] MinIO buckets: `system-assets`, `user-uploads`, `production-exports`, `chat-history`
+- [x] MinIO buckets: `system-assets`, `user-uploads`, `production-exports`, `chat-history`, `contact-messages`
 - [x] PHP container has no public ports (NFR-4.4)
 - [x] Anonymous volume bindings for node_modules and vendor
 - [x] `.env.example` with documented environment variables
 - [x] `.gitignore` global and per-service
+- [ ] Mailpit service (SMTP) for dev email notifications
 
 ---
 
@@ -51,8 +52,11 @@
 - [x] Contextual restriction: only answers based on CV
 - [x] Error handling with SSE error message
 
-### Contact (API Spec)
-- [ ] `POST /api/v1/contact` - **NOT IMPLEMENTED**
+### Contact (FR-1.2)
+- [ ] `POST /api/v1/contact` - contact form with anti-spam (honeypot + rate limiting)
+- [ ] Contact messages persistence in MinIO (`contact-messages/`)
+- [ ] Email notification via Mailpit SMTP (nodemailer)
+- [ ] `ContactDto` with validation (name, email, subject, message, honeypot)
 
 ---
 
@@ -143,3 +147,4 @@
 - [ ] Add `typecheck` script to frontend (`tsc --noEmit`)
 - [ ] Review `deleteOutDir` in nest-cli.json (should be `true` for clean builds)
 - [ ] Verify GROQ_MODEL in `.env` matches the actual available model
+- [ ] SMTP env vars (SMTP_HOST, SMTP_PORT, CONTACT_EMAIL) documented in .env.example
