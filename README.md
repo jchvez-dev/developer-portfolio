@@ -54,6 +54,8 @@ The infrastructure uses Docker to orchestrate all services. The storage cluster,
 | `MINIO_USE_SSL` | `false` | Enable TLS for MinIO SDK connections |
 | `MINIO_PUBLIC_URL` | `http://localhost:9000` | Public URL for MinIO downloads (change in production) |
 | `CORS_ORIGINS` | `http://localhost:3000` | Comma-separated allowed browser origins |
+| `GROQ_API_KEY` | — | API key for Groq LLM provider (AI Career Assistant) |
+| `GROQ_MODEL` | `llama-3.1-8b-instant` | Groq model for chat completions |
 
 ### Launching Services
 
@@ -97,6 +99,8 @@ Once running:
 | **NestJS API** | `http://localhost:4000/api/v1` | Public API gateway |
 | **Health check** | `http://localhost:4000/api/v1/health` | Smoke-test endpoint |
 | **Canvas Export** | `http://localhost:4000/api/v1/canvas/export` | `POST` — Export canvas layout as image |
+| **Canvas Upload** | `http://localhost:4000/api/v1/canvas/upload` | `POST` (multipart) — Upload user images, processed via PHP/Imagick |
+| **AI Chat** | `http://localhost:4000/api/v1/chat` | `POST` — Chat with Groq LLM (SSE token streaming) |
 | **MinIO S3 API** | `http://localhost:9000` | Used by services to upload/download assets |
 | **MinIO Console** | `http://localhost:9001` | Web UI; log in with `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD` |
 | **PHP Render** | `http://backend-php:8000` (internal network only) | `POST /internal/render`, no host port exposed |

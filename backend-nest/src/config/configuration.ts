@@ -7,6 +7,7 @@ export default () => ({
     accessKey: process.env.MINIO_ROOT_USER ?? '',
     secretKey: process.env.MINIO_ROOT_PASSWORD ?? '',
     useSSL: process.env.MINIO_USE_SSL === 'true',
+    region: 'us-east-1',
   },
   minioPublicUrl:
     process.env.MINIO_PUBLIC_URL ??
@@ -18,4 +19,6 @@ export default () => ({
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean),
+  groqApiKey: process.env.GROQ_API_KEY ?? '',
+  groqModel: process.env.GROQ_MODEL ?? 'llama3-8b-8192',
 });

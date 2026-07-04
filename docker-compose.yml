@@ -37,6 +37,7 @@ services:
       /usr/bin/mc mb --ignore-existing local_cluster/system-assets;
       /usr/bin/mc mb --ignore-existing local_cluster/user-uploads;
       /usr/bin/mc mb --ignore-existing local_cluster/production-exports;
+      /usr/bin/mc mb --ignore-existing local_cluster/chat-history;
       /usr/bin/mc anonymous set public local_cluster/production-exports;
       echo 'All buckets provisioned successfully!';
       exit 0;
@@ -82,6 +83,9 @@ services:
       - MINIO_USE_SSL=${MINIO_USE_SSL}
       - PHP_BACKEND_URL=${PHP_BACKEND_URL}
       - CORS_ORIGINS=${CORS_ORIGINS}
+      - MINIO_ENDPOINT=storage
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - GROQ_MODEL=${GROQ_MODEL}
     depends_on:
       - storage
 
