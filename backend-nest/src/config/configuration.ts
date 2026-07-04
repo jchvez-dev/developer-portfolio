@@ -21,4 +21,11 @@ export default () => ({
     .filter(Boolean),
   groqApiKey: process.env.GROQ_API_KEY ?? '',
   groqModel: process.env.GROQ_MODEL ?? 'llama3-8b-8192',
+  smtp: {
+    host: process.env.SMTP_HOST ?? 'mailpit',
+    port: parseInt(process.env.SMTP_PORT ?? '1025', 10),
+    user: process.env.SMTP_USER ?? '',
+    pass: process.env.SMTP_PASS ?? '',
+    contactEmail: process.env.CONTACT_EMAIL ?? '',
+  },
 });

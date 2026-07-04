@@ -5,6 +5,7 @@ import { CanvasModule } from './canvas/canvas.module';
 import { HealthModule } from './health/health.module';
 import { UploadModule } from './upload/upload.module';
 import { ChatModule } from './chat/chat.module';
+import { ContactModule } from './contact/contact.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ChatModule } from './chat/chat.module';
     CanvasModule,
     UploadModule,
     ChatModule,
+    ContactModule,
   ],
 })
 export class AppModule {}

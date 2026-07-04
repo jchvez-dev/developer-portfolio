@@ -1,7 +1,7 @@
 # Project Checklist
 
 > Current implementation status of the Developer Portfolio project.
-> Last updated: 2026-07-04
+> Last updated: 2026-07-04 (contact endpoint + Mailpit)
 
 ---
 
@@ -21,7 +21,7 @@
 - [x] Anonymous volume bindings for node_modules and vendor
 - [x] `.env.example` with documented environment variables
 - [x] `.gitignore` global and per-service
-- [ ] Mailpit service (SMTP) for dev email notifications
+- [x] Mailpit service (SMTP) for dev email notifications
 
 ---
 
@@ -53,10 +53,10 @@
 - [x] Error handling with SSE error message
 
 ### Contact (FR-1.2)
-- [ ] `POST /api/v1/contact` - contact form with anti-spam (honeypot + rate limiting)
-- [ ] Contact messages persistence in MinIO (`contact-messages/`)
-- [ ] Email notification via Mailpit SMTP (nodemailer)
-- [ ] `ContactDto` with validation (name, email, subject, message, honeypot)
+- [x] `POST /api/v1/contact` - contact form with anti-spam (honeypot + rate limiting)
+- [x] Contact messages persistence in MinIO (`contact-messages/`)
+- [x] Email notification via Mailpit SMTP (nodemailer)
+- [x] `ContactDto` with validation (name, email, subject, message, honeypot)
 
 ---
 
@@ -127,6 +127,7 @@
 - [x] `canvas.controller.spec.ts`, `canvas.service.spec.ts`
 - [x] `upload.controller.spec.ts`, `upload.service.spec.ts`
 - [x] `chat.controller.spec.ts`, `chat.service.spec.ts`
+- [x] `contact.controller.spec.ts`, `contact.service.spec.ts`
 - [x] `app.e2e-spec.ts`
 
 ### PHP
@@ -147,4 +148,4 @@
 - [ ] Add `typecheck` script to frontend (`tsc --noEmit`)
 - [ ] Review `deleteOutDir` in nest-cli.json (should be `true` for clean builds)
 - [ ] Verify GROQ_MODEL in `.env` matches the actual available model
-- [ ] SMTP env vars (SMTP_HOST, SMTP_PORT, CONTACT_EMAIL) documented in .env.example
+- [x] SMTP env vars (SMTP_HOST, SMTP_PORT, CONTACT_EMAIL) documented in .env.example
