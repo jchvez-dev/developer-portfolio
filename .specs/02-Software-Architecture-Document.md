@@ -63,7 +63,7 @@ This system implements a **Polyglot Microservices Architecture** orchestrated en
 - **Runtime:** MinIO Release Binary.
 - **Core Responsibilities:**
     - Expose a fully S3-compliant API endpoint for localized development.
-    - Isolate file assets into distinct access-controlled buckets: `system-assets`, `user-uploads`, and `production-exports`.
+    - Isolate file assets into distinct access-controlled buckets: `system-assets`, `user-uploads`, `production-exports`, and `chat-history`.
 
 ## 3. Core Architectural Patterns & Rationales
 ### 3.1 Separation of CPU-Bound vs. I/O-Bound Compute Nodes
