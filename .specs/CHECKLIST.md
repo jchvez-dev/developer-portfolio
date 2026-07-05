@@ -140,15 +140,15 @@
 - [x] `ImageProcessorTest.php`
 
 ### Frontend
-- [ ] Testing setup (Vitest + Testing Library)
-- [ ] Component tests
+- [x] Testing setup (Vitest + Testing Library)
+- [x] Component tests (59 tests across 18 files)
 
 ---
 
 ## Tech Debt / Improvements
 
 - [ ] Create Makefile with common commands (up, down, build, test, lint)
-- [ ] Add `typecheck` script to frontend (`tsc --noEmit`)
+- [x] Add `typecheck` script to frontend (`tsc --noEmit`)
 - [ ] Review `deleteOutDir` in nest-cli.json (should be `true` for clean builds)
 - [ ] Verify GROQ_MODEL in `.env` matches the actual available model
 - [x] SMTP env vars (SMTP_HOST, SMTP_PORT, CONTACT_EMAIL) documented in .env.example
