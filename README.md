@@ -43,7 +43,7 @@ The infrastructure uses Docker to orchestrate all services. The storage cluster,
 | Variable | Default | Description |
 |---|---|---|
 | `NEST_PORT` | `4000` | Host port mapped to the NestJS API gateway |
-| `FRONTEND_PORT` | `3000` | Host port reserved for the React frontend (not yet wired) |
+| `FRONTEND_PORT` | `3000` | Host port mapped to the React frontend (Vite dev server) |
 | `MINIO_API_PORT` | `9000` | Host port for the MinIO S3 API |
 | `MINIO_CONSOLE_PORT` | `9001` | Host port for the MinIO web console |
 | `MINIO_ROOT_USER` | — | MinIO admin username (shared by storage and NestJS) |
@@ -103,6 +103,7 @@ Once running:
 | **Frontend** | `http://localhost:3000` | React SPA with Tailwind CSS |
 | **NestJS API** | `http://localhost:4000/api/v1` | Public API gateway |
 | **Health check** | `http://localhost:4000/api/v1/health` | Smoke-test endpoint |
+| **Profile** | `http://localhost:4000/api/v1/profile` | `GET` — CV data from MinIO (used by landing page) |
 | **Canvas Export** | `http://localhost:4000/api/v1/canvas/export` | `POST` — Export canvas layout as image |
 | **Canvas Upload** | `http://localhost:4000/api/v1/canvas/upload` | `POST` (multipart) — Upload user images, processed via PHP/Imagick |
 | **AI Chat** | `http://localhost:4000/api/v1/chat` | `POST` — Chat with Groq LLM (SSE token streaming) |

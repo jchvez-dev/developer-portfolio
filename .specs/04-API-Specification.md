@@ -15,6 +15,7 @@
 |**Canvas Engine**|`POST`|`/internal/render`|Internal|Private PHP pipeline that compiles layers into binary assets.|
 |**Canvas Engine**|`POST`|`/internal/process-upload`|Internal|Private PHP pipeline that processes and stores uploaded images.|
 |**System Core**|`POST`|`/contact`|Public|Submits verified contact forms with anti-spam protection to the engineering lead.|
+|**System Core**|`GET`|`/profile`|Public|Returns structured CV data (name, skills, experience, education) from MinIO.|
 
 ## 3. Detailed Endpoint Specifications
 ### 3.1 AI Career Assistant

@@ -31,6 +31,9 @@
 - [x] Bootstrap with CORS, global prefix `api/v1`, ValidationPipe
 - [x] ConfigModule loading environment variables
 
+### Profile (CV-based)
+- [x] `GET /api/v1/profile` - reads profile.json from MinIO, returns structured JSON
+
 ### Health
 - [x] `GET /api/v1/health` - readiness check
 
@@ -89,11 +92,11 @@
 - [x] Context providers (theme, session, etc.)
 
 ### Landing Page (FR-1.1)
-- [ ] Value proposition display
-- [ ] "About me" section with CV summary
-- [ ] Projects/technologies section
-- [ ] Contact form (FR-1.2)
-- [ ] Call-to-action towards Studio or Chat
+- [x] Value proposition display
+- [x] "About me" section with CV summary
+- [x] Projects/technologies section
+- [x] Contact form (FR-1.2)
+- [x] Call-to-action towards Studio or Chat
 
 ### Canvas Studio (FR-2.1, FR-2.2, FR-2.3)
 - [ ] Canvas area with Proxy + EventEmitter (60 FPS)
@@ -149,3 +152,13 @@
 - [ ] Review `deleteOutDir` in nest-cli.json (should be `true` for clean builds)
 - [ ] Verify GROQ_MODEL in `.env` matches the actual available model
 - [x] SMTP env vars (SMTP_HOST, SMTP_PORT, CONTACT_EMAIL) documented in .env.example
+
+---
+
+## UI Refinements (Pendiente)
+
+- [ ] Pagina 404 (NotFound) para rutas inexistentes
+- [ ] Barril en `components/` (ademas de `components/ui/`)
+- [ ] Iconografia: logos tech en badges, iconos semanticos en cards, flecha en CTA
+- [ ] Microinteracciones: hover elevation en cards, scale en badges/buttons, focus transition en inputs
+- [ ] Live Ping: indicador "Available for hire" con animacion en Hero
