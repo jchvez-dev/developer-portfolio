@@ -7,7 +7,7 @@ interface AppContextValue {
 
 const AppContext = createContext<AppContextValue | undefined>(undefined);
 
-export function AppProvider({ children }: { children: ReactNode }) {
+const AppProvider = ({ children }: { children: ReactNode }) => {
   const [chatOpen, setChatOpen] = useState(false);
 
   return (
@@ -15,10 +15,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
       {children}
     </AppContext.Provider>
   );
-}
+};
 
 export function useApp() {
   const ctx = useContext(AppContext);
   if (!ctx) throw new Error('useApp must be used within AppProvider');
   return ctx;
 }
+
+export { AppProvider };

@@ -4,13 +4,13 @@ import { useTheme } from '../context/ThemeContext';
 
 const navLinks = [
   { to: '/', label: 'Home' },
-  { to: '/about', label: 'About' },
-  { to: '/projects', label: 'Projects' },
+  { to: '/#about', label: 'About' },
+  { to: '/#projects', label: 'Projects' },
   { to: '/studio', label: 'Studio' },
-  { to: '/contact', label: 'Contact' },
+  { to: '/#contact', label: 'Contact' },
 ];
 
-export default function Header() {
+export const Header = () => {
   const { theme, toggleTheme } = useTheme();
 
   return (
@@ -48,4 +48,4 @@ export default function Header() {
       </nav>
     </header>
   );
-}
+};
