@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Header,
   HttpCode,
@@ -28,6 +29,20 @@ export class ChatController {
     }
 
     return conversation;
+  }
+
+  @Delete(':conversationId')
+  @HttpCode(HttpStatus.OK)
+  async deleteConversation(@Param('conversationId') conversationId: string) {
+    const conversation = await this.chatService.getConversation(conversationId);
+
+    if (!conversation) {
+      throw new NotFoundException('Conversation not found');
+    }
+
+    await this.chatService.deleteConversation(conversationId);
+
+    return { success: true };
   }
 
   @Post()
