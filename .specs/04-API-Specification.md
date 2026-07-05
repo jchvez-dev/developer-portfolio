@@ -10,6 +10,7 @@
 |**Module**|**Method**|**Path**|**Access**|**Description**|
 |---|---|---|---|---|---|
 |**AI Assistant**|`POST`|`/chat`|Public|Initiates a token-streaming career consultation.|
+|**AI Assistant**|`GET`|`/chat/:conversationId`|Public|Retrieves conversation history from MinIO.|
 |**Canvas Studio**|`POST`|`/canvas/export`|Public|Accepts layout JSON payload and triggers image composition.|
 |**Canvas Studio**|`POST`|`/canvas/upload`|Public|Uploads a user image asset for use in canvas layers.|
 |**Canvas Engine**|`POST`|`/internal/render`|Internal|Private PHP pipeline that compiles layers into binary assets.|
@@ -44,7 +45,37 @@ data: {"token": " optimizing...", "done": false}
 data: {"token": "", "done": true}
 ```
 
-### 3.2 Canvas Studio: Public Export Trigger
+### 3.2 AI Career Assistant: Conversation History
+
+- **Path:** `/chat/:conversationId`
+- **Method:** `GET`
+- **Content-Type:** `application/json`
+
+#### Expected Success Response (`200 OK`)
+
+```json
+{
+  "conversationId": "uuid-string",
+  "createdAt": "2026-07-04T12:00:00.000Z",
+  "updatedAt": "2026-07-04T12:05:00.000Z",
+  "messages": [
+    { "role": "user", "content": "Does Juan have experience with React?" },
+    { "role": "assistant", "content": "Yes, Juan has 5+ years of experience with React." }
+  ]
+}
+```
+
+#### Error Response (`404 Not Found`)
+
+```json
+{
+  "statusCode": 404,
+  "message": "Conversation not found",
+  "error": "Not Found"
+}
+```
+
+### 3.3 Canvas Studio: Public Export Trigger
 - **Path:** `/canvas/export`
 - **Method:** `POST`
 #### Request Payload (`application/json`)
@@ -112,7 +143,7 @@ Returns an S3 secure presigned URL fetched from MinIO, decoupling download bandw
 }
 ```
 
-### 3.3 Microservice Private Mesh: Internal Render Pipeline
+### 3.4 Microservice Private Mesh: Internal Render Pipeline
 - **Path:** `/internal/render`
 - **Method:** `POST`
 - **Access Control:** Isolated inside Docker network. External requests hit connection drop rules.
