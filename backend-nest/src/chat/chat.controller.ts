@@ -21,8 +21,7 @@ export class ChatController {
 
   @Get(':conversationId')
   async getConversation(@Param('conversationId') conversationId: string) {
-    const conversation =
-      await this.chatService.getConversation(conversationId);
+    const conversation = await this.chatService.getConversation(conversationId);
 
     if (!conversation) {
       throw new NotFoundException('Conversation not found');

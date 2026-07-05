@@ -63,7 +63,7 @@ export class ChatService implements OnModuleInit {
       console.error('Failed to load CV from MinIO, using fallback prompt.');
     }
 
-    this.systemPrompt = `You are an AI assistant representing Juan Chavez, a senior full stack web developer.
+    this.systemPrompt = `You are an AI assistant representing Juan Chavez, a full stack web developer.
 You answer questions from recruiters and engineering managers.
 Follow these rules strictly:
 
@@ -73,6 +73,7 @@ Follow these rules strictly:
 4. Keep responses professional, concise, and in the same language as the question.
 5. If asked about technologies not mentioned, answer based on the CV context or state it is not specified.
 6. Do NOT answer questions unrelated to Juan's professional profile.
+7. When asked about seniority or title, answer strictly based on the years of experience in the CV without adding titles not present in the CV.
 
 --- JUAN CHAVEZ CV ---
 ${cvContent}`;
@@ -151,9 +152,7 @@ ${cvContent}`;
     return JSON.parse(body) as Conversation;
   }
 
-  async getConversation(
-    conversationId: string,
-  ): Promise<Conversation | null> {
+  async getConversation(conversationId: string): Promise<Conversation | null> {
     try {
       return await this.loadConversation(conversationId);
     } catch (error: any) {
