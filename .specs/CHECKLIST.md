@@ -82,8 +82,8 @@
 ## Frontend React (frontend/)
 
 ### Core
-- [ ] Vite + React 19 + TypeScript configured
-- [ ] Tailwind CSS v4 configured
+- [x] Vite + React 19 + TypeScript configured
+- [x] Tailwind CSS v4 configured
 - [ ] Routing system (React Router)
 - [ ] Main layout (header, footer, navigation)
 - [ ] Context providers (theme, session, etc.)
