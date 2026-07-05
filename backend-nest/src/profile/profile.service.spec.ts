@@ -23,7 +23,9 @@ describe('ProfileService', () => {
         {
           provide: ConfigService,
           useValue: {
-            get: jest.fn((key: string) => mockConfig[key as keyof typeof mockConfig]),
+            get: jest.fn(
+              (key: string) => mockConfig[key as keyof typeof mockConfig],
+            ),
           },
         },
       ],
