@@ -1,9 +1,12 @@
 import {
   Body,
   Controller,
+  Get,
   Header,
   HttpCode,
   HttpStatus,
+  NotFoundException,
+  Param,
   Post,
   Res,
 } from '@nestjs/common';
@@ -14,6 +17,18 @@ import { ChatDto } from './dto/chat.dto';
 @Controller('chat')
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
+
+  @Get(':conversationId')
+  async getConversation(@Param('conversationId') conversationId: string) {
+    const conversation =
+      await this.chatService.getConversation(conversationId);
+
+    if (!conversation) {
+      throw new NotFoundException('Conversation not found');
+    }
+
+    return conversation;
+  }
 
   @Post()
   @Header('Content-Type', 'text/event-stream')

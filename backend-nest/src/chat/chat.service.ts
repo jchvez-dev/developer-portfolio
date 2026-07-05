@@ -149,4 +149,17 @@ ${cvContent}`;
     const body = await response.Body!.transformToString();
     return JSON.parse(body) as Conversation;
   }
+
+  async getConversation(
+    conversationId: string,
+  ): Promise<Conversation | null> {
+    try {
+      return await this.loadConversation(conversationId);
+    } catch (error: any) {
+      if (error.name === 'NoSuchKey') {
+        return null;
+      }
+      throw error;
+    }
+  }
 }

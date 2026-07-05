@@ -50,6 +50,7 @@
 
 ### Chatbot (FR-3.1, FR-3.2, FR-3.3)
 - [x] `POST /api/v1/chat` - SSE streaming from Groq LLM
+- [x] `GET /api/v1/chat/:conversationId` - load conversation history from MinIO
 - [x] CV loaded from MinIO as system prompt
 - [x] Conversation persistence in MinIO (`chat-history/conversations/`)
 - [x] Contextual restriction: only answers based on CV
