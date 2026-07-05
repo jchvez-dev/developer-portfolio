@@ -84,9 +84,9 @@
 ### Core
 - [x] Vite + React 19 + TypeScript configured
 - [x] Tailwind CSS v4 configured
-- [ ] Routing system (React Router)
-- [ ] Main layout (header, footer, navigation)
-- [ ] Context providers (theme, session, etc.)
+- [x] Routing system (React Router)
+- [x] Main layout (header, footer, navigation)
+- [x] Context providers (theme, session, etc.)
 
 ### Landing Page (FR-1.1)
 - [ ] Value proposition display
