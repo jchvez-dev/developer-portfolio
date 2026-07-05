@@ -5,6 +5,7 @@ import {
   S3Client,
   GetObjectCommand,
   PutObjectCommand,
+  DeleteObjectCommand,
 } from '@aws-sdk/client-s3';
 import { ChatDto } from './dto/chat.dto';
 import { ChatMessage, Conversation } from './interfaces';
@@ -158,6 +159,22 @@ ${cvContent}`;
     } catch (error: any) {
       if (error.name === 'NoSuchKey') {
         return null;
+      }
+      throw error;
+    }
+  }
+
+  async deleteConversation(conversationId: string): Promise<void> {
+    const command = new DeleteObjectCommand({
+      Bucket: 'chat-history',
+      Key: `conversations/${conversationId}.json`,
+    });
+
+    try {
+      await this.s3.send(command);
+    } catch (error: any) {
+      if (error.name === 'NoSuchKey') {
+        return;
       }
       throw error;
     }

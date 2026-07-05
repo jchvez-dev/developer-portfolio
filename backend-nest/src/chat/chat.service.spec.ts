@@ -39,4 +39,10 @@ describe('ChatService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  describe('deleteConversation', () => {
+    it('should be a function', () => {
+      expect(typeof service.deleteConversation).toBe('function');
+    });
+  });
 });

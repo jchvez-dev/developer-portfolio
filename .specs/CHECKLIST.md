@@ -1,7 +1,7 @@
 # Project Checklist
 
 > Current implementation status of the Developer Portfolio project.
-> Last updated: 2026-07-04 (contact endpoint + Mailpit)
+> Last updated: 2026-07-04 (DELETE /chat/:conversationId endpoint)
 
 ---
 
@@ -110,11 +110,11 @@
 - [ ] Asset upload via `POST /api/v1/canvas/upload`
 
 ### AI Career Assistant (FR-3.1, FR-3.2, FR-3.3)
-- [ ] Floating chat widget (persistent across pages)
-- [ ] SSE streaming UI with typing indicator
-- [ ] Real-time token rendering
-- [ ] Conversation management (new, history)
-- [ ] Error handling in UI
+- [x] Floating chat widget (persistent across pages)
+- [x] SSE streaming UI with typing indicator
+- [x] Real-time token rendering
+- [x] Conversation management (new, history)
+- [x] Error handling in UI
 
 ---
 

@@ -9,6 +9,8 @@ describe('ChatController', () => {
   const mockChatService = {
     streamResponse: jest.fn(),
     saveConversation: jest.fn(),
+    getConversation: jest.fn(),
+    deleteConversation: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -23,5 +25,29 @@ describe('ChatController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  describe('deleteConversation', () => {
+    it('deletes existing conversation', async () => {
+      mockChatService.getConversation.mockResolvedValue({
+        conversationId: 'abc',
+        messages: [],
+        createdAt: '',
+        updatedAt: '',
+      });
+
+      const result = await controller.deleteConversation('abc');
+
+      expect(mockChatService.deleteConversation).toHaveBeenCalledWith('abc');
+      expect(result).toEqual({ success: true });
+    });
+
+    it('throws NotFoundException if conversation does not exist', async () => {
+      mockChatService.getConversation.mockResolvedValue(null);
+
+      await expect(controller.deleteConversation('abc')).rejects.toThrow(
+        'Conversation not found',
+      );
+    });
   });
 });

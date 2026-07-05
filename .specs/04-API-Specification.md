@@ -11,6 +11,7 @@
 |---|---|---|---|---|---|
 |**AI Assistant**|`POST`|`/chat`|Public|Initiates a token-streaming career consultation.|
 |**AI Assistant**|`GET`|`/chat/:conversationId`|Public|Retrieves conversation history from MinIO.|
+|**AI Assistant**|`DELETE`|`/chat/:conversationId`|Public|Deletes a conversation from MinIO.|
 |**Canvas Studio**|`POST`|`/canvas/export`|Public|Accepts layout JSON payload and triggers image composition.|
 |**Canvas Studio**|`POST`|`/canvas/upload`|Public|Uploads a user image asset for use in canvas layers.|
 |**Canvas Engine**|`POST`|`/internal/render`|Internal|Private PHP pipeline that compiles layers into binary assets.|
@@ -75,7 +76,30 @@ data: {"token": "", "done": true}
 }
 ```
 
-### 3.3 Canvas Studio: Public Export Trigger
+### 3.3 AI Career Assistant: Delete Conversation
+
+- **Path:** `/chat/:conversationId`
+- **Method:** `DELETE`
+
+#### Expected Success Response (`200 OK`)
+
+```json
+{
+  "success": true
+}
+```
+
+#### Error Response (`404 Not Found`)
+
+```json
+{
+  "statusCode": 404,
+  "message": "Conversation not found",
+  "error": "Not Found"
+}
+```
+
+### 3.5 Canvas Studio: Public Export Trigger
 - **Path:** `/canvas/export`
 - **Method:** `POST`
 #### Request Payload (`application/json`)
@@ -143,7 +167,7 @@ Returns an S3 secure presigned URL fetched from MinIO, decoupling download bandw
 }
 ```
 
-### 3.4 Microservice Private Mesh: Internal Render Pipeline
+### 3.6 Microservice Private Mesh: Internal Render Pipeline
 - **Path:** `/internal/render`
 - **Method:** `POST`
 - **Access Control:** Isolated inside Docker network. External requests hit connection drop rules.
@@ -183,7 +207,7 @@ NestJS acts as the secure API proxy, appending internal tracking IDs and sanitiz
 }
 ```
 
-### 3.5 User Asset Upload
+### 3.7 User Asset Upload
 - **Path:** `/canvas/upload`
 - **Method:** `POST`
 - **Headers:** `Content-Type: multipart/form-data`
@@ -218,7 +242,7 @@ NestJS acts as the secure API proxy, appending internal tracking IDs and sanitiz
 }
 ```
 
-### 3.6 Microservice Private Mesh: Internal Process Upload
+### 3.8 Microservice Private Mesh: Internal Process Upload
 - **Path:** `/internal/process-upload`
 - **Method:** `POST`
 - **Access Control:** Isolated inside Docker network. External requests hit connection drop rules.
@@ -248,7 +272,7 @@ NestJS acts as the secure API proxy, appending internal tracking IDs and sanitiz
 }
 ```
 
-### 3.7 Contact Form Submission
+### 3.9 Contact Form Submission
 - **Path:** `/contact`
 - **Method:** `POST`
 - **Access:** Public
