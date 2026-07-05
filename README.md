@@ -107,6 +107,7 @@ Once running:
 | **Canvas Export** | `http://localhost:4000/api/v1/canvas/export` | `POST` — Export canvas layout as image |
 | **Canvas Upload** | `http://localhost:4000/api/v1/canvas/upload` | `POST` (multipart) — Upload user images, processed via PHP/Imagick |
 | **AI Chat** | `http://localhost:4000/api/v1/chat` | `POST` — Chat with Groq LLM (SSE token streaming) |
+| **AI Chat History** | `http://localhost:4000/api/v1/chat/:id` | `GET` — Retrieve conversation history |
 | **Contact Form** | `http://localhost:4000/api/v1/contact` | `POST` — Submit contact form with anti-spam (honeypot + rate limiting) |
 | **MinIO S3 API** | `http://localhost:9000` | Used by services to upload/download assets |
 | **MinIO Console** | `http://localhost:9001` | Web UI; log in with `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD` |
