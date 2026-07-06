@@ -21,4 +21,11 @@ describe('AboutSection', () => {
     expect(screen.getByText((content) => content.includes('Tech Corp'))).toBeInTheDocument();
     expect(screen.getByText('Platform Migration')).toBeInTheDocument();
   });
+
+  it('renders education entries', () => {
+    render(<AboutSection profile={mockProfile} loading={false} />);
+    expect(screen.getByText('B.S. Computer Science')).toBeInTheDocument();
+    expect(screen.getByText((content) => content.includes('University'))).toBeInTheDocument();
+    expect(screen.getByText((content) => content.includes('2016'))).toBeInTheDocument();
+  });
 });

@@ -58,6 +58,22 @@ export const AboutSection = ({ profile, loading }: AboutSectionProps) => {
           </Card>
         ))}
       </div>
+
+      {profile?.education && profile.education.length > 0 && (
+        <div className="mt-10">
+          <Heading as="h2">Education</Heading>
+          <div className="mt-4 space-y-4">
+            {profile.education.map((edu, i) => (
+              <Card key={i}>
+                <Heading as="h3">{edu.degree}</Heading>
+                <Text muted small>
+                  {edu.institution} &middot; {edu.year}
+                </Text>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
     </Section>
   );
 };
