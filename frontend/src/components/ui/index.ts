@@ -6,3 +6,4 @@ export { Card } from './Card';
 export { Dropdown } from './Dropdown';
 export { Heading } from './Heading';
 export { Text } from './Text';
+export { Modal } from './Modal';

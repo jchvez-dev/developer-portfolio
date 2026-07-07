@@ -1,65 +1,17 @@
-import { useState } from 'react';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import {
-  InlineEditor,
-  Bold,
-  Essentials,
-  FontSize,
-  Italic,
-  List,
-  Paragraph,
-  Undo,
-  EditorWatchdog,
-  ContextWatchdog,
-} from 'ckeditor5';
+import { useState, useRef, useCallback } from 'react';
 import type { Editor } from 'ckeditor5';
-import 'ckeditor5/ckeditor5.css';
-import { Button, Dropdown } from '../../components/ui';
+import { Button, Modal } from '../../components/ui';
 import { exportCanvas } from './api';
-
-const Editor = Object.assign(InlineEditor, { EditorWatchdog, ContextWatchdog });
-
-const EDITOR_CONFIG = {
-  licenseKey: 'GPL' as const,
-  plugins: [Bold, Essentials, FontSize, Italic, List, Paragraph, Undo],
-  fontSize: {
-    options: [
-      { title: '12px', model: '12px' },
-      { title: '16px', model: '16px' },
-      { title: '24px', model: '24px' },
-      { title: '32px', model: '32px' },
-      { title: '48px', model: '48px' },
-      { title: '64px', model: '64px' },
-    ],
-  },
-};
-
-interface TextLayer {
-  id: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  html: string;
-}
-
-const initialLayers: TextLayer[] = [
-  { id: 'title', x: 50, y: 50, width: 500, height: 200, html: '<h2>Titulo principal</h2>' },
-  { id: 'body', x: 50, y: 300, width: 500, height: 250, html: '<p>Texto del cuerpo...</p>' },
-];
+import { CanvasToolbar } from './CanvasToolbar';
+import { TextLayerComponent } from './TextLayer';
+import type { TextLayer } from './types';
 
 const CANVAS_W = 1200;
 const CANVAS_H = 630;
 
-const fontSizes = ['12px', '16px', '24px', '32px', '48px', '64px'];
-
-const toolbarBtns = [
-  { label: 'Undo', cmd: 'undo' },
-  { label: 'Redo', cmd: 'redo' },
-  { label: 'B', cmd: 'bold', className: 'font-bold' },
-  { label: 'I', cmd: 'italic', className: 'italic' },
-  { label: 'OL', cmd: 'numberedList' },
-  { label: 'UL', cmd: 'bulletedList' },
+const initialLayers: TextLayer[] = [
+  { id: 'title', x: 50, y: 50, width: 200, height: 30, zIndex: 1, html: '<h2>Titulo principal</h2>' },
+  { id: 'body', x: 50, y: 300, width: 200, height: 30, zIndex: 2, html: '<p>Texto del cuerpo...</p>' },
 ];
 
 export const CanvasPreview = () => {
@@ -68,10 +20,60 @@ export const CanvasPreview = () => {
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [focusedEditor, setFocusedEditor] = useState<Editor | null>(null);
+  const [focusedLayerId, setFocusedLayerId] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const nextId = useRef(3);
+  const nextZIndex = useRef(3);
 
-  const handleChange = (id: string, html: string) => {
+  const handleChange = useCallback((id: string, html: string) => {
     setLayers(prev => prev.map(l => l.id === id ? { ...l, html } : l));
-  };
+  }, []);
+
+  const addLayer = useCallback(() => {
+    const id = nextId.current++;
+    const z = nextZIndex.current++;
+    setLayers(prev => [...prev, {
+      id: `layer-${id}`,
+      x: 30 + (z % 5) * 20,
+      y: 30 + (z % 5) * 20,
+      width: 200,
+      height: 30,
+      zIndex: z,
+      html: '<p>New text layer</p>',
+    }]);
+  }, []);
+
+  const removeLayer = useCallback((id: string) => {
+    setDeleteTarget(id);
+  }, []);
+
+  const confirmDelete = useCallback(() => {
+    if (!deleteTarget) return;
+    setLayers(prev => prev.filter(l => l.id !== deleteTarget));
+    if (focusedLayerId === deleteTarget) {
+      setFocusedLayerId(null);
+      setFocusedEditor(null);
+    }
+    setDeleteTarget(null);
+  }, [deleteTarget, focusedLayerId]);
+
+  const cancelDelete = useCallback(() => {
+    setDeleteTarget(null);
+  }, []);
+
+  const handleLayerFocus = useCallback((layerId: string, editor: Editor) => {
+    setFocusedLayerId(layerId);
+    setFocusedEditor(editor);
+  }, []);
+
+  const handleLayerBlur = useCallback(() => {
+    setFocusedLayerId(null);
+    setFocusedEditor(null);
+  }, []);
+
+  const handleResize = useCallback((id: string, width: number, height: number) => {
+    setLayers(prev => prev.map(l => l.id === id ? { ...l, width, height } : l));
+  }, []);
 
   const handleExport = async () => {
     setLoading(true);
@@ -105,61 +107,37 @@ export const CanvasPreview = () => {
 
   return (
     <div className="mx-auto mt-8 max-w-full">
-      <h3 className="mb-4 text-lg font-semibold">Canvas Preview (1200x630)</h3>
+      <h3 className="mb-4 text-lg font-semibold">Canvas Preview ({CANVAS_W}x{CANVAS_H})</h3>
 
-      <div className="mb-2 flex flex-wrap items-center gap-1">
-        <Dropdown
-          value={'32px'}
-          options={fontSizes.map(s => ({ label: s, value: s }))}
-          disabled={!focusedEditor}
-          onChange={(v) => focusedEditor?.execute('fontSize', { value: v })}
-        />
-        {toolbarBtns.map(btn => (
-          <Button
-            key={btn.label}
-            variant="secondary"
-            disabled={!focusedEditor}
-            onMouseDown={(e) => {
-              e.preventDefault();
-              if (focusedEditor) focusedEditor.execute(btn.cmd, btn.value !== undefined ? { value: btn.value } : undefined);
-            }}
-            className={`px-3 py-1 text-sm ${btn.className ?? ''}`}
-          >
-            {btn.label}
-          </Button>
-        ))}
-      </div>
+      <CanvasToolbar focusedEditor={focusedEditor} onAddLayer={addLayer} />
 
       <div
         className="relative overflow-auto border-2 border-dashed border-gray-300 bg-white"
         style={{ width: CANVAS_W, maxHeight: CANVAS_H, minHeight: CANVAS_H }}
       >
-        {layers.map(layer => (
-          <div
-            key={layer.id}
-            className="absolute"
-            style={{ left: layer.x, top: layer.y, width: layer.width, height: layer.height }}
-          >
-            <CKEditor
-              editor={Editor}
-              config={EDITOR_CONFIG}
-              data={layer.html}
-              onFocus={(_event, editor) => setFocusedEditor(editor)}
-              onChange={(_event, editor) => handleChange(layer.id, editor.getData())}
+        {[...layers]
+          .sort((a, b) => a.zIndex - b.zIndex)
+          .map(layer => (
+            <TextLayerComponent
+              key={layer.id}
+              layer={layer}
+              isFocused={focusedLayerId === layer.id}
+              onChange={handleChange}
+              onRemove={removeLayer}
+              onFocus={handleLayerFocus}
+              onBlur={handleLayerBlur}
+              onResize={handleResize}
             />
-          </div>
-        ))}
+          ))
+        }
       </div>
 
       <div className="mt-4 flex gap-3">
-        <Button
-          variant="primary"
-          disabled={loading}
-          onClick={handleExport}
-        >
+        <Button variant="primary" disabled={loading} onClick={handleExport}>
           {loading ? 'Exportando...' : 'Exportar imagen'}
         </Button>
       </div>
+
       {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
       {result && (
         <div className="mt-2">
@@ -174,6 +152,23 @@ export const CanvasPreview = () => {
           </a>
         </div>
       )}
+
+      <Modal open={deleteTarget !== null} onClose={cancelDelete}>
+        <div className="p-6">
+          <h3 className="mb-2 text-lg font-semibold dark:text-white">Delete layer</h3>
+          <p className="mb-6 text-sm text-gray-600 dark:text-gray-400">
+            Are you sure you want to delete this layer?
+          </p>
+          <div className="flex justify-end gap-2">
+            <Button variant="secondary" size="sm" onClick={cancelDelete}>
+              Cancel
+            </Button>
+            <Button size="sm" onClick={confirmDelete}>
+              Delete
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

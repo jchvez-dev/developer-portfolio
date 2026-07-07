@@ -1,7 +1,7 @@
 # Project Checklist
 
 > Current implementation status of the Developer Portfolio project.
-> Last updated: 2026-07-04 (DELETE /chat/:conversationId endpoint)
+> Last updated: 2026-07-07 (Added Zustand item after Add/remove text layers)
 
 ---
 
@@ -102,7 +102,8 @@
 ### Canvas Studio (FR-2.1, FR-2.2, FR-2.3)
 - [x] CKEditor 5 integration for rich text (inline editors with font-size support)
 - [x] Toolbar (fixed toolbar with bold, italic, lists, font-size)
-- [ ] Add/remove text layers
+- [x] Add/remove text layers
+- [ ] Zustand store for canvas state (eliminate prop drilling)
 - [ ] Canvas area with Proxy + EventEmitter (60 FPS)
   - [ ] `CanvasEngine.ts`: vanilla JS class with Proxy for layer state + EventEmitter for change notifications
   - [ ] `useCanvasState.ts`: React hook that listens to EventEmitter with 16ms throttle
