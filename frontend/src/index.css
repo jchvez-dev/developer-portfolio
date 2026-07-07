@@ -25,3 +25,8 @@ html {
   --color-accent: var(--color-emerald-400);
   --color-accent-hover: var(--color-emerald-300);
 }
+
+/* Hide CKEditor floating toolbar — we use an external toolbar instead */
+.ck-balloon-panel.ck-toolbar-container {
+  display: none !important;
+}

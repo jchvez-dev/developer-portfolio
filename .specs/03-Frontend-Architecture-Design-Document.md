@@ -38,7 +38,6 @@ frontend/
 │   │   ├── landing/      # Portfolio Landing Page (Hero, About, Projects, Contact)
 │   │   ├── studio/       # Mini-Canva Module
 │   │   │   ├── canvas/   # JS Vanilla Engine (Proxies, Events)
-│   │   │   └── UI/       # Control sidebars, layer selectors
 │   │   └── chatbot/      # AI Assistant UI & Stream handlers
 │   └── main.tsx
 ├── Dockerfile

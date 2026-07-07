@@ -37,4 +37,46 @@ describe('Button', () => {
     await user.click(screen.getByRole('button'));
     expect(onClick).toHaveBeenCalledOnce();
   });
+
+  describe('size', () => {
+    it('applies sm size', () => {
+      render(<Button size="sm">Small</Button>);
+      expect(screen.getByRole('button').className).toContain('px-3 py-1.5');
+    });
+
+    it('applies md size by default', () => {
+      render(<Button>Medium</Button>);
+      expect(screen.getByRole('button').className).toContain('px-6 py-2.5');
+    });
+
+    it('applies lg size', () => {
+      render(<Button size="lg">Large</Button>);
+      expect(screen.getByRole('button').className).toContain('px-8 py-3.5');
+    });
+  });
+
+  describe('shape', () => {
+    it('applies square shape by default', () => {
+      render(<Button>Square</Button>);
+      expect(screen.getByRole('button').className).toContain('rounded-lg');
+    });
+
+    it('applies pill shape', () => {
+      render(<Button shape="pill">Pill</Button>);
+      expect(screen.getByRole('button').className).toContain('rounded-full');
+    });
+  });
+
+  describe('icon', () => {
+    it('renders icon on the left by default', () => {
+      render(<Button icon={<span data-testid="icon" />}>With Icon</Button>);
+      expect(screen.getByTestId('icon')).toBeInTheDocument();
+    });
+
+    it('renders icon on the right', () => {
+      render(<Button icon={<span data-testid="icon" />} iconPosition="right">With Icon</Button>);
+      const btn = screen.getByRole('button');
+      expect(btn.innerHTML).toMatch(/With Icon.*icon/);
+    });
+  });
 });
