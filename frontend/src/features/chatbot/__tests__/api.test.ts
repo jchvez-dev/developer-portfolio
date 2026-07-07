@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { fetchStream, deleteConversation, getHistory } from '../api';
 import type { StreamEvent } from '../types';
 
-const API_URL = 'http://localhost:4000/api/v1';
+const API_URL = '/api/v1';
 
 function sseChunk(...lines: string[]): Uint8Array {
   return new TextEncoder().encode(lines.join('\n') + '\n\n');

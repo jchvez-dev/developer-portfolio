@@ -8,6 +8,12 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 3000,
+    proxy: {
+      '/api': {
+        target: 'http://backend-nest:4000',
+        changeOrigin: true,
+      },
+    },
   },
   test: {
     globals: true,
