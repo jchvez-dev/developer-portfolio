@@ -100,14 +100,22 @@
 - [x] Call-to-action towards Studio or Chat
 
 ### Canvas Studio (FR-2.1, FR-2.2, FR-2.3)
+- [x] CKEditor 5 integration for rich text (inline editors with font-size support)
+- [x] Toolbar (fixed toolbar with bold, italic, lists, font-size)
+- [ ] Add/remove text layers
 - [ ] Canvas area with Proxy + EventEmitter (60 FPS)
-- [ ] Layer drag & drop
+  - [ ] `CanvasEngine.ts`: vanilla JS class with Proxy for layer state + EventEmitter for change notifications
+  - [ ] `useCanvasState.ts`: React hook that listens to EventEmitter with 16ms throttle
+  - [ ] Drag & drop on pointer events (onPointerDown/onPointerMove/onPointerUp) bypassing React lifecycle
+  - [ ] DOM mutation during drag: direct style.left/style.top updates (no re-renders)
+- [ ] Layer drag & drop (move text boxes by dragging)
 - [ ] Layer panel (list, reorder, delete)
-- [ ] Toolbar (select, text, image, zoom, etc.)
-- [ ] CKEditor 5 integration for rich text
-- [ ] Layer properties (position, size, color, font)
-- [ ] Export to image via `POST /api/v1/canvas/export`
+- [ ] Layer properties panel (position, size, font family, color)
+- [ ] Canvas background color picker
+- [ ] Image layers (asset-backed layers)
 - [ ] Asset upload via `POST /api/v1/canvas/upload`
+- [x] Export to image via `POST /api/v1/canvas/export`
+- [ ] Rich text rendering in PHP export (parse HTML spans for font-size, bold, italic)
 
 ### AI Career Assistant (FR-3.1, FR-3.2, FR-3.3)
 - [x] Floating chat widget (persistent across pages)
@@ -153,6 +161,7 @@
 - [ ] Review `deleteOutDir` in nest-cli.json (should be `true` for clean builds)
 - [ ] Verify GROQ_MODEL in `.env` matches the actual available model
 - [x] SMTP env vars (SMTP_HOST, SMTP_PORT, CONTACT_EMAIL) documented in .env.example
+- [ ] PHP ImageEngine: replace `strip_tags()` with full HTML parsing for rich text export (font-size, bold, italic)
 
 ---
 

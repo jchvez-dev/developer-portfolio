@@ -25,6 +25,7 @@ These rules guide the AI coding assistant (Antigravity) on coding style, archite
 * **NestJS App:** Always prefix REST controllers with `api/v1` and enable CORS in `src/main.ts`.
 * **Frontend Canvas:** Keep high-frequency UI mutations (such as layer dragging/resizing) outside the React lifecycle using vanilla JS `Proxy` listeners and EventEmitters to preserve 60 FPS performance.
 * **No Placeholders:** Avoid implementing empty code stubs or placeholders. All routes, validation schemas (using `class-validator`), and image rasterization algorithms must be fully implemented.
+* **UI Components:** Use `frontend/src/components/ui/` components (Button, Badge, Card, etc.) instead of raw HTML elements with Tailwind classes. Avoid inline Tailwind on semantic UI elements.
 
 ### 5. Git & Documentation Conventions
 * **No Emojis:** Do not use emojis in code, configuration files, commit messages, or documentation (including README and specification files).

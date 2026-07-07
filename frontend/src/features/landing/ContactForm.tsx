@@ -12,7 +12,7 @@ interface FormData {
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:4000/api/v1';
+const API_URL = import.meta.env.VITE_API_URL ?? '/api/v1';
 
 const inputClass = 'mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-500 dark:bg-gray-900 focus:border-accent focus:ring-2 focus:ring-accent focus:outline-none';
 
