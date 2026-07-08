@@ -27,6 +27,7 @@ html {
 }
 
 /* Hide CKEditor floating toolbar — we use an external toolbar instead */
-.ck-balloon-panel.ck-toolbar-container {
+.ck-balloon-panel.ck-toolbar-container,
+.ck-balloon-panel.ck-powered-by-balloon {
   display: none !important;
 }

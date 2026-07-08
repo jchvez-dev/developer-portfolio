@@ -30,7 +30,7 @@ These rules guide the AI coding assistant (Antigravity) on coding style, archite
 ### 5. Git & Documentation Conventions
 * **No Emojis:** Do not use emojis in code, configuration files, commit messages, or documentation (including README and specification files).
 * **Conventional Commits:** All Git commit messages must strictly follow the Conventional Commits specification: `type(scope): description`.
-* **PR Templates:** All Pull Request descriptions must follow the standard structure of `What`, `Why`, `How`, and `Verification` separated by horizontal rules (`---`).
+* **PR Descriptions:** The PR title uses the commit message (`type(scope): description`). The `What` section contains the detailed bullet list of changes. For simple commits (single change), `What` is just the description reformulated. The body sections (`What`, `Why`, `How`, `Verification`) are separated by `---`.
 
 ### 6. State Awareness
 * **Checklist:** Before starting any work, read `.specs/CHECKLIST.md` to understand the current implementation status. Update it as tasks are completed or new gaps are identified.

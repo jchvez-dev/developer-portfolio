@@ -14,8 +14,9 @@ import {
   type Editor,
 } from 'ckeditor5';
 import 'ckeditor5/ckeditor5.css';
-import type { TextLayer } from './types';
+import type { TextLayerData } from './types';
 import { Button } from '../../components/ui';
+import { useCanvasStore } from './canvas/store';
 
 const InlineEditorInstance = Object.assign(InlineEditor, { EditorWatchdog, ContextWatchdog });
 
@@ -35,29 +36,32 @@ const EDITOR_CONFIG = {
 };
 
 interface TextLayerProps {
-  layer: TextLayer;
-  isFocused: boolean;
-  onChange: (id: string, html: string) => void;
-  onRemove: (id: string) => void;
-  onFocus: (layerId: string, editor: Editor) => void;
-  onBlur: () => void;
-  onResize: (id: string, width: number, height: number) => void;
+  layer: TextLayerData;
 }
 
-export const TextLayerComponent = ({ layer, isFocused, onChange, onRemove, onFocus, onBlur, onResize }: TextLayerProps) => {
+export const TextLayerComponent = ({ layer }: TextLayerProps) => {
+  const focusedLayerId = useCanvasStore(s => s.focusedLayerId);
+  const setFocus = useCanvasStore(s => s.setFocus);
+  const clearFocus = useCanvasStore(s => s.clearFocus);
+  const updateLayer = useCanvasStore(s => s.updateLayer);
+  const resizeLayer = useCanvasStore(s => s.resizeLayer);
+  const requestDelete = useCanvasStore(s => s.requestDelete);
+
+  const isFocused = focusedLayerId === layer.id;
+
   const handleChange = useCallback(
     (_event: unknown, editor: Editor) => {
-      onChange(layer.id, editor.getData());
+      updateLayer(layer.id, { html: editor.getData() });
     },
-    [layer.id, onChange],
+    [layer.id, updateLayer],
   );
 
   const handleRemove = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      onRemove(layer.id);
+      requestDelete(layer.id);
     },
-    [layer.id, onRemove],
+    [layer.id, requestDelete],
   );
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -67,11 +71,11 @@ export const TextLayerComponent = ({ layer, isFocused, onChange, onRemove, onFoc
     if (!el) return;
     const ro = new ResizeObserver(([entry]) => {
       const { width, height } = entry.contentRect;
-      onResize(layer.id, Math.round(width), Math.round(height));
+      resizeLayer(layer.id, Math.round(width), Math.round(height));
     });
     ro.observe(el);
     return () => ro.disconnect();
-  }, [layer.id, onResize]);
+  }, [layer.id, resizeLayer]);
 
   const handleDeleteMouseDown = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
@@ -105,8 +109,8 @@ export const TextLayerComponent = ({ layer, isFocused, onChange, onRemove, onFoc
         editor={InlineEditorInstance}
         config={EDITOR_CONFIG}
         data={layer.html}
-        onFocus={(_event, editor) => onFocus(layer.id, editor)}
-        onBlur={onBlur}
+        onFocus={(_event, editor) => setFocus(layer.id, editor)}
+        onBlur={clearFocus}
         onChange={handleChange}
       />
     </div>
