@@ -1,7 +1,7 @@
 # Project Checklist
 
 > Current implementation status of the Developer Portfolio project.
-> Last updated: 2026-07-07 (Added Zustand item after Add/remove text layers)
+> Last updated: 2026-07-07 (Zustand store completed, added UI component refinements)
 
 ---
 
@@ -103,7 +103,7 @@
 - [x] CKEditor 5 integration for rich text (inline editors with font-size support)
 - [x] Toolbar (fixed toolbar with bold, italic, lists, font-size)
 - [x] Add/remove text layers
-- [ ] Zustand store for canvas state (eliminate prop drilling)
+- [x] Zustand store for canvas state (eliminate prop drilling)
 - [ ] Canvas area with Proxy + EventEmitter (60 FPS)
   - [ ] `CanvasEngine.ts`: vanilla JS class with Proxy for layer state + EventEmitter for change notifications
   - [ ] `useCanvasState.ts`: React hook that listens to EventEmitter with 16ms throttle
@@ -163,13 +163,18 @@
 - [ ] Verify GROQ_MODEL in `.env` matches the actual available model
 - [x] SMTP env vars (SMTP_HOST, SMTP_PORT, CONTACT_EMAIL) documented in .env.example
 - [ ] PHP ImageEngine: replace `strip_tags()` with full HTML parsing for rich text export (font-size, bold, italic)
+- [ ] Dropdown: agregar prop `size` para que coincida con botones de toolbar
+- [ ] Reemplazar raw `<h3>`/`<p>` en features con `<Heading>`/`<Text>` de components/ui
+- [ ] Badge: agregar `variant` y `className` props
+- [ ] Card: agregar `variant` prop (default, elevated, bordered)
+- [ ] Box: crear componente wrapper generico
 
 ---
 
-## UI Refinements (Pendiente)
+## UI Refinements (Pending)
 
-- [ ] Pagina 404 (NotFound) para rutas inexistentes
-- [ ] Barril en `components/` (ademas de `components/ui/`)
-- [ ] Iconografia: logos tech en badges, iconos semanticos en cards, flecha en CTA
-- [ ] Microinteracciones: hover elevation en cards, scale en badges/buttons, focus transition en inputs
-- [ ] Live Ping: indicador "Available for hire" con animacion en Hero
+- [ ] 404 page (NotFound) for non-existent routes
+- [ ] Barrel in `components/` (in addition to `components/ui/`)
+- [ ] Iconography: tech logos in badges, semantic icons in cards, arrow in CTA
+- [ ] Micro-interactions: hover elevation on cards, scale on badges/buttons, focus transition on inputs
+- [ ] Live ping: "Available for hire" indicator with animation in Hero
