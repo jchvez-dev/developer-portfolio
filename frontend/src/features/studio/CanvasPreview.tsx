@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { Layer } from './types';
 import { Button, Modal } from '../../components/ui';
-import { exportCanvas } from './api';
+import { exportCanvas, type ExportLayer } from './api';
 import { CanvasToolbar } from './CanvasToolbar';
 import { TextLayerComponent } from './TextLayer';
 import { useCanvasStore } from './canvas/store';
@@ -13,10 +13,12 @@ const renderLayer = (layer: Layer) => {
   switch (layer.type) {
     case 'text':
       return <TextLayerComponent key={layer.id} layer={layer} />;
+    case 'image':
+      return null;
   }
 };
 
-const toExportPayload = (layer: Layer) => {
+const toExportPayload = (layer: Layer): ExportLayer | undefined => {
   switch (layer.type) {
     case 'text':
       return {
@@ -31,6 +33,18 @@ const toExportPayload = (layer: Layer) => {
           fontSize: 32,
           fontFamily: 'DejaVu-Sans',
           color: '#111827',
+        },
+      };
+    case 'image':
+      return {
+        id: layer.id,
+        type: 'image',
+        properties: {
+          x: layer.x,
+          y: layer.y,
+          width: layer.width,
+          height: layer.height,
+          src: layer.src,
         },
       };
   }

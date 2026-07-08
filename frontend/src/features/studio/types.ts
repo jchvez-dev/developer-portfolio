@@ -21,5 +21,5 @@ export interface ImageLayerData {
 }
 
 export type Layer = TextLayerData | ImageLayerData;
-
+export type LayerType = Layer['type'];
 export type LayerPatch = Partial<Omit<TextLayerData, 'type'> & Omit<ImageLayerData, 'type'>>;

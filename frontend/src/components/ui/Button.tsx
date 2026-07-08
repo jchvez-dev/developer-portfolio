@@ -6,7 +6,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   shape?: 'square' | 'pill';
   icon?: ReactNode;
   iconPosition?: 'left' | 'right';
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 const variants = {
@@ -39,7 +39,7 @@ export const Button = ({
 }: ButtonProps) => {
   return (
     <button
-      className={`font-medium transition-colors inline-flex items-center justify-center ${variants[variant]} ${sizes[size]} ${shapes[shape]} ${icon && children ? 'gap-1.5' : ''} ${className}`}
+      className={`font-medium transition-colors inline-flex items-center justify-center cursor-pointer ${variants[variant]} ${sizes[size]} ${shapes[shape]} ${icon && children ? 'gap-1.5' : ''} ${className}`}
       {...props}
     >
       {icon && iconPosition === 'left' && icon}

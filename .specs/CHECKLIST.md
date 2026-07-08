@@ -1,7 +1,7 @@
 # Project Checklist
 
 > Current implementation status of the Developer Portfolio project.
-> Last updated: 2026-07-07 (Zustand store completed, added UI component refinements)
+> Last updated: 2026-07-07 (drag simplified: self-contained in TextLayer, removed CanvasEngine)
 
 ---
 
@@ -104,12 +104,9 @@
 - [x] Toolbar (fixed toolbar with bold, italic, lists, font-size)
 - [x] Add/remove text layers
 - [x] Zustand store for canvas state (eliminate prop drilling)
-- [ ] Canvas area with Proxy + EventEmitter (60 FPS)
-  - [ ] `CanvasEngine.ts`: vanilla JS class with Proxy for layer state + EventEmitter for change notifications
-  - [ ] `useCanvasState.ts`: React hook that listens to EventEmitter with 16ms throttle
-  - [ ] Drag & drop on pointer events (onPointerDown/onPointerMove/onPointerUp) bypassing React lifecycle
-  - [ ] DOM mutation during drag: direct style.left/style.top updates (no re-renders)
-- [ ] Layer drag & drop (move text boxes by dragging)
+- [x] Drag & drop: each TextLayer handles its own drag internally via pointer events (no React re-renders during drag)
+  - [x] Direct DOM mutation via `transform: translate3d()` during drag (GPU-accelerated)
+  - [x] Zustand sync only on drag end
 - [ ] Layer panel (list, reorder, delete)
 - [ ] Layer properties panel (position, size, font family, color)
 - [ ] Canvas background color picker

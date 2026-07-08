@@ -1,23 +1,35 @@
-interface LayerProperties {
+import type { LayerType } from './types';
+
+export interface TextLayerProperties {
   x: number;
   y: number;
   width: number;
   height: number;
-  content?: string;
-  fontSize?: number;
-  fontFamily?: string;
-  color?: string;
+  content: string;
+  fontSize: number;
+  fontFamily: string;
+  color: string;
 }
 
-interface Layer {
+export interface ImageLayerProperties {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  src: string;
+}
+
+export type ExportProperties = TextLayerProperties | ImageLayerProperties;
+
+export interface ExportLayer {
   id: string;
-  type: string;
-  properties: LayerProperties;
+  type: LayerType;
+  properties: ExportProperties;
 }
 
 interface ExportPayload {
   canvas: { width: number; height: number; backgroundColor?: string };
-  layers: Layer[];
+  layers: ExportLayer[];
 }
 
 interface ExportResult {
