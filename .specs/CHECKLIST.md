@@ -1,7 +1,7 @@
 # Project Checklist
 
 > Current implementation status of the Developer Portfolio project.
-> Last updated: 2026-07-07 (drag simplified: self-contained in TextLayer, removed CanvasEngine)
+> Last updated: 2026-07-07 (checklist reorganized: bugs marked with [BUG], Features/Improvements split)
 
 ---
 
@@ -105,15 +105,16 @@
 - [x] Add/remove text layers
 - [x] Zustand store for canvas state (eliminate prop drilling)
 - [x] Drag & drop: each TextLayer handles its own drag internally via pointer events (no React re-renders during drag)
-  - [x] Direct DOM mutation via `transform: translate3d()` during drag (GPU-accelerated)
-  - [x] Zustand sync only on drag end
-- [ ] Layer panel (list, reorder, delete)
-- [ ] Layer properties panel (position, size, font family, color)
-- [ ] Canvas background color picker
-- [ ] Image layers (asset-backed layers)
-- [ ] Asset upload via `POST /api/v1/canvas/upload`
 - [x] Export to image via `POST /api/v1/canvas/export`
-- [ ] Rich text rendering in PHP export (parse HTML spans for font-size, bold, italic)
+- [ ] Layer panel (list, reorder, delete)
+- [ ] Layer properties panel (position, size, font, color)
+- [ ] Canvas background color picker
+- [ ] Image layers + asset upload
+- [ ] Canvas/artboard size picker
+- [ ] Custom font loading
+- [ ] [BUG] Clamp drag bounds within canvas area
+- [ ] [BUG] Rich text rendering in PHP export (spans stripped by strip_tags)
+- [ ] [BUG] Sync default font size between editor and export
 
 ### AI Career Assistant (FR-3.1, FR-3.2, FR-3.3)
 - [x] Floating chat widget (persistent across pages)
@@ -152,24 +153,18 @@
 
 ---
 
-## Tech Debt / Improvements
+## Improvements
 
 - [ ] Create Makefile with common commands (up, down, build, test, lint)
 - [x] Add `typecheck` script to frontend (`tsc --noEmit`)
 - [ ] Review `deleteOutDir` in nest-cli.json (should be `true` for clean builds)
 - [ ] Verify GROQ_MODEL in `.env` matches the actual available model
 - [x] SMTP env vars (SMTP_HOST, SMTP_PORT, CONTACT_EMAIL) documented in .env.example
-- [ ] PHP ImageEngine: replace `strip_tags()` with full HTML parsing for rich text export (font-size, bold, italic)
-- [ ] Dropdown: agregar prop `size` para que coincida con botones de toolbar
-- [ ] Reemplazar raw `<h3>`/`<p>` en features con `<Heading>`/`<Text>` de components/ui
-- [ ] Badge: agregar `variant` y `className` props
-- [ ] Card: agregar `variant` prop (default, elevated, bordered)
-- [ ] Box: crear componente wrapper generico
-
----
-
-## UI Refinements (Pending)
-
+- [ ] Dropdown: add `size` prop to match toolbar buttons
+- [ ] Badge: add `variant` and `className` props
+- [ ] Card: add `variant` prop (default, elevated, bordered)
+- [ ] Box: create generic wrapper component
+- [ ] Replace raw `<h3>`/`<p>` in features with `<Heading>`/`<Text>` from components/ui
 - [ ] 404 page (NotFound) for non-existent routes
 - [ ] Barrel in `components/` (in addition to `components/ui/`)
 - [ ] Iconography: tech logos in badges, semantic icons in cards, arrow in CTA
