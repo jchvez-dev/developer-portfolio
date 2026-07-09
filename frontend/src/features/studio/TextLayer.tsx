@@ -1,5 +1,5 @@
-import { useCallback, useRef, useEffect } from 'react';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
+import { useCallback, useRef, useEffect } from "react";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
 import {
   InlineEditor,
   Bold,
@@ -12,26 +12,29 @@ import {
   EditorWatchdog,
   ContextWatchdog,
   type Editor,
-} from 'ckeditor5';
-import 'ckeditor5/ckeditor5.css';
-import type { TextLayerData } from './types';
-import { ArrowsPointingOutIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { Button } from '../../components/ui';
-import { useCanvasStore } from './canvas/store';
+} from "ckeditor5";
+import "ckeditor5/ckeditor5.css";
+import type { TextLayerData } from "./types";
+import { ArrowsPointingOutIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Button } from "../../components/ui";
+import { useCanvasStore } from "./canvas/store";
 
-const InlineEditorInstance = Object.assign(InlineEditor, { EditorWatchdog, ContextWatchdog });
+const InlineEditorInstance = Object.assign(InlineEditor, {
+  EditorWatchdog,
+  ContextWatchdog,
+});
 
 const EDITOR_CONFIG = {
-  licenseKey: 'GPL' as const,
+  licenseKey: "GPL" as const,
   plugins: [Bold, Essentials, FontSize, Italic, List, Paragraph, Undo],
   fontSize: {
     options: [
-      { title: '12px', model: '12px' },
-      { title: '16px', model: '16px' },
-      { title: '24px', model: '24px' },
-      { title: '32px', model: '32px' },
-      { title: '48px', model: '48px' },
-      { title: '64px', model: '64px' },
+      { title: "12px", model: "12px" },
+      { title: "16px", model: "16px" },
+      { title: "24px", model: "24px" },
+      { title: "32px", model: "32px" },
+      { title: "48px", model: "48px" },
+      { title: "64px", model: "64px" },
     ],
   },
 };
@@ -43,14 +46,20 @@ interface TextLayerProps {
 export const TextLayerComponent = ({ layer }: TextLayerProps) => {
   const rootRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<Editor | null>(null);
-  const focusedLayerId = useCanvasStore(s => s.focusedLayerId);
-  const setFocus = useCanvasStore(s => s.setFocus);
-  const clearFocus = useCanvasStore(s => s.clearFocus);
-  const updateLayer = useCanvasStore(s => s.updateLayer);
-  const resizeLayer = useCanvasStore(s => s.resizeLayer);
-  const requestDelete = useCanvasStore(s => s.requestDelete);
+  const focusedLayerId = useCanvasStore((s) => s.focusedLayerId);
+  const setFocus = useCanvasStore((s) => s.setFocus);
+  const clearFocus = useCanvasStore((s) => s.clearFocus);
+  const updateLayer = useCanvasStore((s) => s.updateLayer);
+  const resizeLayer = useCanvasStore((s) => s.resizeLayer);
+  const requestDelete = useCanvasStore((s) => s.requestDelete);
 
   const isFocused = focusedLayerId === layer.id;
+
+  useEffect(() => {
+    if (isFocused && editorRef.current) {
+      editorRef.current.focus();
+    }
+  }, [isFocused]);
 
   const handleChange = useCallback(
     (_event: unknown, editor: Editor) => {
@@ -67,46 +76,49 @@ export const TextLayerComponent = ({ layer }: TextLayerProps) => {
     [layer.id, requestDelete],
   );
 
-  const handleDragPointerDown = useCallback((e: React.PointerEvent) => {
-    e.stopPropagation();
-    const el = rootRef.current;
-    if (!el) return;
+  const handleDragPointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      e.stopPropagation();
+      const el = rootRef.current;
+      if (!el) return;
 
-    const startX = e.clientX;
-    const startY = e.clientY;
-    const origX = layer.x;
-    const origY = layer.y;
-    let dx = 0;
-    let dy = 0;
+      const startX = e.clientX;
+      const startY = e.clientY;
+      const origX = layer.x;
+      const origY = layer.y;
+      let dx = 0;
+      let dy = 0;
 
-    el.setPointerCapture(e.pointerId);
-    el.style.cursor = 'grabbing';
+      el.setPointerCapture(e.pointerId);
+      el.style.cursor = "grabbing";
 
-    const onMove = (ev: PointerEvent) => {
-      dx = ev.clientX - startX;
-      dy = ev.clientY - startY;
-      el.style.transform = `translate(${dx}px, ${dy}px)`;
-    };
+      const onMove = (ev: PointerEvent) => {
+        dx = ev.clientX - startX;
+        dy = ev.clientY - startY;
+        el.style.transform = `translate(${dx}px, ${dy}px)`;
+      };
 
-    const onUp = () => {
-      el.style.transform = '';
-      el.style.cursor = '';
-      const newX = origX + dx;
-      const newY = origY + dy;
-      el.style.left = `${newX}px`;
-      el.style.top = `${newY}px`;
-      updateLayer(layer.id, { x: Math.round(newX), y: Math.round(newY) });
-      if (editorRef.current) {
-        setFocus(layer.id, editorRef.current);
-        editorRef.current.focus();
-      }
-      el.removeEventListener('pointermove', onMove);
-      el.removeEventListener('pointerup', onUp);
-    };
+      const onUp = () => {
+        el.style.transform = "";
+        el.style.cursor = "";
+        const newX = origX + dx;
+        const newY = origY + dy;
+        el.style.left = `${newX}px`;
+        el.style.top = `${newY}px`;
+        updateLayer(layer.id, { x: Math.round(newX), y: Math.round(newY) });
+        if (editorRef.current) {
+          setFocus(layer.id, editorRef.current);
+          editorRef.current.focus();
+        }
+        el.removeEventListener("pointermove", onMove);
+        el.removeEventListener("pointerup", onUp);
+      };
 
-    el.addEventListener('pointermove', onMove);
-    el.addEventListener('pointerup', onUp);
-  }, [layer.x, layer.y, layer.id, updateLayer, setFocus]);
+      el.addEventListener("pointermove", onMove);
+      el.addEventListener("pointerup", onUp);
+    },
+    [layer.x, layer.y, layer.id, updateLayer, setFocus],
+  );
 
   useEffect(() => {
     const el = rootRef.current;
@@ -132,7 +144,7 @@ export const TextLayerComponent = ({ layer }: TextLayerProps) => {
         left: layer.x,
         top: layer.y,
         zIndex: layer.zIndex,
-        width: 'fit-content',
+        width: "fit-content",
       }}
     >
       {isFocused && (
@@ -149,8 +161,9 @@ export const TextLayerComponent = ({ layer }: TextLayerProps) => {
           <Button
             size="sm"
             shape="pill"
+            variant="danger"
             icon={<XMarkIcon className="h-4 w-4" />}
-            className="absolute -right-5 -top-5  z-50 p-0 bg-red-500 text-white hover:bg-red-600"
+            className="absolute -right-5 -top-5 z-50 !p-1"
             aria-label="Remove layer"
             onMouseDown={handleDeleteMouseDown}
             onClick={handleRemove}
@@ -161,6 +174,10 @@ export const TextLayerComponent = ({ layer }: TextLayerProps) => {
         editor={InlineEditorInstance}
         config={EDITOR_CONFIG}
         data={layer.html}
+        onReady={(editor) => {
+          editorRef.current = editor;
+          if (isFocused) editor.focus();
+        }}
         onFocus={(_event, editor) => {
           editorRef.current = editor;
           setFocus(layer.id, editor);
