@@ -31,9 +31,6 @@ const toExportPayload = (layer: Layer): ExportLayer | undefined => {
           width: layer.width,
           height: layer.height,
           content: layer.html,
-          fontSize: 32,
-          fontFamily: "DejaVu-Sans",
-          color: "#111827",
         },
       };
     case "image":
