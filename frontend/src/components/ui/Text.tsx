@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode } from "react";
 
 interface TextProps {
   children: ReactNode;
@@ -7,9 +7,9 @@ interface TextProps {
   className?: string;
 }
 
-export const Text = ({ children, muted, small, className = '' }: TextProps) => (
+export const Text = ({ children, muted, small, className = "" }: TextProps) => (
   <p
-    className={`${muted ? 'text-gray-500 dark:text-gray-400' : 'text-gray-600 dark:text-gray-400'} ${small ? 'text-sm' : ''} ${className}`}
+    className={`${muted ? "text-gray-400 dark:text-gray-400" : "text-gray-600 dark:text-gray-400"} ${small ? "text-sm" : ""} ${className}`}
   >
     {children}
   </p>

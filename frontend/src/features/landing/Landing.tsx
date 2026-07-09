@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { useProfile } from './useProfile';
-import { Hero } from './Hero';
-import { AboutSection } from './AboutSection';
-import { ProjectsSection } from './ProjectsSection';
-import { ContactForm } from './ContactForm';
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { useProfile } from "./useProfile";
+import { Hero } from "./Hero";
+import { AboutSection } from "./AboutSection";
+import { ProjectsSection } from "./ProjectsSection";
+import { ContactForm } from "./ContactForm";
 
 export const Landing = () => {
   const { profile, loading } = useProfile();
@@ -14,11 +14,11 @@ export const Landing = () => {
     if (loading) return;
 
     if (hash) {
-      const id = hash.replace('#', '');
+      const id = hash.replace("#", "");
       const el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
+      if (el) el.scrollIntoView({ behavior: "smooth" });
     } else {
-      window.scrollTo({ top: 0, behavior: 'instant' });
+      window.scrollTo({ top: 0, behavior: "instant" });
     }
   }, [hash, loading]);
 
