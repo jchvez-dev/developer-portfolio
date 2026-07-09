@@ -26,6 +26,7 @@ let nextZIndex = 3;
 const initialLayers: Layer[] = [
   {
     id: "title",
+    name: "Main Title",
     type: "text",
     x: 50,
     y: 50,
@@ -36,6 +37,7 @@ const initialLayers: Layer[] = [
   },
   {
     id: "body",
+    name: "Body",
     type: "text",
     x: 50,
     y: 300,
@@ -57,6 +59,7 @@ export const useCanvasStore = create<CanvasState>((set) => ({
     const z = nextZIndex++;
     const base = {
       id: `layer-${id}`,
+      name: type === "text" ? "New text layer" : "New image layer",
       x: 30 + (z % 5) * 20,
       y: 30 + (z % 5) * 20,
       width: 200,
