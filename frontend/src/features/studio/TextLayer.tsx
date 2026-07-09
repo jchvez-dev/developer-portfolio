@@ -15,7 +15,7 @@ import {
 } from "ckeditor5";
 import "ckeditor5/ckeditor5.css";
 import type { TextLayerData } from "./types";
-import { ArrowsPointingOutIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { ArrowsPointingOutIcon } from "@heroicons/react/24/outline";
 import { Button } from "../../components/ui";
 import { useCanvasStore } from "./canvas/store";
 
@@ -46,12 +46,13 @@ interface TextLayerProps {
 export const TextLayerComponent = ({ layer }: TextLayerProps) => {
   const rootRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<Editor | null>(null);
+  const canvasWidth = useCanvasStore((s) => s.canvasWidth);
+  const canvasHeight = useCanvasStore((s) => s.canvasHeight);
   const focusedLayerId = useCanvasStore((s) => s.focusedLayerId);
   const setFocus = useCanvasStore((s) => s.setFocus);
   const clearFocus = useCanvasStore((s) => s.clearFocus);
   const updateLayer = useCanvasStore((s) => s.updateLayer);
   const resizeLayer = useCanvasStore((s) => s.resizeLayer);
-  const requestDelete = useCanvasStore((s) => s.requestDelete);
 
   const isFocused = focusedLayerId === layer.id;
 
@@ -68,12 +69,14 @@ export const TextLayerComponent = ({ layer }: TextLayerProps) => {
     [layer.id, updateLayer],
   );
 
-  const handleRemove = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      requestDelete(layer.id);
-    },
-    [layer.id, requestDelete],
+  const clampX = useCallback(
+    (x: number) => Math.max(0, Math.min(x, canvasWidth - layer.width)),
+    [canvasWidth, layer.width],
+  );
+
+  const clampY = useCallback(
+    (y: number) => Math.max(0, Math.min(y, canvasHeight - layer.height)),
+    [canvasHeight, layer.height],
   );
 
   const handleDragPointerDown = useCallback(
@@ -95,17 +98,21 @@ export const TextLayerComponent = ({ layer }: TextLayerProps) => {
       const onMove = (ev: PointerEvent) => {
         dx = ev.clientX - startX;
         dy = ev.clientY - startY;
-        el.style.transform = `translate(${dx}px, ${dy}px)`;
+        const clampedX = clampX(origX + dx);
+        const clampedY = clampY(origY + dy);
+        const visualDx = clampedX - origX;
+        const visualDy = clampedY - origY;
+        el.style.transform = `translate(${visualDx}px, ${visualDy}px)`;
       };
 
       const onUp = () => {
         el.style.transform = "";
         el.style.cursor = "";
-        const newX = origX + dx;
-        const newY = origY + dy;
-        el.style.left = `${newX}px`;
-        el.style.top = `${newY}px`;
-        updateLayer(layer.id, { x: Math.round(newX), y: Math.round(newY) });
+        const clampedX = clampX(origX + dx);
+        const clampedY = clampY(origY + dy);
+        el.style.left = `${clampedX}px`;
+        el.style.top = `${clampedY}px`;
+        updateLayer(layer.id, { x: Math.round(clampedX), y: Math.round(clampedY) });
         if (editorRef.current) {
           setFocus(layer.id, editorRef.current);
           editorRef.current.focus();
@@ -117,7 +124,7 @@ export const TextLayerComponent = ({ layer }: TextLayerProps) => {
       el.addEventListener("pointermove", onMove);
       el.addEventListener("pointerup", onUp);
     },
-    [layer.x, layer.y, layer.id, updateLayer, setFocus],
+    [layer.x, layer.y, layer.id, updateLayer, setFocus, clampX, clampY],
   );
 
   useEffect(() => {
@@ -131,11 +138,6 @@ export const TextLayerComponent = ({ layer }: TextLayerProps) => {
     return () => ro.disconnect();
   }, [layer.id, resizeLayer]);
 
-  const handleDeleteMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-  }, []);
-
   return (
     <div
       ref={rootRef}
@@ -148,27 +150,17 @@ export const TextLayerComponent = ({ layer }: TextLayerProps) => {
       }}
     >
       {isFocused && (
-        <>
-          <Button
-            size="sm"
-            shape="pill"
-            variant="secondary"
-            icon={<ArrowsPointingOutIcon className="h-4 w-4" />}
-            className="absolute -left-5 -top-5 z-50 !cursor-grab bg-white/90 hover:bg-gray-200 dark:bg-gray-800/80 dark:hover:bg-gray-700"
-            aria-label="Drag layer"
-            onPointerDown={handleDragPointerDown}
-          />
-          <Button
-            size="sm"
-            shape="pill"
-            variant="danger"
-            icon={<XMarkIcon className="h-4 w-4" />}
-            className="absolute -right-5 -top-5 z-50 !p-1"
-            aria-label="Remove layer"
-            onMouseDown={handleDeleteMouseDown}
-            onClick={handleRemove}
-          />
-        </>
+        <Button
+          size="sm"
+          shape="pill"
+          variant="secondary"
+          icon={<ArrowsPointingOutIcon className="h-4 w-4" />}
+          className={`absolute z-50 !cursor-grab bg-white/90 hover:bg-gray-200 dark:bg-gray-800/80 dark:hover:bg-gray-700 left-1/2 -translate-x-1/2 ${
+            layer.y < 32 ? "-bottom-8" : "-top-8"
+          }`}
+          aria-label="Drag layer"
+          onPointerDown={handleDragPointerDown}
+        />
       )}
       <CKEditor
         editor={InlineEditorInstance}
