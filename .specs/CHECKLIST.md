@@ -1,7 +1,7 @@
 # Project Checklist
 
 > Current implementation status of the Developer Portfolio project.
-> Last updated: 2026-07-08 (layer panel implemented with drag-to-reorder and delete, Button variant danger, Text muted adjusted to 400, unified remove buttons, CKEditor focus from panel, i18n english texts)
+> Last updated: 2026-07-08 (rename layers with double-click inline editing, LayerItem extracted, LayerRename merged into LayerItem)
 
 ---
 
@@ -107,7 +107,7 @@
 - [x] Drag & drop: each TextLayer handles its own drag internally via pointer events (no React re-renders during drag)
 - [x] Export to image via `POST /api/v1/canvas/export`
 - [x] Layer panel (list, reorder, delete)
-- [ ] Rename layers
+- [x] Rename layers
 - [ ] Layer properties panel (position, size, font, color)
 - [ ] Canvas background color picker
 - [ ] Image layers + asset upload

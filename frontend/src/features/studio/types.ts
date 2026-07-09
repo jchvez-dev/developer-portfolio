@@ -1,5 +1,6 @@
 export interface TextLayerData {
   id: string;
+  name: string;
   type: 'text';
   x: number;
   y: number;
@@ -11,6 +12,7 @@ export interface TextLayerData {
 
 export interface ImageLayerData {
   id: string;
+  name: string;
   type: 'image';
   x: number;
   y: number;
