@@ -50,18 +50,7 @@ class LayerPropertiesDto {
   @IsString()
   content?: string;
 
-  @IsOptional()
-  @IsString()
-  fontFamily?: string;
-
-  @IsOptional()
-  @IsNumber()
-  fontSize?: number;
-
-  @IsOptional()
-  @IsString()
-  color?: string;
-}
+  }
 
 class LayerDto {
   @IsString()

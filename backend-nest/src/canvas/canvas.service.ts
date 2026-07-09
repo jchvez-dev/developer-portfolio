@@ -73,15 +73,6 @@ export class CanvasService {
               ...(layer.properties.content
                 ? { html: layer.properties.content }
                 : {}),
-              ...(layer.properties.color
-                ? { color: layer.properties.color }
-                : {}),
-              ...(layer.properties.fontSize
-                ? { fontSize: layer.properties.fontSize }
-                : {}),
-              ...(layer.properties.fontFamily
-                ? { fontFamily: layer.properties.fontFamily }
-                : {}),
               x: layer.properties.x,
               y: layer.properties.y,
             },

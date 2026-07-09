@@ -7,9 +7,16 @@ use Aws\S3\S3Client;
 class ImageEngine
 {
     private S3Client $s3;
+    private HtmlSanitizer $sanitizer;
+    private HtmlTokenizer $tokenizer;
+    private TextRenderer $textRenderer;
 
-    public function __construct(?S3Client $s3 = null)
-    {
+    public function __construct(
+        ?S3Client $s3 = null,
+        ?HtmlSanitizer $sanitizer = null,
+        ?HtmlTokenizer $tokenizer = null,
+        ?TextRenderer $textRenderer = null,
+    ) {
         $endpoint = rtrim(getenv('MINIO_ENDPOINT') ?: 'http://storage:9000', '/');
 
         $this->s3 = $s3 ?? new S3Client([
@@ -22,6 +29,10 @@ class ImageEngine
                 'secret' => getenv('MINIO_ROOT_PASSWORD') ?: '',
             ],
         ]);
+
+        $this->sanitizer = $sanitizer ?? new HtmlSanitizer();
+        $this->tokenizer = $tokenizer ?? new HtmlTokenizer();
+        $this->textRenderer = $textRenderer ?? new TextRenderer();
     }
 
     public function process(array $definition): string
@@ -105,22 +116,10 @@ class ImageEngine
 
         $x = $params['x'] ?? 0;
         $y = $params['y'] ?? 0;
-        $fontSize = $params['fontSize'] ?? 42;
-        $color = $params['color'] ?? '#111827';
-        $fontFamily = $params['fontFamily'] ?? 'DejaVu-Sans';
 
-        $draw = new \ImagickDraw();
-        $draw->setFontSize($fontSize);
-        $draw->setFillColor(new \ImagickPixel($color));
-        $draw->setTextAlignment(\Imagick::ALIGN_LEFT);
+        $safeHtml = $this->sanitizer->sanitize($html);
+        $tokens = $this->tokenizer->tokenize($safeHtml);
 
-        try {
-            $draw->setFont($fontFamily);
-        } catch (\ImagickException) {
-            $draw->setFont('DejaVu-Sans');
-        }
-
-        $text = strip_tags($html);
-        $canvas->annotateImage($draw, $x, $y + $fontSize, 0, $text);
+        $this->textRenderer->render($canvas, $tokens, $x, $y);
     }
 }

@@ -114,8 +114,9 @@
 - [ ] Canvas/artboard size picker
 - [ ] Custom font loading
 - [ ] [BUG] Clamp drag bounds within canvas area
-- [ ] [BUG] Rich text rendering in PHP export (spans stripped by strip_tags)
+- [x] [BUG] Rich text rendering in PHP export (spans stripped by strip_tags)
 - [ ] [BUG] Sync default font size between editor and export
+- [ ] [BUG] Export layer height does not account for multi-line text (content clipped when text wraps)
 
 ### AI Career Assistant (FR-3.1, FR-3.2, FR-3.3)
 - [x] Floating chat widget (persistent across pages)
@@ -171,3 +172,10 @@
 - [ ] Iconography: tech logos in badges, semantic icons in cards, arrow in CTA
 - [ ] Micro-interactions: hover elevation on cards, scale on badges/buttons, focus transition on inputs
 - [ ] Live ping: "Available for hire" indicator with animation in Hero
+
+---
+
+## Pre-existing Test Failures (unrelated)
+
+- [ ] [BUG PHP] `ImageProcessorTest::testProcessReturnsObjectKey` — WriteBlob Failed writing fixture PNG
+- [ ] [BUG Front] `Text.test.tsx` muted test — expects `text-gray-500` but component uses `text-gray-400`
