@@ -1,7 +1,7 @@
 # Project Checklist
 
 > Current implementation status of the Developer Portfolio project.
-> Last updated: 2026-07-08 (rename layers with double-click inline editing, LayerItem extracted, LayerRename merged into LayerItem)
+> Last updated: 2026-07-08 (clamp drag bounds, canvas dimensions moved to Zustand store)
 
 ---
 
@@ -108,15 +108,15 @@
 - [x] Export to image via `POST /api/v1/canvas/export`
 - [x] Layer panel (list, reorder, delete)
 - [x] Rename layers
+- [x] [BUG] Rich text rendering in PHP export (spans stripped by strip_tags)
+- [x] [BUG] Clamp drag bounds within canvas area
+- [ ] [BUG] Sync default font size between editor and export
+- [ ] [BUG] Export layer height does not account for multi-line text (content clipped when text wraps)
 - [ ] Layer properties panel (position, size, font, color)
 - [ ] Canvas background color picker
 - [ ] Image layers + asset upload
 - [ ] Canvas/artboard size picker
 - [ ] Custom font loading
-- [ ] [BUG] Clamp drag bounds within canvas area
-- [x] [BUG] Rich text rendering in PHP export (spans stripped by strip_tags)
-- [ ] [BUG] Sync default font size between editor and export
-- [ ] [BUG] Export layer height does not account for multi-line text (content clipped when text wraps)
 
 ### AI Career Assistant (FR-3.1, FR-3.2, FR-3.3)
 - [x] Floating chat widget (persistent across pages)

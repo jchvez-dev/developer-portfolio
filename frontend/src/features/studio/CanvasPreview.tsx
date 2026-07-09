@@ -7,9 +7,6 @@ import { LayerPanel } from "./LayerPanel";
 import { TextLayerComponent } from "./TextLayer";
 import { useCanvasStore } from "./canvas/store";
 
-const CANVAS_W = 1200;
-const CANVAS_H = 630;
-
 const renderLayer = (layer: Layer) => {
   switch (layer.type) {
     case "text":
@@ -50,6 +47,8 @@ const toExportPayload = (layer: Layer): ExportLayer | undefined => {
 
 export const CanvasPreview = () => {
   const layers = useCanvasStore((s) => s.layers);
+  const canvasWidth = useCanvasStore((s) => s.canvasWidth);
+  const canvasHeight = useCanvasStore((s) => s.canvasHeight);
   const deleteTarget = useCanvasStore((s) => s.deleteTarget);
   const confirmDelete = useCanvasStore((s) => s.confirmDelete);
   const cancelDelete = useCanvasStore((s) => s.cancelDelete);
@@ -64,8 +63,8 @@ export const CanvasPreview = () => {
     try {
       const res = await exportCanvas({
         canvas: {
-          width: CANVAS_W,
-          height: CANVAS_H,
+          width: canvasWidth,
+          height: canvasHeight,
           backgroundColor: "#ffffff",
         },
         layers: layers.map(toExportPayload),
@@ -81,7 +80,7 @@ export const CanvasPreview = () => {
   return (
     <>
       <Heading as="h3" className="mb-4">
-        ({CANVAS_W}x{CANVAS_H})
+        ({canvasWidth}x{canvasHeight})
       </Heading>
 
       <CanvasToolbar />
@@ -90,7 +89,7 @@ export const CanvasPreview = () => {
         <div className="flex w-full overflow-auto p-2 scrollbar-thin scrollbar-thumb-gray-500">
           <div
             className="relative overflow-hidden border-2 border-dashed border-gray-300 bg-white m-auto flex-shrink-0 dark:border-gray-700"
-            style={{ width: CANVAS_W, height: CANVAS_H }}
+            style={{ width: canvasWidth, height: canvasHeight }}
           >
             {[...layers].sort((a, b) => a.zIndex - b.zIndex).map(renderLayer)}
           </div>

@@ -7,6 +7,8 @@ interface CanvasState {
   focusedLayerId: string | null;
   focusedEditor: Editor | null;
   deleteTarget: string | null;
+  canvasWidth: number;
+  canvasHeight: number;
   addLayer: (type: "text" | "image") => void;
   removeLayer: (id: string) => void;
   updateLayer: (id: string, patch: LayerPatch) => void;
@@ -18,6 +20,7 @@ interface CanvasState {
   confirmDelete: () => void;
   cancelDelete: () => void;
   reorderLayer: (fromIndex: number, toIndex: number) => void;
+  setCanvasSize: (width: number, height: number) => void;
 }
 
 let nextLayerId = 3;
@@ -53,6 +56,8 @@ export const useCanvasStore = create<CanvasState>((set) => ({
   focusedLayerId: null,
   focusedEditor: null,
   deleteTarget: null,
+  canvasWidth: 1200,
+  canvasHeight: 630,
 
   addLayer: (type) => {
     const id = nextLayerId++;
@@ -148,4 +153,6 @@ export const useCanvasStore = create<CanvasState>((set) => ({
     }),
 
   cancelDelete: () => set({ deleteTarget: null }),
+
+  setCanvasSize: (width, height) => set({ canvasWidth: width, canvasHeight: height }),
 }));
