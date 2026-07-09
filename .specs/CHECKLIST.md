@@ -110,7 +110,7 @@
 - [x] Rename layers
 - [x] [BUG] Rich text rendering in PHP export (spans stripped by strip_tags)
 - [x] [BUG] Clamp drag bounds within canvas area
-- [ ] [BUG] Sync default font size between editor and export
+- [x] [BUG] Sync default font size between editor and export
 - [ ] [BUG] Export layer height does not account for multi-line text (content clipped when text wraps)
 - [ ] Layer properties panel (position, size, font, color)
 - [ ] Canvas background color picker

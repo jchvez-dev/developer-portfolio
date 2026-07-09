@@ -12,7 +12,7 @@ class HtmlTokenizer
         $body = $dom->getElementsByTagName('body')->item(0) ?? $dom->documentElement;
 
         $state = [
-            'fontSize' => 42,
+            'fontSize' => 16,
             'fontFamily' => 'DejaVu-Sans',
             'color' => '#111827',
             'bold' => false,

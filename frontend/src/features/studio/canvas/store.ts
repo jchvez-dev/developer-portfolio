@@ -36,7 +36,7 @@ const initialLayers: Layer[] = [
     width: 200,
     height: 30,
     zIndex: 1,
-    html: "<h2>Main Title</h2>",
+    html: '<h2 style="font-size:32px;">Main Title</h2>',
   },
   {
     id: "body",
@@ -47,7 +47,7 @@ const initialLayers: Layer[] = [
     width: 200,
     height: 30,
     zIndex: 2,
-    html: "<p>Body text...</p>",
+    html: '<p style="font-size:16px;">Body text...</p>',
   },
 ];
 
@@ -78,7 +78,7 @@ export const useCanvasStore = create<CanvasState>((set) => ({
               ...base,
               type: "text" as const,
               height: 30,
-              html: "<p>New text layer</p>",
+              html: '<p><span style="font-size:16px;">New text layer</span></p>',
             }
           : { ...base, type: "image" as const, height: 200, src: "" },
       ],
