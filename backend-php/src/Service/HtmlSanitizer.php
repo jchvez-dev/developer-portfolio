@@ -9,7 +9,7 @@ class HtmlSanitizer
     public function sanitize(string $html): string
     {
         $dom = new \DOMDocument();
-        @$dom->loadHTML('<?xml encoding="utf-8" ?>' . $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        @$dom->loadHTML('<?xml encoding="utf-8" ?>' . $html, LIBXML_HTML_NODEFDTD);
 
         $xpath = new \DOMXPath($dom);
         foreach (self::DANGEROUS_TAGS as $tag) {

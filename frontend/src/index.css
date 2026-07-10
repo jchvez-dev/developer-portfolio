@@ -31,3 +31,14 @@ html {
 .ck-balloon-panel.ck-powered-by-balloon {
   display: none !important;
 }
+
+.ck-editor__editable_inline {
+  padding: 0 !important;
+}
+
+.ck-editor__editable_inline p,
+.ck-editor__editable_inline ul,
+.ck-editor__editable_inline ol,
+.ck-editor__editable_inline li {
+  margin: 0 !important;
+}

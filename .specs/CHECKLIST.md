@@ -111,7 +111,7 @@
 - [x] [BUG] Rich text rendering in PHP export (spans stripped by strip_tags)
 - [x] [BUG] Clamp drag bounds within canvas area
 - [x] [BUG] Sync default font size between editor and export
-- [ ] [BUG] Export layer height does not account for multi-line text (content clipped when text wraps)
+- [x] [BUG] Export layer height does not account for multi-line text (content clipped when text wraps)
 - [ ] Layer properties panel (position, size, font, color)
 - [ ] Canvas background color picker
 - [ ] Image layers + asset upload
@@ -172,6 +172,7 @@
 - [ ] Iconography: tech logos in badges, semantic icons in cards, arrow in CTA
 - [ ] Micro-interactions: hover elevation on cards, scale on badges/buttons, focus transition on inputs
 - [ ] Live ping: "Available for hire" indicator with animation in Hero
+- [ ] Replace Imagick with browserless/chrome + Spatie Browsershot for 1:1 PNG export with CKEditor
 
 ---
 

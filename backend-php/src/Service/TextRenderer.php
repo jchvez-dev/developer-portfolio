@@ -4,16 +4,21 @@ namespace App\Service;
 
 class TextRenderer
 {
-    public function render(\Imagick $canvas, array $tokens, int $originX, int $originY): void
+    public function render(\Imagick $canvas, array $tokens, int $originX, int $originY, ?int $maxWidth = null): void
     {
-        $maxWidth = $canvas->getImageWidth() - $originX;
+        $maxWidth = $maxWidth !== null ? ($originX + $maxWidth) : ($canvas->getImageWidth() - $originX);
         $lineHeight = 0;
         $currentX = $originX;
         $currentY = $originY;
         $lineTokens = [];
 
-        $flushLine = function () use ($canvas, &$lineTokens, &$currentX, &$currentY, $originX, $maxWidth, &$lineHeight) {
+        $flushLine = function (bool $force = false) use ($canvas, &$lineTokens, &$currentX, &$currentY, $originX, $maxWidth, &$lineHeight) {
             if (empty($lineTokens)) {
+                if ($force) {
+                    $currentY = $currentY + $lineHeight;
+                    $currentX = $originX;
+                    $lineHeight = 0;
+                }
                 return;
             }
 
@@ -40,8 +45,8 @@ class TextRenderer
 
         foreach ($tokens as $token) {
             if ($token['text'] === "\n") {
-                $lineHeight = max($lineHeight, $token['fontSize']);
-                $flushLine();
+                $lineHeight = max($lineHeight, (int)($token['fontSize'] * 1.5));
+                $flushLine(true);
                 continue;
             }
 
@@ -67,11 +72,11 @@ class TextRenderer
                 $testX += (int)$wordMetrics['textWidth'];
 
                 if ($testX > $maxWidth && !empty($lineTokens)) {
-                    $lineHeight = max($lineHeight, $token['fontSize']);
+                    $lineHeight = max($lineHeight, (int)($token['fontSize'] * 1.5));
                     $flushLine();
                 }
 
-                $lineHeight = max($lineHeight, $token['fontSize']);
+                $lineHeight = max($lineHeight, (int)($token['fontSize'] * 1.5));
                 $lineTokens[] = [
                     'text' => $wordStr,
                     'fontSize' => $token['fontSize'],
