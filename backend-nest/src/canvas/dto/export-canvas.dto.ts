@@ -1,8 +1,6 @@
 import {
   IsArray,
-  IsEnum,
   IsNumber,
-  IsObject,
   IsOptional,
   IsString,
   Max,
@@ -25,6 +23,17 @@ class CanvasDto {
   @IsOptional()
   @IsString()
   backgroundColor?: string;
+}
+
+export class ExportCanvasDto {
+  @ValidateNested()
+  @Type(() => CanvasDto)
+  canvas: CanvasDto;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => LayerDto)
+  layers: LayerDto[];
 }
 
 class LayerPropertiesDto {
@@ -62,15 +71,4 @@ class LayerDto {
   @ValidateNested()
   @Type(() => LayerPropertiesDto)
   properties: LayerPropertiesDto;
-}
-
-export class ExportCanvasDto {
-  @ValidateNested()
-  @Type(() => CanvasDto)
-  canvas: CanvasDto;
-
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => LayerDto)
-  layers: LayerDto[];
 }

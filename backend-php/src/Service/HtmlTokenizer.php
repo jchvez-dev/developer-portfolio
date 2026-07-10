@@ -4,12 +4,14 @@ namespace App\Service;
 
 class HtmlTokenizer
 {
+    private const BLOCK_TAGS = ['p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'ul', 'ol', 'li'];
+
     public function tokenize(string $html): array
     {
         $dom = new \DOMDocument();
-        @$dom->loadHTML('<?xml encoding="utf-8" ?>' . $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        @$dom->loadHTML('<?xml encoding="utf-8" ?>' . $html, LIBXML_HTML_NODEFDTD);
 
-        $body = $dom->getElementsByTagName('body')->item(0) ?? $dom->documentElement;
+        $body = $dom->getElementsByTagName('body')->item(0);
 
         $state = [
             'fontSize' => 16,
@@ -25,11 +27,12 @@ class HtmlTokenizer
         return $tokens;
     }
 
-    private function extractTokens(\DOMNode $node, array $state, array &$tokens): void
+    private function extractTokens(\DOMNode $node, array $state, array &$tokens, bool $isFirstInParent = true): void
     {
         if ($node instanceof \DOMText) {
             $text = $node->textContent;
-            if (trim($text) === '') {
+            $clean = str_replace("\xC2\xA0", ' ', $text);
+            if (trim($clean) === '') {
                 return;
             }
 
@@ -48,6 +51,19 @@ class HtmlTokenizer
         if ($node instanceof \DOMElement) {
             $tag = strtolower($node->tagName);
             $prevState = $state;
+
+            if (in_array($tag, self::BLOCK_TAGS, true)) {
+                if (!$isFirstInParent) {
+                    $tokens[] = [
+                        'text' => "\n",
+                        'fontSize' => $state['fontSize'],
+                        'fontFamily' => $state['fontFamily'],
+                        'color' => $state['color'],
+                        'bold' => $state['bold'],
+                        'italic' => $state['italic'],
+                    ];
+                }
+            }
 
             $style = $node->getAttribute('style');
             if ($style) {
@@ -83,8 +99,10 @@ class HtmlTokenizer
                     break;
             }
 
+            $isFirstChild = true;
             foreach ($node->childNodes as $child) {
-                $this->extractTokens($child, $state, $tokens);
+                $this->extractTokens($child, $state, $tokens, $isFirstChild);
+                $isFirstChild = false;
             }
 
             $state = $prevState;
