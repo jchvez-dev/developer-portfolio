@@ -27,19 +27,19 @@ export const Dropdown = <T extends string | number>({ value, options, disabled, 
   }, [open]);
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative w-full">
       <Button
         variant="secondary"
         disabled={disabled}
         onMouseDown={(e) => e.preventDefault()}
         onClick={() => setOpen(!open)}
-        className="px-3 py-1 text-sm"
+        className="w-full justify-between px-3 py-1 text-sm"
       >
-        {value}
-        <span className="ml-1">{open ? '▲' : '▼'}</span>
+        <span className="min-w-0 flex-1 truncate text-left">{value}</span>
+        <span className="shrink-0">{open ? '▲' : '▼'}</span>
       </Button>
       {open && (
-        <div className="absolute left-0 top-full z-10 mt-1 w-20 rounded border border-gray-300 bg-white shadow dark:border-gray-700 dark:bg-gray-800">
+        <div className="absolute left-0 right-0 top-full z-10 mt-1 rounded border border-gray-300 bg-white shadow dark:border-gray-700 dark:bg-gray-800">
           {options.map(opt => (
             <button
               key={opt.value}

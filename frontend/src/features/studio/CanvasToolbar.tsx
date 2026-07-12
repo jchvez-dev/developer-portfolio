@@ -1,13 +1,9 @@
 import { useCanvasStore, editorRegistry } from './canvas/store';
 import { Button } from '../../components/ui';
-import { ColorPickerButton } from './ColorPickerButton';
-import { FontSizeDropdown } from './FontSizeDropdown';
 
 const toolbarBtns = [
   { label: 'Undo', cmd: 'undo' },
   { label: 'Redo', cmd: 'redo' },
-  { label: 'B', cmd: 'bold', className: 'font-bold' },
-  { label: 'I', cmd: 'italic', className: 'italic' },
   { label: 'OL', cmd: 'numberedList' },
   { label: 'UL', cmd: 'bulletedList' },
 ];
@@ -33,8 +29,6 @@ export const CanvasToolbar = () => {
         + Add Layer
       </Button>
 
-      <FontSizeDropdown />
-
       {toolbarBtns.map(btn => (
         <Button
           key={btn.label}
@@ -49,8 +43,6 @@ export const CanvasToolbar = () => {
           {btn.label}
         </Button>
       ))}
-
-      <ColorPickerButton />
     </div>
   );
 };

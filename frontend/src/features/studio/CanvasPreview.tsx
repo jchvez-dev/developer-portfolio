@@ -1,9 +1,10 @@
 import { useState } from "react";
-import type { Layer } from "./types";
+import type { Layer, TextLayerData } from "./types";
 import { Button, Card, Heading, Modal, Text } from "../../components/ui";
 import { exportCanvas, type ExportLayer } from "./api";
 import { CanvasToolbar } from "./CanvasToolbar";
 import { LayerPanel } from "./LayerPanel";
+import { LayerPropertiesPanel } from "./LayerPropertiesPanel";
 import { TextLayerComponent } from "./TextLayer";
 import { useCanvasStore } from "./canvas/store";
 
@@ -49,9 +50,14 @@ export const CanvasPreview = () => {
   const layers = useCanvasStore((s) => s.layers);
   const canvasWidth = useCanvasStore((s) => s.canvasWidth);
   const canvasHeight = useCanvasStore((s) => s.canvasHeight);
+  const focusedLayerId = useCanvasStore((s) => s.focusedLayerId);
   const deleteTarget = useCanvasStore((s) => s.deleteTarget);
   const confirmDelete = useCanvasStore((s) => s.confirmDelete);
   const cancelDelete = useCanvasStore((s) => s.cancelDelete);
+
+  const focusedLayer = focusedLayerId
+    ? (layers.find((l) => l.id === focusedLayerId) ?? null)
+    : null;
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -94,7 +100,13 @@ export const CanvasPreview = () => {
             {[...layers].sort((a, b) => a.zIndex - b.zIndex).map(renderLayer)}
           </div>
         </div>
-        <LayerPanel />
+        <div className="w-72">
+          {focusedLayer && focusedLayer.type === "text" ? (
+            <LayerPropertiesPanel layer={focusedLayer as TextLayerData} />
+          ) : (
+            <LayerPanel />
+          )}
+        </div>
       </Card>
 
       <div className="mt-4 flex gap-3">
