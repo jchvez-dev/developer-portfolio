@@ -42,7 +42,8 @@ class ImageEngine
         $elements = $definition['elements'] ?? [];
 
         $canvas = new \Imagick();
-        $canvas->newImage($w, $h, new \ImagickPixel('#ffffff'));
+        $bgColor = $definition['background'] ?? '#ffffff';
+        $canvas->newImage($w, $h, new \ImagickPixel($bgColor));
         $canvas->setImageFormat('png');
 
         foreach ($elements as $element) {
@@ -116,10 +117,24 @@ class ImageEngine
 
         $x = $params['x'] ?? 0;
         $y = $params['y'] ?? 0;
+        $width = $params['width'] ?? null;
+        $bgColor = $params['backgroundColor'] ?? null;
+
+        if ($bgColor && $bgColor !== 'transparent') {
+            $draw = new \ImagickDraw();
+            $draw->setFillColor(new \ImagickPixel($bgColor));
+            $draw->rectangle(
+                $x,
+                $y,
+                $x + ($width ?? $canvas->getImageWidth()),
+                $y + ($params['height'] ?? $canvas->getImageHeight()),
+            );
+            $canvas->drawImage($draw);
+        }
 
         $safeHtml = $this->sanitizer->sanitize($html);
         $tokens = $this->tokenizer->tokenize($safeHtml);
 
-        $this->textRenderer->render($canvas, $tokens, $x, $y);
+        $this->textRenderer->render($canvas, $tokens, $x, $y, $width);
     }
 }

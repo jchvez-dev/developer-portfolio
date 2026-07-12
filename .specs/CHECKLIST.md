@@ -1,7 +1,7 @@
 # Project Checklist
 
 > Current implementation status of the Developer Portfolio project.
-> Last updated: 2026-07-11 (layer properties panel)
+> Last updated: 2026-07-12 (background color pickers + refactor)
 
 ---
 
@@ -113,7 +113,8 @@
 - [x] [BUG] Sync default font size between editor and export
 - [x] [BUG] Export layer height does not account for multi-line text (content clipped when text wraps)
 - [x] Layer properties panel (position, size, font, color)
-- [ ] Canvas background color picker
+- [x] Canvas background color picker
+- [x] Layer background color picker
 - [ ] Image layers + asset upload
 - [ ] Canvas/artboard size picker
 - [ ] Custom font loading

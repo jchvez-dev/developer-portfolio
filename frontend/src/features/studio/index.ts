@@ -1,3 +1,12 @@
 export { StudioPage } from './StudioPage';
 export { LayerPanel } from './LayerPanel';
 export { LayerPropertiesPanel } from './LayerPropertiesPanel';
+export { CanvasBgColorPicker } from './CanvasBgColorPicker';
+export { TextColorPicker } from './TextColorPicker';
+export { TextBgColorPicker } from './TextBgColorPicker';
+export { PositionInfo } from './properties/PositionInfo';
+export { FontProperties } from './properties/FontProperties';
+export { StyleButtons } from './properties/StyleButtons';
+export { ColorSection } from './properties/ColorSection';
+export { useCkEditor } from './hooks/useCkEditor';
+export { useTextColor } from './hooks/useTextColor';

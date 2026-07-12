@@ -11,6 +11,7 @@ export interface TextLayerData {
   fontFamily: string;
   fontSize: number;
   color: string;
+  backgroundColor?: string;
 }
 
 export interface ImageLayerData {

@@ -57,6 +57,7 @@ export class CanvasService {
       },
       definition: {
         dimensions: { w: dto.canvas.width, h: dto.canvas.height },
+        background: dto.canvas.backgroundColor ?? '#ffffff',
         elements: dto.layers.map((layer) => {
           const action =
             layer.type === 'image' ? 'draw_image' : 'render_html_text';
@@ -72,6 +73,9 @@ export class CanvasService {
                 : {}),
               ...(layer.properties.content
                 ? { html: layer.properties.content }
+                : {}),
+              ...(layer.properties.backgroundColor
+                ? { backgroundColor: layer.properties.backgroundColor }
                 : {}),
               x: layer.properties.x,
               y: layer.properties.y,
