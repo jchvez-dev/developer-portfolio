@@ -39,6 +39,9 @@ const initialLayers: Layer[] = [
     height: 30,
     zIndex: 1,
     html: '<h2 style="font-size:32px;">Main Title</h2>',
+    fontFamily: "Inter",
+    fontSize: 32,
+    color: "#111827",
   },
   {
     id: "body",
@@ -50,6 +53,9 @@ const initialLayers: Layer[] = [
     height: 30,
     zIndex: 2,
     html: '<p style="font-size:16px;">Body text...</p>',
+    fontFamily: "Inter",
+    fontSize: 16,
+    color: "#111827",
   },
 ];
 
@@ -81,6 +87,9 @@ export const useCanvasStore = create<CanvasState>((set) => ({
               type: "text" as const,
               height: 30,
               html: '<p><span style="font-size:16px;">New text layer</span></p>',
+              fontFamily: "Inter",
+              fontSize: 16,
+              color: "#111827",
             }
           : { ...base, type: "image" as const, height: 200, src: "" },
       ],

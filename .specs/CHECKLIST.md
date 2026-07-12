@@ -1,7 +1,7 @@
 # Project Checklist
 
 > Current implementation status of the Developer Portfolio project.
-> Last updated: 2026-07-08 (clamp drag bounds, canvas dimensions moved to Zustand store)
+> Last updated: 2026-07-11 (layer properties panel)
 
 ---
 
@@ -112,7 +112,7 @@
 - [x] [BUG] Clamp drag bounds within canvas area
 - [x] [BUG] Sync default font size between editor and export
 - [x] [BUG] Export layer height does not account for multi-line text (content clipped when text wraps)
-- [ ] Layer properties panel (position, size, font, color)
+- [x] Layer properties panel (position, size, font, color)
 - [ ] Canvas background color picker
 - [ ] Image layers + asset upload
 - [ ] Canvas/artboard size picker

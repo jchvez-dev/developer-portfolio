@@ -8,6 +8,9 @@ export interface TextLayerData {
   height: number;
   zIndex: number;
   html: string;
+  fontFamily: string;
+  fontSize: number;
+  color: string;
 }
 
 export interface ImageLayerData {

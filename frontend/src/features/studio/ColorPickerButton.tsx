@@ -49,6 +49,24 @@ export const ColorPickerButton = () => {
     };
   }, [focusedEditor, focusedLayerId]);
 
+  const handleClick = () => {
+    let color = '#000000';
+    const editor = getEditor();
+    if (editor) {
+      try {
+        const selectionColor = editor.model.document.selection.getAttribute('fontColor') as string | null;
+        if (selectionColor) {
+          color = normalizeColor(selectionColor);
+        }
+      } catch {
+        // ignore
+      }
+    }
+    if (swatchRef.current) swatchRef.current.style.backgroundColor = color;
+    if (inputRef.current) inputRef.current.value = color;
+    inputRef.current?.click();
+  };
+
   return (
     <Button
       variant="secondary"
@@ -56,21 +74,7 @@ export const ColorPickerButton = () => {
       className="relative"
       onMouseDown={(e) => {
         e.preventDefault();
-        let color = '#000000';
-        const editor = getEditor();
-        if (editor) {
-          try {
-            const selectionColor = editor.model.document.selection.getAttribute('fontColor') as string | null;
-            if (selectionColor) {
-              color = normalizeColor(selectionColor);
-            }
-          } catch {
-            // ignore
-          }
-        }
-        if (swatchRef.current) swatchRef.current.style.backgroundColor = color;
-        if (inputRef.current) inputRef.current.value = color;
-        inputRef.current?.click();
+        handleClick();
       }}
     >
       <span className="font-medium">A</span>
