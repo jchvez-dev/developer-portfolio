@@ -2,6 +2,8 @@ import { create } from "zustand";
 import type { Editor } from "ckeditor5";
 import type { Layer, LayerPatch } from "../types";
 
+export const editorRegistry = new Map<string, Editor>();
+
 interface CanvasState {
   layers: Layer[];
   focusedLayerId: string | null;
@@ -85,13 +87,15 @@ export const useCanvasStore = create<CanvasState>((set) => ({
     }));
   },
 
-  removeLayer: (id) =>
+  removeLayer: (id) => {
+    editorRegistry.delete(id);
     set((state) => ({
       layers: state.layers.filter((l) => l.id !== id),
       ...(state.focusedLayerId === id
         ? { focusedLayerId: null, focusedEditor: null }
         : {}),
-    })),
+    }));
+  },
 
   updateLayer: (id, patch) =>
     set((state) => ({
@@ -107,22 +111,21 @@ export const useCanvasStore = create<CanvasState>((set) => ({
       ),
     })),
 
-  setFocus: (layerId, editor) =>
+  setFocus: (layerId, editor) => {
+    editorRegistry.set(layerId, editor);
     set({
       focusedLayerId: layerId,
       focusedEditor: editor,
-    }),
+    });
+  },
 
   clearFocus: () =>
-    set({
-      focusedLayerId: null,
-      focusedEditor: null,
-    }),
+    set({ focusedLayerId: null }),
 
   selectLayer: (layerId) =>
     set({
       focusedLayerId: layerId,
-      focusedEditor: null,
+      focusedEditor: editorRegistry.get(layerId) ?? null,
     }),
 
   reorderLayer: (fromIndex, toIndex) =>
@@ -143,6 +146,7 @@ export const useCanvasStore = create<CanvasState>((set) => ({
   confirmDelete: () =>
     set((state) => {
       if (!state.deleteTarget) return state;
+      editorRegistry.delete(state.deleteTarget);
       return {
         layers: state.layers.filter((l) => l.id !== state.deleteTarget),
         deleteTarget: null,

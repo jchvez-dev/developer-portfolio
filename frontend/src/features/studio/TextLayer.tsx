@@ -4,6 +4,7 @@ import {
   InlineEditor,
   Bold,
   Essentials,
+  FontColor,
   FontSize,
   Italic,
   List,
@@ -17,7 +18,7 @@ import "ckeditor5/ckeditor5.css";
 import type { TextLayerData } from "./types";
 import { ArrowsPointingOutIcon } from "@heroicons/react/24/outline";
 import { Button } from "../../components/ui";
-import { useCanvasStore } from "./canvas/store";
+import { useCanvasStore, editorRegistry } from "./canvas/store";
 
 const InlineEditorInstance = Object.assign(InlineEditor, {
   EditorWatchdog,
@@ -26,7 +27,7 @@ const InlineEditorInstance = Object.assign(InlineEditor, {
 
 const EDITOR_CONFIG = {
   licenseKey: "GPL" as const,
-  plugins: [Bold, Essentials, FontSize, Italic, List, Paragraph, Undo],
+  plugins: [Bold, Essentials, FontColor, FontSize, Italic, List, Paragraph, Undo],
   fontSize: {
     options: [
       { title: "12px", model: "12px" },
@@ -55,6 +56,12 @@ export const TextLayerComponent = ({ layer }: TextLayerProps) => {
   const resizeLayer = useCanvasStore((s) => s.resizeLayer);
 
   const isFocused = focusedLayerId === layer.id;
+
+  useEffect(() => {
+    return () => {
+      editorRegistry.delete(layer.id);
+    };
+  }, [layer.id]);
 
   useEffect(() => {
     if (isFocused && editorRef.current) {
@@ -168,6 +175,7 @@ export const TextLayerComponent = ({ layer }: TextLayerProps) => {
         data={layer.html}
         onReady={(editor) => {
           editorRef.current = editor;
+          editorRegistry.set(layer.id, editor);
           if (isFocused) editor.focus();
         }}
         onFocus={(_event, editor) => {

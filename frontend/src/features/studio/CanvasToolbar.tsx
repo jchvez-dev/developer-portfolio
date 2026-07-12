@@ -1,7 +1,7 @@
-import { Button, Dropdown } from '../../components/ui';
-import { useCanvasStore } from './canvas/store';
-
-const fontSizes = ['12px', '16px', '24px', '32px', '48px', '64px'];
+import { useCanvasStore, editorRegistry } from './canvas/store';
+import { Button } from '../../components/ui';
+import { ColorPickerButton } from './ColorPickerButton';
+import { FontSizeDropdown } from './FontSizeDropdown';
 
 const toolbarBtns = [
   { label: 'Undo', cmd: 'undo' },
@@ -14,7 +14,18 @@ const toolbarBtns = [
 
 export const CanvasToolbar = () => {
   const focusedEditor = useCanvasStore(s => s.focusedEditor);
+  const focusedLayerId = useCanvasStore(s => s.focusedLayerId);
   const addLayer = useCanvasStore(s => s.addLayer);
+
+  const getEditor = () => focusedEditor ?? (focusedLayerId ? editorRegistry.get(focusedLayerId) ?? null : null);
+
+  const exec = (cmd: string, payload?: unknown) => {
+    const editor = getEditor();
+    if (editor) {
+      if (payload !== undefined) editor.execute(cmd, payload);
+      else editor.execute(cmd);
+    }
+  };
 
   return (
     <div className="mb-2 flex flex-wrap items-center gap-1">
@@ -22,23 +33,15 @@ export const CanvasToolbar = () => {
         + Add Layer
       </Button>
 
-      <Dropdown
-        value="32px"
-        options={fontSizes.map(s => ({ label: s, value: s }))}
-        disabled={!focusedEditor}
-        onChange={(v) => focusedEditor?.execute('fontSize', { value: v })}
-      />
+      <FontSizeDropdown />
 
       {toolbarBtns.map(btn => (
         <Button
           key={btn.label}
           variant="secondary"
-          disabled={!focusedEditor}
           onMouseDown={(e) => {
             e.preventDefault();
-            if (focusedEditor) {
-              focusedEditor.execute(btn.cmd);
-            }
+            exec(btn.cmd);
           }}
           size="sm"
           className={btn.className ?? ''}
@@ -46,6 +49,8 @@ export const CanvasToolbar = () => {
           {btn.label}
         </Button>
       ))}
+
+      <ColorPickerButton />
     </div>
   );
 };
