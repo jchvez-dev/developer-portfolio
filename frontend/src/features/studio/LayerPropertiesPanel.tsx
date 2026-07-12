@@ -35,7 +35,10 @@ export const LayerPropertiesPanel = ({ layer }: Props) => {
   };
 
   return (
-    <div className="h-full border-l border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900">
+    <div
+      className="h-full border-l border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900"
+      onMouseDown={(e) => e.preventDefault()}
+    >
       <Heading
         as="h4"
         className="mb-3 text-sm font-semibold text-gray-500 dark:text-gray-400"

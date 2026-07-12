@@ -51,6 +51,7 @@ export const CanvasPreview = () => {
   const canvasWidth = useCanvasStore((s) => s.canvasWidth);
   const canvasHeight = useCanvasStore((s) => s.canvasHeight);
   const focusedLayerId = useCanvasStore((s) => s.focusedLayerId);
+  const clearFocus = useCanvasStore((s) => s.clearFocus);
   const deleteTarget = useCanvasStore((s) => s.deleteTarget);
   const confirmDelete = useCanvasStore((s) => s.confirmDelete);
   const cancelDelete = useCanvasStore((s) => s.cancelDelete);
@@ -96,6 +97,9 @@ export const CanvasPreview = () => {
           <div
             className="relative overflow-hidden border-2 border-dashed border-gray-300 bg-white m-auto flex-shrink-0 dark:border-gray-700"
             style={{ width: canvasWidth, height: canvasHeight }}
+            onMouseDown={(e) => {
+              if (e.target === e.currentTarget) clearFocus();
+            }}
           >
             {[...layers].sort((a, b) => a.zIndex - b.zIndex).map(renderLayer)}
           </div>
