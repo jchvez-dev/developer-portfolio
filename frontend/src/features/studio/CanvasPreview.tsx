@@ -6,6 +6,7 @@ import { CanvasToolbar } from "./CanvasToolbar";
 import { LayerPanel } from "./LayerPanel";
 import { LayerPropertiesPanel } from "./LayerPropertiesPanel";
 import { TextLayerComponent } from "./TextLayer";
+import { CanvasBgColorPicker } from "./CanvasBgColorPicker";
 import { useCanvasStore } from "./canvas/store";
 
 const renderLayer = (layer: Layer) => {
@@ -29,6 +30,7 @@ const toExportPayload = (layer: Layer): ExportLayer | undefined => {
           width: layer.width,
           height: layer.height,
           content: layer.html,
+          backgroundColor: layer.backgroundColor,
         },
       };
     case "image":
@@ -50,6 +52,7 @@ export const CanvasPreview = () => {
   const layers = useCanvasStore((s) => s.layers);
   const canvasWidth = useCanvasStore((s) => s.canvasWidth);
   const canvasHeight = useCanvasStore((s) => s.canvasHeight);
+  const backgroundColor = useCanvasStore((s) => s.backgroundColor);
   const focusedLayerId = useCanvasStore((s) => s.focusedLayerId);
   const clearFocus = useCanvasStore((s) => s.clearFocus);
   const deleteTarget = useCanvasStore((s) => s.deleteTarget);
@@ -72,7 +75,7 @@ export const CanvasPreview = () => {
         canvas: {
           width: canvasWidth,
           height: canvasHeight,
-          backgroundColor: "#ffffff",
+          backgroundColor,
         },
         layers: layers.map(toExportPayload),
       });
@@ -95,8 +98,8 @@ export const CanvasPreview = () => {
       <Card className="flex gap-6 w-full h-[50vh]">
         <div className="flex w-full overflow-auto p-2 scrollbar-thin scrollbar-thumb-gray-500">
           <div
-            className="relative overflow-hidden border-2 border-dashed border-gray-300 bg-white m-auto flex-shrink-0 dark:border-gray-700"
-            style={{ width: canvasWidth, height: canvasHeight }}
+            className="relative overflow-hidden border-2 border-dashed border-gray-300 m-auto flex-shrink-0 dark:border-gray-700"
+            style={{ width: canvasWidth, height: canvasHeight, backgroundColor }}
             onMouseDown={(e) => {
               if (e.target === e.currentTarget) clearFocus();
             }}
@@ -108,7 +111,21 @@ export const CanvasPreview = () => {
           {focusedLayer && focusedLayer.type === "text" ? (
             <LayerPropertiesPanel layer={focusedLayer as TextLayerData} />
           ) : (
-            <LayerPanel />
+            <div className="flex flex-col gap-4">
+              <div className="border-l border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900">
+                <Heading
+                  as="h4"
+                  className="mb-3 text-sm font-semibold text-gray-500 dark:text-gray-400"
+                >
+                  Canvas
+                </Heading>
+                <div className="flex items-center justify-between">
+                  <Text small muted>Background</Text>
+                  <CanvasBgColorPicker />
+                </div>
+              </div>
+              <LayerPanel />
+            </div>
           )}
         </div>
       </Card>

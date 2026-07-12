@@ -6,6 +6,7 @@ export interface TextLayerProperties {
   width: number;
   height: number;
   content: string;
+  backgroundColor?: string;
 }
 
 export interface ImageLayerProperties {

@@ -59,6 +59,9 @@ class LayerPropertiesDto {
   @IsString()
   content?: string;
 
+  @IsOptional()
+  @IsString()
+  backgroundColor?: string;
   }
 
 class LayerDto {

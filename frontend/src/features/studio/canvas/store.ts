@@ -11,6 +11,7 @@ interface CanvasState {
   deleteTarget: string | null;
   canvasWidth: number;
   canvasHeight: number;
+  backgroundColor: string;
   addLayer: (type: "text" | "image") => void;
   removeLayer: (id: string) => void;
   updateLayer: (id: string, patch: LayerPatch) => void;
@@ -23,6 +24,7 @@ interface CanvasState {
   cancelDelete: () => void;
   reorderLayer: (fromIndex: number, toIndex: number) => void;
   setCanvasSize: (width: number, height: number) => void;
+  setBackgroundColor: (color: string) => void;
 }
 
 let nextLayerId = 3;
@@ -42,6 +44,7 @@ const initialLayers: Layer[] = [
     fontFamily: "Inter",
     fontSize: 32,
     color: "#111827",
+    backgroundColor: "transparent",
   },
   {
     id: "body",
@@ -56,6 +59,7 @@ const initialLayers: Layer[] = [
     fontFamily: "Inter",
     fontSize: 16,
     color: "#111827",
+    backgroundColor: "transparent",
   },
 ];
 
@@ -66,6 +70,7 @@ export const useCanvasStore = create<CanvasState>((set) => ({
   deleteTarget: null,
   canvasWidth: 1200,
   canvasHeight: 630,
+  backgroundColor: "#ffffff",
 
   addLayer: (type) => {
     const id = nextLayerId++;
@@ -90,6 +95,7 @@ export const useCanvasStore = create<CanvasState>((set) => ({
               fontFamily: "Inter",
               fontSize: 16,
               color: "#111827",
+              backgroundColor: "transparent",
             }
           : { ...base, type: "image" as const, height: 200, src: "" },
       ],
@@ -168,4 +174,6 @@ export const useCanvasStore = create<CanvasState>((set) => ({
   cancelDelete: () => set({ deleteTarget: null }),
 
   setCanvasSize: (width, height) => set({ canvasWidth: width, canvasHeight: height }),
+
+  setBackgroundColor: (color) => set({ backgroundColor: color }),
 }));

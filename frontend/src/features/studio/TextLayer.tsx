@@ -156,6 +156,12 @@ export const TextLayerComponent = ({ layer }: TextLayerProps) => {
         width: "fit-content",
       }}
     >
+      {layer.backgroundColor && layer.backgroundColor !== "transparent" && (
+        <div
+          className="absolute inset-0 pointer-events-none -z-1"
+          style={{ backgroundColor: layer.backgroundColor }}
+        />
+      )}
       {isFocused && (
         <Button
           size="sm"
