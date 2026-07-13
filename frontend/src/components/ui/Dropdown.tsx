@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
-import { Button } from './Button';
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid";
+import { useEffect, useRef, useState } from "react";
+import { Button } from "./Button";
+import { Text } from "./Text";
 
 interface DropdownOption<T extends string | number = string> {
   label: string;
@@ -13,7 +15,12 @@ interface DropdownProps<T extends string | number = string> {
   onChange: (value: T) => void;
 }
 
-export const Dropdown = <T extends string | number>({ value, options, disabled, onChange }: DropdownProps<T>) => {
+export const Dropdown = <T extends string | number>({
+  value,
+  options,
+  disabled,
+  onChange,
+}: DropdownProps<T>) => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -22,8 +29,8 @@ export const Dropdown = <T extends string | number>({ value, options, disabled, 
     const handler = (e: MouseEvent) => {
       if (!ref.current?.contains(e.target as Node)) setOpen(false);
     };
-    setTimeout(() => document.addEventListener('mousedown', handler), 0);
-    return () => document.removeEventListener('mousedown', handler);
+    setTimeout(() => document.addEventListener("mousedown", handler), 0);
+    return () => document.removeEventListener("mousedown", handler);
   }, [open]);
 
   return (
@@ -35,23 +42,26 @@ export const Dropdown = <T extends string | number>({ value, options, disabled, 
         onClick={() => setOpen(!open)}
         className="w-full justify-between px-3 py-1 text-sm"
       >
-        <span className="min-w-0 flex-1 truncate text-left">{value}</span>
-        <span className="shrink-0">{open ? '▲' : '▼'}</span>
+        <Text as="span" className="min-w-0 flex-1 truncate text-left">{value}</Text>
+        {open ? <ChevronUpIcon className="size-4 shrink-0" /> : <ChevronDownIcon className="size-4 shrink-0" />}
       </Button>
       {open && (
         <div className="absolute left-0 right-0 top-full z-10 mt-1 rounded border border-gray-300 bg-white shadow dark:border-gray-700 dark:bg-gray-800">
-          {options.map(opt => (
-            <button
+          {options.map((opt) => (
+            <Button
               key={opt.value}
+              variant="secondary"
+              size="sm"
+              shape="square"
               onMouseDown={(e) => {
                 e.preventDefault();
                 onChange(opt.value);
                 setOpen(false);
               }}
-              className="w-full px-3 py-1 text-left text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+              className="w-full justify-start rounded-none border-0 py-1 text-left"
             >
               {opt.label}
-            </button>
+            </Button>
           ))}
         </div>
       )}

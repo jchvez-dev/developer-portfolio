@@ -1,12 +1,28 @@
-import type { ReactNode } from 'react';
+import { cva } from "class-variance-authority";
+import type { ReactNode } from "react";
+import { cn } from "../../lib/utils";
 
 interface BadgeProps {
   children: ReactNode;
+  variant?: "default" | "accent";
+  className?: string;
 }
 
-export const Badge = ({ children }: BadgeProps) => {
+const badge = cva("rounded-full px-3 py-1 text-sm font-medium", {
+  variants: {
+    variant: {
+      default: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
+      accent: "bg-accent/10 text-accent dark:bg-accent/20",
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+  },
+});
+
+export const Badge = ({ children, variant, className }: BadgeProps) => {
   return (
-    <span className="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+    <span className={cn(badge({ variant }), className)}>
       {children}
     </span>
   );

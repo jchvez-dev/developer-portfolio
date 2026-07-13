@@ -1,7 +1,7 @@
 # Project Checklist
 
 > Current implementation status of the Developer Portfolio project.
-> Last updated: 2026-07-12 (background color pickers + refactor)
+> Last updated: 2026-07-13 (migrate design system components to CVA)
 
 ---
 
@@ -152,7 +152,7 @@
 
 ### Frontend
 - [x] Testing setup (Vitest + Testing Library)
-- [x] Component tests (59 tests across 18 files)
+- [x] Component tests (134 tests across 27 files)
 
 ---
 
@@ -164,10 +164,10 @@
 - [ ] Verify GROQ_MODEL in `.env` matches the actual available model
 - [x] SMTP env vars (SMTP_HOST, SMTP_PORT, CONTACT_EMAIL) documented in .env.example
 - [ ] Dropdown: add `size` prop to match toolbar buttons
-- [ ] Badge: add `variant` and `className` props
-- [ ] Card: add `variant` prop (default, elevated, bordered)
+- [x] Badge: add `variant` and `className` props
+- [x] Card: add `variant` prop (default, elevated, bordered)
 - [ ] Box: create generic wrapper component
-- [ ] Replace raw `<h3>`/`<p>` in features with `<Heading>`/`<Text>` from components/ui
+- [x] Replace raw `html` in features with components/ui (Section now uses Heading/Text)
 - [ ] 404 page (NotFound) for non-existent routes
 - [ ] Barrel in `components/` (in addition to `components/ui/`)
 - [ ] Iconography: tech logos in badges, semantic icons in cards, arrow in CTA
@@ -180,4 +180,4 @@
 ## Pre-existing Test Failures (unrelated)
 
 - [ ] [BUG PHP] `ImageProcessorTest::testProcessReturnsObjectKey` — WriteBlob Failed writing fixture PNG
-- [ ] [BUG Front] `Text.test.tsx` muted test — expects `text-gray-500` but component uses `text-gray-400`
+- [x] [BUG Front] `Text.test.tsx` muted test — expects `text-gray-500` but component uses `text-gray-400` (fixed assertion)
