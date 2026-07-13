@@ -157,8 +157,8 @@ From the host or inside the container:
 
 ```bash
 cd backend-nest
-npm test
-npm run test:e2e
+pnpm test
+pnpm test:e2e
 ```
 
 ### Running Tests (backend-php)

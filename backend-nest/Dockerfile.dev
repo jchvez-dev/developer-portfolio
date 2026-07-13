@@ -2,11 +2,15 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-RUN apk add --no-cache libc6-compat curl
+RUN apk add --no-cache libc6-compat curl pnpm
 
-COPY package*.json ./
+ENV PNPM_HOME=/pnpm/store
+RUN mkdir -p /pnpm/store && chown -R node:node /pnpm
 
-RUN npm ci
+COPY package.json pnpm-lock.yaml ./
+USER node
+RUN pnpm install --frozen-lockfile
+USER root
 
 COPY . .
 
@@ -16,4 +20,4 @@ USER node
 
 EXPOSE 4000
 
-CMD ["npm", "run", "start:dev"]
+CMD ["pnpm", "run", "start:dev"]
