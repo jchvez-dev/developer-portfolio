@@ -4,6 +4,7 @@ networks:
 
 volumes:
   minio-data:
+  pnpm-store:
 
 services:
   storage:
@@ -54,6 +55,7 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+      - pnpm-store:/pnpm/store
     networks:
       - portafolio-network
     environment:
@@ -71,6 +73,7 @@ services:
     volumes:
       - ./backend-nest:/app
       - /app/node_modules
+      - pnpm-store:/pnpm/store
     networks:
       - portafolio-network
     environment:
