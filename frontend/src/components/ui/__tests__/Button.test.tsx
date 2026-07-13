@@ -20,6 +20,12 @@ describe('Button', () => {
     expect(btn.className).toContain('border');
   });
 
+  it('applies danger variant', () => {
+    render(<Button variant="danger">Danger</Button>);
+    const btn = screen.getByRole('button');
+    expect(btn.className).toContain('bg-red-500');
+  });
+
   it('applies custom className', () => {
     render(<Button className="custom">Styled</Button>);
     expect(screen.getByRole('button').className).toContain('custom');
@@ -77,6 +83,16 @@ describe('Button', () => {
       render(<Button icon={<span data-testid="icon" />} iconPosition="right">With Icon</Button>);
       const btn = screen.getByRole('button');
       expect(btn.innerHTML).toMatch(/With Icon.*icon/);
+    });
+
+    it('adds gap when icon and children are present', () => {
+      render(<Button icon={<span data-testid="icon" />}>Label</Button>);
+      expect(screen.getByRole('button').className).toContain('gap-1.5');
+    });
+
+    it('does not add gap when icon is present without children', () => {
+      render(<Button icon={<span data-testid="icon" />} />);
+      expect(screen.getByRole('button').className).not.toContain('gap-1.5');
     });
   });
 });

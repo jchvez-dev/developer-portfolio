@@ -9,7 +9,7 @@ describe('Text', () => {
 
   it('applies muted styles when muted prop is set', () => {
     render(<Text muted>Muted</Text>);
-    expect(screen.getByText('Muted').className).toContain('text-gray-500');
+    expect(screen.getByText('Muted').className).toContain('text-gray-400');
   });
 
   it('applies small styles when small prop is set', () => {
@@ -20,5 +20,10 @@ describe('Text', () => {
   it('applies custom className', () => {
     render(<Text className="custom">Styled</Text>);
     expect(screen.getByText('Styled').className).toContain('custom');
+  });
+
+  it('renders as span when as prop is set', () => {
+    render(<Text as="span">Inline</Text>);
+    expect(screen.getByText('Inline').tagName).toBe('SPAN');
   });
 });

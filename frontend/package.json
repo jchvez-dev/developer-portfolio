@@ -17,9 +17,12 @@
     "@ckeditor/ckeditor5-react": "^11.2.0",
     "@heroicons/react": "^2.2.0",
     "ckeditor5": "^48.3.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.1",
+    "tailwind-merge": "^3.6.0",
     "zustand": "^5.0.14"
   },
   "devDependencies": {

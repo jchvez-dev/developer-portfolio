@@ -1,4 +1,7 @@
-import type { ReactNode } from 'react';
+import type { ReactNode } from "react";
+import { cn } from "../../lib/utils";
+import { Heading } from "./Heading";
+import { Text } from "./Text";
 
 interface SectionProps {
   id: string;
@@ -8,10 +11,10 @@ interface SectionProps {
   className?: string;
 }
 
-export const Section = ({ id, title, description, children, className = '' }: SectionProps) => (
-  <section id={id} className={`mx-auto max-w-3xl py-16 ${className}`}>
-    {title && <h2 className="text-3xl font-bold tracking-tight">{title}</h2>}
-    {description && <p className="mt-4 text-gray-600 dark:text-gray-400">{description}</p>}
+export const Section = ({ id, title, description, children, className }: SectionProps) => (
+  <section id={id} className={cn("mx-auto max-w-3xl py-16", className)}>
+    {title && <Heading as="h2">{title}</Heading>}
+    {description && <Text className="mt-4">{description}</Text>}
     {children}
   </section>
 );
