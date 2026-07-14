@@ -1,7 +1,14 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  OnModuleInit,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { firstValueFrom } from 'rxjs';
+import { Readable } from 'stream';
 import { UploadedFile, UploadResult } from './interfaces';
 
 const ALLOWED_MIME_TYPES = [
@@ -14,11 +21,34 @@ const ALLOWED_MIME_TYPES = [
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 @Injectable()
-export class UploadService {
+export class UploadService implements OnModuleInit {
+  private s3: S3Client;
+
   constructor(
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
   ) {}
+
+  onModuleInit() {
+    const minioConfig = this.configService.get<{
+      endpoint: string;
+      port: number;
+      accessKey: string;
+      secretKey: string;
+      useSSL: boolean;
+      region: string;
+    }>('minio')!;
+
+    this.s3 = new S3Client({
+      region: minioConfig.region,
+      endpoint: `http://${minioConfig.endpoint}:${minioConfig.port}`,
+      forcePathStyle: true,
+      credentials: {
+        accessKeyId: minioConfig.accessKey,
+        secretAccessKey: minioConfig.secretKey,
+      },
+    });
+  }
 
   async processUpload(
     file: UploadedFile,
@@ -28,7 +58,6 @@ export class UploadService {
 
     const jobId = `upload_job_${Date.now()}`;
     const phpUrl = this.configService.get<string>('phpBackendUrl')!;
-    const publicUrl = this.configService.get<string>('minioPublicUrl')!;
 
     const formData = new FormData();
     formData.append(
@@ -61,13 +90,41 @@ export class UploadService {
       );
     }
 
-    const assetUrl = `${publicUrl}/${phpResponse.objectKey}`;
+    const assetUrl = phpResponse.objectKey;
 
     return {
       success: true,
       assetUrl,
       sessionId,
     };
+  }
+
+  async getImage(
+    path: string,
+  ): Promise<{ body: Readable; contentType: string }> {
+    const parts = path.split('/');
+    const bucket = parts[0];
+    const key = parts.slice(1).join('/');
+
+    try {
+      const command = new GetObjectCommand({
+        Bucket: bucket,
+        Key: key,
+      });
+      const response = await this.s3.send(command);
+      return {
+        body: response.Body as Readable,
+        contentType: response.ContentType ?? 'image/webp',
+      };
+    } catch (error: any) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          message: 'Image not found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
   }
 
   private validateFile(file: UploadedFile): void {
