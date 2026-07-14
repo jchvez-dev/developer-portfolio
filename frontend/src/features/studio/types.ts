@@ -1,7 +1,7 @@
 export interface TextLayerData {
   id: string;
   name: string;
-  type: 'text';
+  type: "text";
   x: number;
   y: number;
   width: number;
@@ -12,20 +12,25 @@ export interface TextLayerData {
   fontSize: number;
   color: string;
   backgroundColor?: string;
+  opacity?: number;
 }
 
 export interface ImageLayerData {
   id: string;
   name: string;
-  type: 'image';
+  type: "image";
   x: number;
   y: number;
   width: number;
   height: number;
   zIndex: number;
   src: string;
+  backgroundColor?: string;
+  opacity?: number;
 }
 
 export type Layer = TextLayerData | ImageLayerData;
-export type LayerType = Layer['type'];
-export type LayerPatch = Partial<Omit<TextLayerData, 'type'> & Omit<ImageLayerData, 'type'>>;
+export type LayerType = Layer["type"];
+export type LayerPatch = Partial<
+  Omit<TextLayerData, "type"> & Omit<ImageLayerData, "type">
+>;

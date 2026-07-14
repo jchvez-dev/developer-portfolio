@@ -115,7 +115,7 @@
 - [x] Layer properties panel (position, size, font, color)
 - [x] Canvas background color picker
 - [x] Layer background color picker
-- [ ] Image layers + asset upload
+- [x] Image layers + asset upload
 - [ ] Canvas/artboard size picker
 - [ ] Custom font loading
 

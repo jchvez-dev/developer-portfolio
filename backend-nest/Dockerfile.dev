@@ -8,6 +8,7 @@ ENV PNPM_HOME=/pnpm/store
 RUN mkdir -p /pnpm/store && chown -R node:node /pnpm
 
 COPY package.json pnpm-lock.yaml ./
+RUN chown node:node /app
 USER node
 RUN pnpm install --frozen-lockfile
 USER root

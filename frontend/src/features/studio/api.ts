@@ -1,4 +1,4 @@
-import type { LayerType } from './types';
+import type { LayerType } from "./types";
 
 export interface TextLayerProperties {
   x: number;
@@ -14,7 +14,13 @@ export interface ImageLayerProperties {
   y: number;
   width: number;
   height: number;
-  src: string;
+  assetUrl: string;
+}
+
+export interface UploadResult {
+  success: boolean;
+  assetUrl: string;
+  sessionId: string;
 }
 
 export type ExportProperties = TextLayerProperties | ImageLayerProperties;
@@ -36,11 +42,29 @@ interface ExportResult {
   downloadUrl: string;
 }
 
-export async function exportCanvas(payload: ExportPayload): Promise<ExportResult> {
-  const res = await fetch('/api/v1/canvas/export', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+export async function exportCanvas(
+  payload: ExportPayload,
+): Promise<ExportResult> {
+  const res = await fetch("/api/v1/canvas/export", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+export async function uploadImage(
+  file: File,
+  sessionId?: string,
+): Promise<UploadResult> {
+  const formData = new FormData();
+  formData.append("image", file);
+  if (sessionId) formData.append("sessionId", sessionId);
+
+  const res = await fetch("/api/v1/canvas/upload", {
+    method: "POST",
+    body: formData,
   });
   if (!res.ok) throw new Error(await res.text());
   return res.json();

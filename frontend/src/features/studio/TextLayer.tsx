@@ -27,7 +27,16 @@ const InlineEditorInstance = Object.assign(InlineEditor, {
 
 const EDITOR_CONFIG = {
   licenseKey: "GPL" as const,
-  plugins: [Bold, Essentials, FontColor, FontSize, Italic, List, Paragraph, Undo],
+  plugins: [
+    Bold,
+    Essentials,
+    FontColor,
+    FontSize,
+    Italic,
+    List,
+    Paragraph,
+    Undo,
+  ],
   fontSize: {
     options: [
       { title: "12px", model: "12px" },
@@ -53,10 +62,8 @@ export const TextLayerComponent = ({ layer }: TextLayerProps) => {
   const setFocus = useCanvasStore((s) => s.setFocus);
   const clearFocus = useCanvasStore((s) => s.clearFocus);
   const updateLayer = useCanvasStore((s) => s.updateLayer);
-  const resizeLayer = useCanvasStore((s) => s.resizeLayer);
 
   const isFocused = focusedLayerId === layer.id;
-
   useEffect(() => {
     return () => {
       editorRegistry.delete(layer.id);
@@ -119,7 +126,10 @@ export const TextLayerComponent = ({ layer }: TextLayerProps) => {
         const clampedY = clampY(origY + dy);
         el.style.left = `${clampedX}px`;
         el.style.top = `${clampedY}px`;
-        updateLayer(layer.id, { x: Math.round(clampedX), y: Math.round(clampedY) });
+        updateLayer(layer.id, {
+          x: Math.round(clampedX),
+          y: Math.round(clampedY),
+        });
         if (editorRef.current) {
           setFocus(layer.id, editorRef.current);
           editorRef.current.focus();
@@ -139,11 +149,14 @@ export const TextLayerComponent = ({ layer }: TextLayerProps) => {
     if (!el) return;
     const ro = new ResizeObserver(([entry]) => {
       const { width, height } = entry.contentRect;
-      resizeLayer(layer.id, Math.round(width), Math.round(height));
+      updateLayer(layer.id, {
+        width: Math.round(width),
+        height: Math.round(height),
+      });
     });
     ro.observe(el);
     return () => ro.disconnect();
-  }, [layer.id, resizeLayer]);
+  }, [layer.id, updateLayer]);
 
   return (
     <div
@@ -154,6 +167,7 @@ export const TextLayerComponent = ({ layer }: TextLayerProps) => {
         top: layer.y,
         zIndex: layer.zIndex,
         width: "fit-content",
+        opacity: layer.opacity ?? 1,
       }}
     >
       {layer.backgroundColor && layer.backgroundColor !== "transparent" && (

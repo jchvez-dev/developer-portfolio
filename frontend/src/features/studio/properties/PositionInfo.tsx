@@ -1,8 +1,8 @@
 import { Text } from "../../../components/ui";
-import type { TextLayerData } from "../types";
+import type { Layer } from "../types";
 
 interface Props {
-  layer: TextLayerData;
+  layer: Layer;
 }
 
 export const PositionInfo = ({ layer }: Props) => (

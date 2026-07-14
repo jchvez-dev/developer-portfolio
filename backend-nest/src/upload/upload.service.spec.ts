@@ -54,9 +54,7 @@ describe('UploadService', () => {
 
       expect(result.success).toBe(true);
       expect(result.sessionId).toBe('sess_test');
-      expect(result.assetUrl).toBe(
-        'http://localhost:9000/user-uploads/sess_test/abc.webp',
-      );
+      expect(result.assetUrl).toBe('user-uploads/sess_test/abc.webp');
     });
 
     it('throws HttpException when PHP call fails', async () => {

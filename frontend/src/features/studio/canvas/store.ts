@@ -12,10 +12,9 @@ interface CanvasState {
   canvasWidth: number;
   canvasHeight: number;
   backgroundColor: string;
-  addLayer: (type: "text" | "image") => void;
+  addLayer: (type: "text" | "image") => string;
   removeLayer: (id: string) => void;
   updateLayer: (id: string, patch: LayerPatch) => void;
-  resizeLayer: (id: string, width: number, height: number) => void;
   setFocus: (layerId: string, editor: Editor) => void;
   clearFocus: () => void;
   selectLayer: (layerId: string) => void;
@@ -45,6 +44,7 @@ const initialLayers: Layer[] = [
     fontSize: 32,
     color: "#111827",
     backgroundColor: "transparent",
+    opacity: 1,
   },
   {
     id: "body",
@@ -60,6 +60,7 @@ const initialLayers: Layer[] = [
     fontSize: 16,
     color: "#111827",
     backgroundColor: "transparent",
+    opacity: 1,
   },
 ];
 
@@ -75,8 +76,9 @@ export const useCanvasStore = create<CanvasState>((set) => ({
   addLayer: (type) => {
     const id = nextLayerId++;
     const z = nextZIndex++;
+    const layerId = `layer-${id}`;
     const base = {
-      id: `layer-${id}`,
+      id: layerId,
       name: type === "text" ? "New text layer" : "New image layer",
       x: 30 + (z % 5) * 20,
       y: 30 + (z % 5) * 20,
@@ -96,10 +98,19 @@ export const useCanvasStore = create<CanvasState>((set) => ({
               fontSize: 16,
               color: "#111827",
               backgroundColor: "transparent",
+              opacity: 1,
             }
-          : { ...base, type: "image" as const, height: 200, src: "" },
+          : {
+              ...base,
+              type: "image" as const,
+              height: 200,
+              src: "",
+              backgroundColor: "transparent",
+              opacity: 1,
+            },
       ],
     }));
+    return layerId;
   },
 
   removeLayer: (id) => {
@@ -119,13 +130,6 @@ export const useCanvasStore = create<CanvasState>((set) => ({
       ),
     })),
 
-  resizeLayer: (id, width, height) =>
-    set((state) => ({
-      layers: state.layers.map((l) =>
-        l.id === id ? { ...l, width, height } : l,
-      ),
-    })),
-
   setFocus: (layerId, editor) => {
     editorRegistry.set(layerId, editor);
     set({
@@ -134,8 +138,7 @@ export const useCanvasStore = create<CanvasState>((set) => ({
     });
   },
 
-  clearFocus: () =>
-    set({ focusedLayerId: null }),
+  clearFocus: () => set({ focusedLayerId: null }),
 
   selectLayer: (layerId) =>
     set({
@@ -173,7 +176,8 @@ export const useCanvasStore = create<CanvasState>((set) => ({
 
   cancelDelete: () => set({ deleteTarget: null }),
 
-  setCanvasSize: (width, height) => set({ canvasWidth: width, canvasHeight: height }),
+  setCanvasSize: (width, height) =>
+    set({ canvasWidth: width, canvasHeight: height }),
 
   setBackgroundColor: (color) => set({ backgroundColor: color }),
 }));
