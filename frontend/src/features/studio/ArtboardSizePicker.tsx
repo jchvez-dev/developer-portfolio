@@ -97,10 +97,11 @@ export const ArtboardSizePicker = () => {
         {showCustom && (
           <div className="mb-4 flex items-end gap-3 rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900">
             <div className="flex-1">
-              <Text as="label" small muted className="mb-1 block">
+              <label htmlFor="artboard-width" className="mb-1 block text-sm text-gray-400 dark:text-gray-400">
                 Width
-              </Text>
+              </label>
               <input
+                id="artboard-width"
                 type="number"
                 value={customWidth}
                 onChange={(e) => setCustomWidth(Number(e.target.value))}
@@ -113,10 +114,11 @@ export const ArtboardSizePicker = () => {
               x
             </Text>
             <div className="flex-1">
-              <Text as="label" small muted className="mb-1 block">
+              <label htmlFor="artboard-height" className="mb-1 block text-sm text-gray-400 dark:text-gray-400">
                 Height
-              </Text>
+              </label>
               <input
+                id="artboard-height"
                 type="number"
                 value={customHeight}
                 onChange={(e) => setCustomHeight(Number(e.target.value))}
