@@ -1,7 +1,7 @@
 # Project Checklist
 
 > Current implementation status of the Developer Portfolio project.
-> Last updated: 2026-07-13 (migrate design system components to CVA)
+> Last updated: 2026-07-21 (one-time artboard size picker)
 
 ---
 
@@ -116,7 +116,7 @@
 - [x] Canvas background color picker
 - [x] Layer background color picker
 - [x] Image layers + asset upload
-- [ ] Canvas/artboard size picker
+- [x] Canvas/artboard size picker
 - [ ] Custom font loading
 
 ### AI Career Assistant (FR-3.1, FR-3.2, FR-3.3)
@@ -152,7 +152,7 @@
 
 ### Frontend
 - [x] Testing setup (Vitest + Testing Library)
-- [x] Component tests (134 tests across 27 files)
+- [x] Component tests (140 tests across 28 files)
 
 ---
 

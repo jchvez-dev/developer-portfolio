@@ -9,6 +9,7 @@ import { TextLayerComponent } from "./TextLayer";
 import { ImageLayerComponent } from "./ImageLayer";
 import { BackgroundColorPicker } from "./BackgroundColorPicker";
 import { DeleteLayerModal } from "./DeleteLayerModal";
+import { ArtboardSizePicker } from "./ArtboardSizePicker";
 import { useCanvasStore } from "./canvas/store";
 
 const renderLayer = (layer: Layer) => {
@@ -59,12 +60,16 @@ export const CanvasPreview = () => {
   const clearFocus = useCanvasStore((s) => s.clearFocus);
   const setBackgroundColor = useCanvasStore((s) => s.setBackgroundColor);
 
-  const focusedLayer = focusedLayerId
-    ? (layers.find((l) => l.id === focusedLayerId) ?? null)
-    : null;
+  const sizeChosen = useCanvasStore((s) => s.sizeChosen);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  if (!sizeChosen) return <ArtboardSizePicker />;
+
+  const focusedLayer = focusedLayerId
+    ? (layers.find((l) => l.id === focusedLayerId) ?? null)
+    : null;
 
   const handleExport = async () => {
     setLoading(true);

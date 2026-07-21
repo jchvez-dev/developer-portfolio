@@ -12,6 +12,7 @@ interface CanvasState {
   canvasWidth: number;
   canvasHeight: number;
   backgroundColor: string;
+  sizeChosen: boolean;
   addLayer: (type: "text" | "image") => string;
   removeLayer: (id: string) => void;
   updateLayer: (id: string, patch: LayerPatch) => void;
@@ -24,6 +25,7 @@ interface CanvasState {
   reorderLayer: (fromIndex: number, toIndex: number) => void;
   setCanvasSize: (width: number, height: number) => void;
   setBackgroundColor: (color: string) => void;
+  confirmSize: () => void;
 }
 
 let nextLayerId = 3;
@@ -72,6 +74,7 @@ export const useCanvasStore = create<CanvasState>((set) => ({
   canvasWidth: 1200,
   canvasHeight: 630,
   backgroundColor: "#ffffff",
+  sizeChosen: false,
 
   addLayer: (type) => {
     const id = nextLayerId++;
@@ -180,4 +183,6 @@ export const useCanvasStore = create<CanvasState>((set) => ({
     set({ canvasWidth: width, canvasHeight: height }),
 
   setBackgroundColor: (color) => set({ backgroundColor: color }),
+
+  confirmSize: () => set({ sizeChosen: true }),
 }));
