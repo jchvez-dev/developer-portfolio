@@ -5,6 +5,7 @@ import {
   Bold,
   Essentials,
   FontColor,
+  FontFamily,
   FontSize,
   Italic,
   List,
@@ -31,6 +32,7 @@ const EDITOR_CONFIG = {
     Bold,
     Essentials,
     FontColor,
+    FontFamily,
     FontSize,
     Italic,
     List,
@@ -45,6 +47,13 @@ const EDITOR_CONFIG = {
       { title: "32px", model: "32px" },
       { title: "48px", model: "48px" },
       { title: "64px", model: "64px" },
+    ],
+  },
+  fontFamily: {
+    options: [
+      "Inter",
+      "Roboto",
+      "Montserrat",
     ],
   },
 };

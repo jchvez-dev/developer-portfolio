@@ -4,6 +4,8 @@ namespace App\Service;
 
 class TextRenderer
 {
+    private const FONT_DIR = '/app/fonts';
+
     public function render(\Imagick $canvas, array $tokens, int $originX, int $originY, ?int $maxWidth = null): void
     {
         $maxWidth = $maxWidth !== null ? ($originX + $maxWidth) : ($canvas->getImageWidth() - $originX);
@@ -91,29 +93,51 @@ class TextRenderer
         $flushLine();
     }
 
-    private function resolveFont(string $base, bool $bold, bool $italic): string
+    private function resolveTtfPath(string $family, bool $bold, bool $italic): string
     {
-        if ($bold && $italic) {
-            return 'DejaVu-Sans-Bold-Oblique';
+        $suffixes = [
+            [$bold && $italic, '-BoldItalic.ttf'],
+            [$bold, '-Bold.ttf'],
+            [$italic, '-Italic.ttf'],
+            [true, '-Regular.ttf'],
+        ];
+
+        foreach ($suffixes as [$matched, $suffix]) {
+            if ($matched) {
+                $path = self::FONT_DIR . '/' . $family . $suffix;
+                if (file_exists($path)) {
+                    return $path;
+                }
+            }
         }
-        if ($bold) {
-            return 'DejaVu-Sans-Bold';
-        }
-        if ($italic) {
-            return 'DejaVu-Sans-Oblique';
-        }
-        return $base;
+
+        return '';
     }
 
     private function configureDraw(\ImagickDraw $draw, array $token): void
     {
         $draw->setFontSize($token['fontSize']);
-        $fontName = $this->resolveFont($token['fontFamily'], $token['bold'], $token['italic']);
-        try {
-            $draw->setFont($fontName);
-        } catch (\ImagickException) {
-            $draw->setFont('DejaVu-Sans');
+
+        $ttfPath = $this->resolveTtfPath($token['fontFamily'], $token['bold'], $token['italic']);
+
+        if ($ttfPath !== '') {
+            $draw->setFont($ttfPath);
+        } else {
+            $fcName = $token['fontFamily'];
+            if ($token['bold'] && $token['italic']) {
+                $fcName = 'DejaVu-Sans-Bold-Oblique';
+            } elseif ($token['bold']) {
+                $fcName = 'DejaVu-Sans-Bold';
+            } elseif ($token['italic']) {
+                $fcName = 'DejaVu-Sans-Oblique';
+            }
+            try {
+                $draw->setFont($fcName);
+            } catch (\ImagickException) {
+                $draw->setFont('DejaVu-Sans');
+            }
         }
+
         $draw->setFillColor(new \ImagickPixel($token['color']));
     }
 }

@@ -15,7 +15,7 @@ class HtmlTokenizer
 
         $state = [
             'fontSize' => 16,
-            'fontFamily' => 'DejaVu-Sans',
+            'fontFamily' => 'Inter',
             'color' => '#111827',
             'bold' => false,
             'italic' => false,

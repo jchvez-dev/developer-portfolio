@@ -14,6 +14,9 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 COPY . .
+COPY fonts /usr/share/fonts
+
+RUN fc-cache -f
 
 RUN composer install --no-interaction --prefer-dist \
     && chown -R www-data:www-data /app
