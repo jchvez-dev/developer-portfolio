@@ -1,7 +1,7 @@
 # Project Checklist
 
 > Current implementation status of the Developer Portfolio project.
-> Last updated: 2026-07-21 (one-time artboard size picker)
+> Last updated: 2026-07-21 (custom font loading with Bold/Italic/BoldItalic TTF variants)
 
 ---
 
@@ -117,7 +117,7 @@
 - [x] Layer background color picker
 - [x] Image layers + asset upload
 - [x] Canvas/artboard size picker
-- [ ] Custom font loading
+- [x] Custom font loading (Inter, Roboto, Montserrat with Regular/Bold/Italic/BoldItalic TTF variants)
 
 ### AI Career Assistant (FR-3.1, FR-3.2, FR-3.3)
 - [x] Floating chat widget (persistent across pages)

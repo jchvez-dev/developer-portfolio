@@ -29,17 +29,20 @@ services:
       - storage
     networks:
       - portafolio-network
+    volumes:
+      - ./backend-php/fonts:/fonts
     entrypoint: |
       /bin/sh -c "
-      until /usr/bin/mc alias set local_cluster http://storage:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD}; do 
-        echo 'Waiting for MinIO server...'; 
-        sleep 1; 
+      until /usr/bin/mc alias set local_cluster http://storage:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD}; do
+        echo 'Waiting for MinIO server...';
+        sleep 1;
       done;
       /usr/bin/mc mb --ignore-existing local_cluster/system-assets;
       /usr/bin/mc mb --ignore-existing local_cluster/user-uploads;
       /usr/bin/mc mb --ignore-existing local_cluster/production-exports;
       /usr/bin/mc mb --ignore-existing local_cluster/chat-history;
       /usr/bin/mc mb --ignore-existing local_cluster/contact-messages;
+      for f in /fonts/*.ttf; do /usr/bin/mc cp "$$f" local_cluster/system-assets/fonts/; done;
       /usr/bin/mc anonymous set public local_cluster/production-exports;
       echo 'All buckets provisioned successfully!';
       exit 0;
