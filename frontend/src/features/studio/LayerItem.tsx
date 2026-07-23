@@ -1,10 +1,5 @@
 import { useRef, useState, useCallback, type DragEvent, type KeyboardEvent } from "react";
-import {
-  Bars3Icon,
-  DocumentTextIcon,
-  PhotoIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { HiBars3, HiDocumentText, HiPhoto, HiXMark } from "react-icons/hi2";
 import { Button } from "../../components/ui";
 import type { Layer, LayerType } from "./types";
 
@@ -21,9 +16,9 @@ const LayerTypeIcon = ({
 }: LayerTypeIconProps) => {
   switch (type) {
     case "text":
-      return <DocumentTextIcon className={className} />;
+      return <HiDocumentText className={className} />;
     case "image":
-      return <PhotoIcon className={className} />;
+      return <HiPhoto className={className} />;
   }
 };
 
@@ -100,7 +95,7 @@ export const LayerItem = ({
         onDragStart={onDragStart}
         className="cursor-grab active:cursor-grabbing"
       >
-        <Bars3Icon className="h-4 w-4 shrink-0 text-gray-400" />
+        <HiBars3 className="h-4 w-4 shrink-0 text-gray-400" />
       </span>
       <span className="flex-1 truncate text-gray-700 dark:text-gray-300">
         {editing ? (
@@ -127,7 +122,7 @@ export const LayerItem = ({
         size="sm"
         shape="pill"
         variant="danger"
-        icon={<XMarkIcon className="h-3 w-3" />}
+        icon={<HiXMark className="h-3 w-3" />}
         className="!p-1 opacity-0 group-hover:opacity-100"
         onClick={(e) => {
           e.stopPropagation();

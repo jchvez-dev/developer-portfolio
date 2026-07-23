@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from "react";
-import { ArrowUpTrayIcon, PhotoIcon } from "@heroicons/react/24/outline";
+import { HiArrowUpTray, HiPhoto } from "react-icons/hi2";
 import { Button, Modal, Text } from "../../components/ui";
 import { uploadImage } from "./api";
 
@@ -144,7 +144,7 @@ export const ImageUploader = ({
             />
           ) : (
             <>
-              <PhotoIcon className="mb-2 h-10 w-10 text-gray-400" />
+              <HiPhoto className="mb-2 h-10 w-10 text-gray-400" />
               <Text small muted className="text-center">
                 Drag & drop an image here, or click to browse
               </Text>
@@ -187,7 +187,7 @@ export const ImageUploader = ({
               size="sm"
               disabled={uploading}
               onClick={handleUpload}
-              icon={<ArrowUpTrayIcon className="h-4 w-4" />}
+              icon={<HiArrowUpTray className="h-4 w-4" />}
             >
               {uploading ? "Uploading..." : "Upload"}
             </Button>

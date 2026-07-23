@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { ChatBubbleLeftRightIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { HiChatBubbleLeftRight, HiXMark } from 'react-icons/hi2';
 import { useChat } from './useChat';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
@@ -36,7 +36,7 @@ export const ChatWidget = () => {
               className="rounded-md p-1 text-gray-500 transition-colors hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-700"
               aria-label="Close chat"
             >
-              <XMarkIcon className="h-5 w-5" />
+              <HiXMark className="h-5 w-5" />
             </button>
           </div>
 
@@ -80,7 +80,7 @@ export const ChatWidget = () => {
           className="flex h-14 w-14 items-center justify-center rounded-full bg-accent text-white shadow-lg transition-transform hover:scale-105 hover:bg-accent-hover"
           aria-label="Open chat"
         >
-          <ChatBubbleLeftRightIcon className="h-6 w-6" />
+          <HiChatBubbleLeftRight className="h-6 w-6" />
         </button>
       )}
     </div>

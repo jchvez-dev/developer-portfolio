@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
+import { HiSun, HiMoon } from 'react-icons/hi2';
 import { useTheme } from '../context/ThemeContext';
 
 const navLinks = [
@@ -38,9 +38,9 @@ export const Header = () => {
               aria-label="Toggle theme"
             >
               {theme === 'dark' ? (
-                <SunIcon className="h-5 w-5" />
+                <HiSun className="h-5 w-5" />
               ) : (
-                <MoonIcon className="h-5 w-5" />
+                <HiMoon className="h-5 w-5" />
               )}
             </button>
           </li>

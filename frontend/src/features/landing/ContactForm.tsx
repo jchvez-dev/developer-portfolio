@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { Section } from '../../components/ui/Section';
 import { Button } from '../../components/ui/Button';
+import { HiEnvelope } from 'react-icons/hi2';
 
 interface FormData {
   name: string;
@@ -147,7 +148,7 @@ export const ContactForm = () => {
           </div>
         )}
 
-        <Button type="submit" disabled={status === 'submitting'}>
+        <Button type="submit" disabled={status === 'submitting'} icon={<HiEnvelope className="h-4 w-4" />} iconPosition="right">
           {status === 'submitting' ? 'Sending...' : 'Send Message'}
         </Button>
       </form>

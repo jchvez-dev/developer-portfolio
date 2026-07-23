@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
+import { HiPaperAirplane } from 'react-icons/hi2';
 
 interface ChatInputProps {
   onSend: (text: string) => void;
@@ -31,7 +31,7 @@ export const ChatInput = ({ onSend, disabled }: ChatInputProps) => {
         disabled={disabled || !input.trim()}
         className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent text-white transition-colors hover:bg-accent-hover disabled:opacity-50"
       >
-        <PaperAirplaneIcon className="h-4 w-4" />
+        <HiPaperAirplane className="h-4 w-4" />
       </button>
     </form>
   );
