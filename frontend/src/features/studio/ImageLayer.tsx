@@ -1,5 +1,5 @@
 import { useCallback, useRef } from "react";
-import { ArrowsPointingOutIcon, PhotoIcon } from "@heroicons/react/24/outline";
+import { HiArrowsPointingOut, HiPhoto } from "react-icons/hi2";
 import { Button } from "../../components/ui";
 import type { ImageLayerData } from "./types";
 import { useCanvasStore } from "./canvas/store";
@@ -109,7 +109,7 @@ export const ImageLayerComponent = ({ layer }: ImageLayerProps) => {
         />
       ) : (
         <div className="flex h-full w-full items-center justify-center rounded border-2 border-dashed border-gray-300 bg-gray-100 dark:border-gray-600 dark:bg-gray-800">
-          <PhotoIcon className="h-8 w-8 text-gray-400" />
+          <HiPhoto className="h-8 w-8 text-gray-400" />
         </div>
       )}
 
@@ -118,7 +118,7 @@ export const ImageLayerComponent = ({ layer }: ImageLayerProps) => {
           size="sm"
           shape="pill"
           variant="secondary"
-          icon={<ArrowsPointingOutIcon className="h-4 w-4" />}
+          icon={<HiArrowsPointingOut className="h-4 w-4" />}
           className={`absolute z-50 !cursor-grab bg-white/90 hover:bg-gray-200 dark:bg-gray-800/80 dark:hover:bg-gray-700 left-1/2 -translate-x-1/2 ${
             layer.y < 32 ? "-bottom-8" : "-top-8"
           }`}

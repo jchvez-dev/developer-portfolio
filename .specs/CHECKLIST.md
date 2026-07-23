@@ -169,9 +169,9 @@
 - [x] Badge: add `variant` and `className` props
 - [x] Card: add `variant` prop (default, elevated, bordered)
 - [x] Replace raw `html` in features with components/ui (Section now uses Heading/Text)
-- [ ] 404 page (NotFound) for non-existent routes
-- [ ] Iconography: tech logos in badges, semantic icons in cards, arrow in CTA
-- [ ] Micro-interactions: hover elevation on cards, scale on badges/buttons, focus transition on inputs
+- [x] 404 page (NotFound) for non-existent routes
+- [x] Iconography: tech logos in badges, semantic icons in cards, arrow in CTA
+- [x] Micro-interactions: hover elevation on badges (translate-y, border, bg, group opacity filter)
 - [ ] Live ping: "Available for hire" indicator with animation in Hero
 
 ## Backlog / Future Refactor

@@ -4,6 +4,7 @@ import { Button } from '../../components/ui/Button';
 import { Heading } from '../../components/ui/Heading';
 import { Text } from '../../components/ui/Text';
 import { Skeleton } from '../../components/ui/Skeleton';
+import { HiRocketLaunch, HiChatBubbleLeftRight } from 'react-icons/hi2';
 import type { Profile } from './useProfile';
 
 interface HeroProps {
@@ -32,10 +33,10 @@ export const Hero = ({ profile, loading }: HeroProps) => {
       </Text>
 
       <div className="mt-10 flex gap-4">
-        <Button onClick={() => navigate('/studio')}>
+        <Button onClick={() => navigate('/studio')} icon={<HiRocketLaunch className="h-5 w-5" />} iconPosition="right">
           Try Canvas Studio
         </Button>
-        <Button variant="secondary" onClick={() => setChatOpen(true)}>
+        <Button variant="secondary" onClick={() => setChatOpen(true)} icon={<HiChatBubbleLeftRight className="h-5 w-5" />} iconPosition="right">
           Ask AI Assistant
         </Button>
       </div>

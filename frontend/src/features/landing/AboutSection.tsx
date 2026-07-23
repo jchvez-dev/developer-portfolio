@@ -3,6 +3,7 @@ import { Card } from '../../components/ui/Card';
 import { Heading } from '../../components/ui/Heading';
 import { Text } from '../../components/ui/Text';
 import { Skeleton } from '../../components/ui/Skeleton';
+import { HiBriefcase, HiAcademicCap } from 'react-icons/hi2';
 import type { Profile } from './useProfile';
 
 interface AboutSectionProps {
@@ -38,7 +39,7 @@ export const AboutSection = ({ profile, loading }: AboutSectionProps) => {
       <div className="mt-10 space-y-6">
         {profile?.experience.map((exp) => (
           <Card key={exp.role}>
-            <Heading as="h3">{exp.role}</Heading>
+            <Heading as="h3"><HiBriefcase className="mr-1.5 inline h-5 w-5" />{exp.role}</Heading>
             <Text muted small>
               {exp.company} &middot; {exp.period}
             </Text>
@@ -65,7 +66,7 @@ export const AboutSection = ({ profile, loading }: AboutSectionProps) => {
           <div className="mt-4 space-y-4">
             {profile.education.map((edu, i) => (
               <Card key={i}>
-                <Heading as="h3">{edu.degree}</Heading>
+                <Heading as="h3"><HiAcademicCap className="mr-1.5 inline h-5 w-5" />{edu.degree}</Heading>
                 <Text muted small>
                   {edu.institution} &middot; {edu.year}
                 </Text>

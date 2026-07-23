@@ -1,5 +1,5 @@
 import { ColorPicker, Button } from "../../components/ui";
-import { PaintBrushIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { HiPaintBrush, HiXMark } from "react-icons/hi2";
 
 interface BackgroundColorPickerProps {
   value: string;
@@ -19,13 +19,13 @@ export const BackgroundColorPicker = ({
       <ColorPicker
         value={displayValue}
         onChange={onChange}
-        icon={<PaintBrushIcon className="h-4 w-4" />}
+        icon={<HiPaintBrush className="h-4 w-4" />}
       />
       {allowTransparent && value && value !== "transparent" && (
         <Button
           variant="secondary"
           size="sm"
-          icon={<XMarkIcon className="h-3 w-3" />}
+          icon={<HiXMark className="h-3 w-3" />}
           onMouseDown={(e) => {
             e.preventDefault();
             onChange("transparent");

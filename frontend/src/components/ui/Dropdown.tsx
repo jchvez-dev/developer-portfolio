@@ -1,4 +1,4 @@
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid";
+import { HiChevronDown, HiChevronUp } from "react-icons/hi2";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "./Button";
 import { Text } from "./Text";
@@ -43,7 +43,7 @@ export const Dropdown = <T extends string | number>({
         className="w-full justify-between px-3 py-1 text-sm"
       >
         <Text as="span" className="min-w-0 flex-1 truncate text-left">{value}</Text>
-        {open ? <ChevronUpIcon className="size-4 shrink-0" /> : <ChevronDownIcon className="size-4 shrink-0" />}
+        {open ? <HiChevronUp className="size-4 shrink-0" /> : <HiChevronDown className="size-4 shrink-0" />}
       </Button>
       {open && (
         <div className="absolute left-0 right-0 top-full z-10 mt-1 rounded border border-gray-300 bg-white shadow dark:border-gray-700 dark:bg-gray-800">
