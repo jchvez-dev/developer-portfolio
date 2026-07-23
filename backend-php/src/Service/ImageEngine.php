@@ -98,6 +98,19 @@ class ImageEngine
                 $layer->readImageBlob((string) $response->getBody());
             }
 
+            $w = (int) ($params['width'] ?? $layer->getImageWidth());
+            $h = (int) ($params['height'] ?? $layer->getImageHeight());
+            $opacity = (float) ($params['opacity'] ?? 1);
+
+            if ($w !== $layer->getImageWidth() || $h !== $layer->getImageHeight()) {
+                $layer->resizeImage($w, $h, \Imagick::FILTER_LANCZOS, 1);
+            }
+
+            if ($opacity < 1) {
+                $layer->setImageAlphaChannel(\Imagick::ALPHACHANNEL_SET);
+                $layer->evaluateImage(\Imagick::EVALUATE_MULTIPLY, $opacity, \Imagick::CHANNEL_ALPHA);
+            }
+
             $x = $params['x'] ?? 0;
             $y = $params['y'] ?? 0;
             $canvas->compositeImage($layer, \Imagick::COMPOSITE_OVER, $x, $y);
@@ -118,23 +131,50 @@ class ImageEngine
         $x = $params['x'] ?? 0;
         $y = $params['y'] ?? 0;
         $width = $params['width'] ?? null;
+        $height = $params['height'] ?? null;
         $bgColor = $params['backgroundColor'] ?? null;
+        $opacity = (float) ($params['opacity'] ?? 1);
+
+        $layerH = $height ?? $canvas->getImageHeight();
+        $layerW = $width ?? $canvas->getImageWidth();
+
+        $textLayer = new \Imagick();
+        $textLayer->newImage(
+            $canvas->getImageWidth(),
+            $canvas->getImageHeight(),
+            new \ImagickPixel('transparent'),
+        );
+        $textLayer->setImageFormat('png');
 
         if ($bgColor && $bgColor !== 'transparent') {
             $draw = new \ImagickDraw();
             $draw->setFillColor(new \ImagickPixel($bgColor));
-            $draw->rectangle(
-                $x,
-                $y,
-                $x + ($width ?? $canvas->getImageWidth()),
-                $y + ($params['height'] ?? $canvas->getImageHeight()),
-            );
-            $canvas->drawImage($draw);
+            $draw->rectangle($x, $y, $x + $layerW - 1, $y + $layerH - 1);
+            $textLayer->drawImage($draw);
         }
 
         $safeHtml = $this->sanitizer->sanitize($html);
         $tokens = $this->tokenizer->tokenize($safeHtml);
 
-        $this->textRenderer->render($canvas, $tokens, $x, $y, $width);
+        $this->textRenderer->render($textLayer, $tokens, $x, $y, $width);
+
+        if (!$bgColor || $bgColor === 'transparent') {
+            $textLayer->trimImage(0);
+            $textH = $textLayer->getImageHeight();
+            $page = $textLayer->getImagePage();
+            $centeredY = $y + (int)(($layerH - $textH) / 2);
+            if ($centeredY < 0) $centeredY = 0;
+        } else {
+            $page = ['x' => $x, 'y' => $y];
+            $centeredY = $y;
+        }
+
+        if ($opacity < 1) {
+            $textLayer->setImageAlphaChannel(\Imagick::ALPHACHANNEL_SET);
+            $textLayer->evaluateImage(\Imagick::EVALUATE_MULTIPLY, $opacity, \Imagick::CHANNEL_ALPHA);
+        }
+
+        $canvas->compositeImage($textLayer, \Imagick::COMPOSITE_OVER, $page['x'], $centeredY);
+        $textLayer->clear();
     }
 }

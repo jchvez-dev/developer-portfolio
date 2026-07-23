@@ -7,6 +7,7 @@ export interface TextLayerProperties {
   height: number;
   content: string;
   backgroundColor?: string;
+  opacity?: number;
 }
 
 export interface ImageLayerProperties {
@@ -15,6 +16,7 @@ export interface ImageLayerProperties {
   width: number;
   height: number;
   assetUrl: string;
+  opacity?: number;
 }
 
 export interface UploadResult {

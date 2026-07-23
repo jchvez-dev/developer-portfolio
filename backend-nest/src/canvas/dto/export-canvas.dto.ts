@@ -62,6 +62,12 @@ class LayerPropertiesDto {
   @IsOptional()
   @IsString()
   backgroundColor?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Max(1)
+  opacity?: number;
   }
 
 class LayerDto {

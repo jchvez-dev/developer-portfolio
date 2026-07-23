@@ -34,6 +34,7 @@ const toExportPayload = (layer: Layer): ExportLayer | undefined => {
           height: layer.height,
           content: layer.html,
           backgroundColor: layer.backgroundColor,
+          opacity: layer.opacity ?? 1,
         },
       };
     case "image":
@@ -46,6 +47,7 @@ const toExportPayload = (layer: Layer): ExportLayer | undefined => {
           width: layer.width,
           height: layer.height,
           assetUrl: layer.src,
+          opacity: layer.opacity ?? 1,
         },
       };
   }
@@ -82,7 +84,7 @@ export const CanvasPreview = () => {
           height: canvasHeight,
           backgroundColor,
         },
-        layers: layers.map(toExportPayload),
+        layers: [...layers].sort((a, b) => a.zIndex - b.zIndex).map(toExportPayload),
       });
       setResult(res.downloadUrl);
     } catch (e) {
