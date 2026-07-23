@@ -94,6 +94,26 @@ To start only the PHP render engine (requires storage to be running):
 docker compose up -d backend-php
 ```
 
+### Makefile Commands
+
+A `Makefile` is provided at the project root with shortcuts for common tasks:
+
+| Command | Action |
+|---|---|
+| `make up` | Start all services (`docker compose up -d`) |
+| `make down` | Stop all services |
+| `make build` | Build all images |
+| `make rebuild` | Stop, rebuild, and restart all services |
+| `make logs` | Tail logs from all services |
+| `make test` | Run tests across all 3 services (NestJS, PHP, frontend) |
+| `make test-nest` | Run NestJS tests |
+| `make test-php` | Run PHP tests |
+| `make test-front` | Run frontend tests |
+| `make lint` | Lint frontend and NestJS |
+| `make shell-nest` | Open a shell in the NestJS container |
+| `make shell-php` | Open a shell in the PHP container |
+| `make shell-front` | Open a shell in the frontend container |
+
 ### Service Endpoints
 
 Once running:
@@ -151,20 +171,13 @@ docker-compose.yml
 .env
 ```
 
-### Running Tests (backend-nest)
+### Running Tests
 
-From the host or inside the container:
-
-```bash
-cd backend-nest
-pnpm test
-pnpm test:e2e
-```
-
-### Running Tests (backend-php)
-
-Inside the running container:
+Run tests for all services at once, or for a specific service:
 
 ```bash
-docker compose exec backend-php vendor/bin/phpunit
+make test         # all services
+make test-nest    # NestJS API gateway
+make test-php     # PHP render engine
+make test-front   # React frontend
 ```

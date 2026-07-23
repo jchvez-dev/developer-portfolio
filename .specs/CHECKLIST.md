@@ -161,26 +161,28 @@
 
 ## Improvements
 
-- [ ] Create Makefile with common commands (up, down, build, test, lint)
+- [x] Create Makefile with common commands (up, down, build, test, lint)
 - [x] Add `typecheck` script to frontend (`tsc --noEmit`)
-- [ ] Review `deleteOutDir` in nest-cli.json (should be `true` for clean builds)
-- [ ] Verify GROQ_MODEL in `.env` matches the actual available model
+- [x] Review `deleteOutDir` in nest-cli.json (should be `true` for clean builds)
+- [x] Verify GROQ_MODEL in `.env` matches the actual available model
 - [x] SMTP env vars (SMTP_HOST, SMTP_PORT, CONTACT_EMAIL) documented in .env.example
-- [ ] Dropdown: add `size` prop to match toolbar buttons
 - [x] Badge: add `variant` and `className` props
 - [x] Card: add `variant` prop (default, elevated, bordered)
-- [ ] Box: create generic wrapper component
 - [x] Replace raw `html` in features with components/ui (Section now uses Heading/Text)
 - [ ] 404 page (NotFound) for non-existent routes
-- [ ] Barrel in `components/` (in addition to `components/ui/`)
 - [ ] Iconography: tech logos in badges, semantic icons in cards, arrow in CTA
 - [ ] Micro-interactions: hover elevation on cards, scale on badges/buttons, focus transition on inputs
 - [ ] Live ping: "Available for hire" indicator with animation in Hero
+
+## Backlog / Future Refactor
+
+- [ ] Dropdown: add `size` prop to match toolbar buttons
+- [ ] Box: create generic wrapper component
 - [ ] Replace Imagick with browserless/chrome + Spatie Browsershot for 1:1 PNG export with CKEditor
 
 ---
 
 ## Pre-existing Test Failures (unrelated)
 
-- [ ] [BUG PHP] `ImageProcessorTest::testProcessReturnsObjectKey` — WriteBlob Failed writing fixture PNG
+- [x] [BUG PHP] `ImageProcessorTest::testProcessReturnsObjectKey` — WriteBlob Failed writing fixture PNG
 - [x] [BUG Front] `Text.test.tsx` muted test — expects `text-gray-500` but component uses `text-gray-400` (fixed assertion)
