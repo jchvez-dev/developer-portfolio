@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
+import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { Heading } from '../../components/ui/Heading';
 import { Text } from '../../components/ui/Text';
@@ -31,6 +32,14 @@ export const Hero = ({ profile, loading }: HeroProps) => {
       <Text muted className="mt-2 text-xl">
         {profile?.title ?? ''}
       </Text>
+
+      <Badge variant="success" className="mt-4 inline-flex items-center gap-2">
+        <span className="relative flex h-2.5 w-2.5">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
+        </span>
+        Available for new opportunities
+      </Badge>
 
       <div className="mt-10 flex gap-4">
         <Button onClick={() => navigate('/studio')} icon={<HiRocketLaunch className="h-5 w-5" />} iconPosition="right">

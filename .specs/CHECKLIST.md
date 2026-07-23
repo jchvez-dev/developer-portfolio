@@ -1,7 +1,7 @@
 # Project Checklist
 
 > Current implementation status of the Developer Portfolio project.
-> Last updated: 2026-07-21 (custom font loading with Bold/Italic/BoldItalic TTF variants)
+> Last updated: 2026-07-22 (v2 backlog items added)
 
 ---
 
@@ -51,6 +51,7 @@
 ### Chatbot (FR-3.1, FR-3.2, FR-3.3)
 - [x] `POST /api/v1/chat` - SSE streaming from Groq LLM
 - [x] `GET /api/v1/chat/:conversationId` - load conversation history from MinIO
+- [x] `DELETE /api/v1/chat/:conversationId` - delete conversation
 - [x] CV loaded from MinIO as system prompt
 - [x] Conversation persistence in MinIO (`chat-history/conversations/`)
 - [x] Contextual restriction: only answers based on CV
@@ -172,13 +173,25 @@
 - [x] 404 page (NotFound) for non-existent routes
 - [x] Iconography: tech logos in badges, semantic icons in cards, arrow in CTA
 - [x] Micro-interactions: hover elevation on badges (translate-y, border, bg, group opacity filter)
-- [ ] Live ping: "Available for hire" indicator with animation in Hero
+- [x] Live ping: "Available for hire" indicator with animation in Hero
 
-## Backlog / Future Refactor
+## Backlog / Future Refactor (v2)
 
 - [ ] Dropdown: add `size` prop to match toolbar buttons
 - [ ] Box: create generic wrapper component
 - [ ] Replace Imagick with browserless/chrome + Spatie Browsershot for 1:1 PNG export with CKEditor
+- [ ] FR-1.1: Replace tech-badge list with comprehensive case studies for each project
+- [ ] FR-2.4 (DoD-2): Pixel-perfect PNG export identical to UI viewport (blocked by CKEditor vs Imagick mismatch)
+- [ ] FADD-5.2: Add HTML sanitization at NestJS gateway level (defense in depth, currently only in PHP)
+- [ ] FADD-5.3: Add CSS aspect-ratio for responsive canvas scaling
+- [ ] API Spec-4: Standardize error response format `{ statusCode, timestamp, path, message }`
+- [ ] Data Model-3.1: Integration tests IT-1 (perimeter connectivity) and IT-2 (storage write)
+- [ ] Data Model-3.2: Functional tests FT-1 (XSS blocking) and FT-2 (empty canvas fallback)
+- [ ] Data Model-3.3: Non-functional test NFT-1 (50 concurrent renders + AI response benchmark)
+- [ ] Data Model-3.4: Upload test suite UT-1 through UT-5
+- [ ] Data Model-3.5: Chat test suite CT-1 through CT-5
+- [ ] Infra Spec: Pin MinIO image version in docker-compose.yml
+- [ ] Infra Spec: Document Mailpit web UI URL (http://localhost:8025) in .env.example
 
 ---
 
