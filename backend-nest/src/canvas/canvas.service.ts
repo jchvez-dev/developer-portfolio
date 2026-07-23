@@ -81,6 +81,7 @@ export class CanvasService {
               y: layer.properties.y,
               width: layer.properties.width,
               height: layer.properties.height,
+              opacity: layer.properties.opacity ?? 1,
             },
           };
         }),

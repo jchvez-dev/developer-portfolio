@@ -112,6 +112,9 @@
 - [x] [BUG] Clamp drag bounds within canvas area
 - [x] [BUG] Sync default font size between editor and export
 - [x] [BUG] Export layer height does not account for multi-line text (content clipped when text wraps)
+- [x] [BUG] Image size not respected in PHP export (drawImage ignored width/height)
+- [x] [BUG] Opacity not passed through export pipeline (frontend types, NestJS DTO, PHP renderer)
+- [x] [BUG] zIndex ordering not respected in export (layers sent unsorted to PHP)
 - [x] Layer properties panel (position, size, font, color)
 - [x] Canvas background color picker
 - [x] Layer background color picker
