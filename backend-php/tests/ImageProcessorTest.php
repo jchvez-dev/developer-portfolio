@@ -22,21 +22,8 @@ class ImageProcessorTest extends TestCase
         $processor = new ImageProcessor($s3);
         $inputPath = __DIR__ . '/fixtures/test-input.png';
 
-        if (!is_dir(dirname($inputPath))) {
-            mkdir(dirname($inputPath), 0777, true);
-        }
-
-        $img = new \Imagick();
-        $img->newImage(100, 100, new \ImagickPixel('#ff0000'));
-        $img->setImageFormat('png');
-        $img->writeImage($inputPath);
-        $img->clear();
-
         $result = $processor->process($inputPath, 'sess_test/abc123.webp');
 
         $this->assertSame('sess_test/abc123.webp', $result);
-
-        unlink($inputPath);
-        rmdir(dirname($inputPath));
     }
 }
