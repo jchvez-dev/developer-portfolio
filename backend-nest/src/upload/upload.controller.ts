@@ -12,8 +12,8 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import type { Request } from 'express';
-import { Readable } from 'stream';
 import { UploadService } from './upload.service';
+import type { UploadedFile as UploadedFileInfo } from './interfaces';
 
 const IMAGES_PREFIX = '/api/v1/canvas/images/';
 
@@ -25,7 +25,7 @@ export class UploadController {
   @UseInterceptors(FileInterceptor('image'))
   @HttpCode(HttpStatus.CREATED)
   async upload(
-    @UploadedFile() file: any,
+    @UploadedFile() file: UploadedFileInfo,
     @Body('sessionId') sessionId?: string,
   ) {
     const resolvedSessionId = sessionId ?? `sess_${crypto.randomUUID()}`;
@@ -37,6 +37,6 @@ export class UploadController {
   async getImage(@Req() req: Request) {
     const path = req.path.slice(IMAGES_PREFIX.length);
     const { body, contentType } = await this.uploadService.getImage(path);
-    return new StreamableFile(body as Readable, { type: contentType });
+    return new StreamableFile(body, { type: contentType });
   }
 }

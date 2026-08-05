@@ -7,6 +7,7 @@ import { UploadModule } from './upload/upload.module';
 import { ChatModule } from './chat/chat.module';
 import { ContactModule } from './contact/contact.module';
 import { ProfileModule } from './profile/profile.module';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ProfileModule } from './profile/profile.module';
       isGlobal: true,
       load: [configuration],
     }),
+    StorageModule,
     HealthModule,
     CanvasModule,
     UploadModule,

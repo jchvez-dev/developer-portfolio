@@ -5,18 +5,21 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { of, throwError } from 'rxjs';
 import { UploadService } from './upload.service';
 import { UploadedFile } from './interfaces';
+import { S3_CLIENT } from '../storage/storage.module';
 
 describe('UploadService', () => {
   let service: UploadService;
 
   const mockConfig: Record<string, string> = {
     phpBackendUrl: 'http://backend-php:8000',
-    minioPublicUrl: 'http://localhost:9000',
+    bucketPublicUrl: 'http://localhost:9000',
   };
 
   const mockHttpService = {
     post: jest.fn(),
   };
+
+  const mockSend = jest.fn();
 
   const validFile: UploadedFile = {
     buffer: Buffer.from('fake-image-content'),
@@ -27,6 +30,7 @@ describe('UploadService', () => {
 
   beforeEach(async () => {
     jest.clearAllMocks();
+    mockSend.mockReset();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -38,6 +42,7 @@ describe('UploadService', () => {
           },
         },
         { provide: HttpService, useValue: mockHttpService },
+        { provide: S3_CLIENT, useValue: { send: mockSend } },
       ],
     }).compile();
 
@@ -139,8 +144,41 @@ describe('UploadService', () => {
 
     it('rejects null file', async () => {
       await expect(
-        service.processUpload(null as any, 'sess_test'),
+        service.processUpload(null as unknown as UploadedFile, 'sess_test'),
       ).rejects.toThrow(HttpException);
+    });
+  });
+
+  describe('getImage', () => {
+    it('returns the stream body and content type for a bucket/key path', async () => {
+      const body = { pipe: jest.fn() };
+      mockSend.mockResolvedValue({ Body: body, ContentType: 'image/png' });
+
+      const result = await service.getImage('user-uploads/sess/abc.png');
+
+      expect(result.contentType).toBe('image/png');
+      expect(result.body).toBe(body);
+      expect(mockSend).toHaveBeenCalledWith(
+        expect.objectContaining({
+          input: { Bucket: 'user-uploads', Key: 'sess/abc.png' },
+        }),
+      );
+    });
+
+    it('throws a 404 HttpException when the S3 read fails', async () => {
+      mockSend.mockRejectedValue(new Error('boom'));
+
+      await expect(
+        service.getImage('user-uploads/sess/abc.png'),
+      ).rejects.toThrow(HttpException);
+      await expect(
+        service.getImage('user-uploads/sess/abc.png'),
+      ).rejects.toMatchObject({
+        response: {
+          statusCode: HttpStatus.NOT_FOUND,
+          message: 'Image not found',
+        },
+      });
     });
   });
 });

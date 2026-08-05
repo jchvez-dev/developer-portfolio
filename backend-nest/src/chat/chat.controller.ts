@@ -71,8 +71,11 @@ export class ChatController {
           .saveConversation(dto.conversationId, dto.message, fullResponse)
           .catch((err) => console.error('Failed to save conversation:', err));
       }
-    } catch (error: any) {
-      const errorMessage = error.message ?? 'Error processing chat request.';
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Error processing chat request.';
       res.write(
         `data: ${JSON.stringify({ token: '', done: true, error: errorMessage })}\n\n`,
       );

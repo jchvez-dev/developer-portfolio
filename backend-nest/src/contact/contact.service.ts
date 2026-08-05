@@ -3,6 +3,7 @@ import {
   HttpStatus,
   Injectable,
   OnModuleInit,
+  Inject,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
@@ -10,6 +11,7 @@ import * as nodemailer from 'nodemailer';
 import { randomUUID } from 'crypto';
 import { ContactDto } from './dto/contact.dto';
 import { ContactMessage } from './interfaces';
+import { S3_CLIENT } from '../storage/storage.module';
 
 interface RateLimitEntry {
   count: number;
@@ -18,36 +20,19 @@ interface RateLimitEntry {
 
 @Injectable()
 export class ContactService implements OnModuleInit {
-  private s3: S3Client;
   private transporter: nodemailer.Transporter;
   private contactEmail: string;
   private readonly rateLimitMap = new Map<string, RateLimitEntry>();
   private readonly RATE_LIMIT_MAX = 5;
   private readonly RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    @Inject(S3_CLIENT) private readonly s3: S3Client,
+  ) {}
 
   onModuleInit() {
     this.contactEmail = this.configService.get<string>('smtp.contactEmail')!;
-
-    const minioConfig = this.configService.get<{
-      endpoint: string;
-      port: number;
-      accessKey: string;
-      secretKey: string;
-      useSSL: boolean;
-      region: string;
-    }>('minio')!;
-
-    this.s3 = new S3Client({
-      region: minioConfig.region,
-      endpoint: `http://${minioConfig.endpoint}:${minioConfig.port}`,
-      forcePathStyle: true,
-      credentials: {
-        accessKeyId: minioConfig.accessKey,
-        secretAccessKey: minioConfig.secretKey,
-      },
-    });
 
     const smtpConfig = this.configService.get<{
       host: string;

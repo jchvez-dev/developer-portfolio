@@ -5,15 +5,21 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { of, throwError } from 'rxjs';
 import { CanvasService } from './canvas.service';
 import { ExportCanvasDto } from './dto/export-canvas.dto';
+import { S3_CLIENT } from '../storage/storage.module';
+
+type RenderPayload = {
+  definition: {
+    dimensions: { w: number; h: number };
+    elements: Array<{ action: string; params: Record<string, unknown> }>;
+  };
+};
 
 describe('CanvasService', () => {
   let service: CanvasService;
-  let httpService: HttpService;
-  let configService: ConfigService;
 
-  const mockConfig = {
+  const mockConfig: Record<string, string> = {
     phpBackendUrl: 'http://backend-php:8000',
-    minioPublicUrl: 'http://localhost:9000',
+    bucketPublicUrl: 'http://localhost:9000',
   };
 
   const mockHttpService = {
@@ -33,12 +39,11 @@ describe('CanvasService', () => {
           },
         },
         { provide: HttpService, useValue: mockHttpService },
+        { provide: S3_CLIENT, useValue: { send: jest.fn() } },
       ],
     }).compile();
 
     service = module.get<CanvasService>(CanvasService);
-    httpService = module.get<HttpService>(HttpService);
-    configService = module.get<ConfigService>(ConfigService);
   });
 
   describe('export', () => {
@@ -114,7 +119,10 @@ describe('CanvasService', () => {
 
       await service.export(validDto);
 
-      const callArg = mockHttpService.post.mock.calls[0];
+      const callArg = mockHttpService.post.mock.calls[0] as [
+        string,
+        RenderPayload,
+      ];
       expect(callArg[0]).toBe('http://backend-php:8000/internal/render');
       expect(callArg[1].definition.dimensions).toEqual({ w: 1200, h: 630 });
       expect(callArg[1].definition.elements[0]).toMatchObject({
@@ -151,7 +159,10 @@ describe('CanvasService', () => {
 
       await service.export(dtoWithImage);
 
-      const callArg = mockHttpService.post.mock.calls[0];
+      const callArg = mockHttpService.post.mock.calls[0] as [
+        string,
+        RenderPayload,
+      ];
       expect(callArg[1].definition.elements[0]).toMatchObject({
         action: 'draw_image',
         params: { src: 'system-assets/background.png' },

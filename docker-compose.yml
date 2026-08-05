@@ -11,16 +11,16 @@ services:
     image: minio/minio:RELEASE.2024-01-28T22-35-53Z
     container_name: portafolio-storage
     ports:
-      - "${MINIO_API_PORT}:9000"     # API S3 (PC:Contenedor)
-      - "${MINIO_CONSOLE_PORT}:9001" # Panel web (PC:Contenedor)
+      - "${BUCKET_API_PORT:-9000}:9000"     # API S3 (PC:Contenedor)
+      - "${BUCKET_CONSOLE_PORT:-9001}:9001" # Panel web (PC:Contenedor)
     volumes:
       - minio-data:/data
     networks:
       - portafolio-network
     command: server /data --console-address ":9001"
     environment:
-      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
-      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - MINIO_ROOT_USER=${BUCKET_ACCESS_KEY_ID}
+      - MINIO_ROOT_PASSWORD=${BUCKET_SECRET_ACCESS_KEY}
 
   storage-init:
     image: minio/mc:latest
@@ -33,7 +33,7 @@ services:
       - ./backend-php/fonts:/fonts
     entrypoint: |
       /bin/sh -c "
-      until /usr/bin/mc alias set local_cluster http://storage:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD}; do
+      until /usr/bin/mc alias set local_cluster http://storage:9000 ${BUCKET_ACCESS_KEY_ID} ${BUCKET_SECRET_ACCESS_KEY}; do
         echo 'Waiting for MinIO server...';
         sleep 1;
       done;
@@ -81,16 +81,15 @@ services:
       - portafolio-network
     environment:
       - NODE_ENV=${NODE_ENV}
-      - MINIO_PUBLIC_URL=${MINIO_PUBLIC_URL}
+      - BUCKET_PUBLIC_URL=${BUCKET_PUBLIC_URL}
       - NEST_PORT=4000
       - FRONTEND_PORT=${FRONTEND_PORT}
-      - MINIO_API_PORT=${MINIO_API_PORT}
-      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
-      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
-      - MINIO_USE_SSL=${MINIO_USE_SSL}
+      - BUCKET_ENDPOINT=${BUCKET_ENDPOINT:-http://storage:9000}
+      - BUCKET_ACCESS_KEY_ID=${BUCKET_ACCESS_KEY_ID}
+      - BUCKET_SECRET_ACCESS_KEY=${BUCKET_SECRET_ACCESS_KEY}
+      - BUCKET_REGION=${BUCKET_REGION:-us-east-1}
       - PHP_BACKEND_URL=${PHP_BACKEND_URL}
       - CORS_ORIGINS=${CORS_ORIGINS}
-      - MINIO_ENDPOINT=storage
       - GROQ_API_KEY=${GROQ_API_KEY}
       - GROQ_MODEL=${GROQ_MODEL}
       - SMTP_HOST=${SMTP_HOST:-mailpit}
@@ -123,8 +122,9 @@ services:
     networks:
       - portafolio-network
     environment:
-      - MINIO_ENDPOINT=http://storage:9000
-      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
-      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - BUCKET_ENDPOINT=${BUCKET_ENDPOINT:-http://storage:9000}
+      - BUCKET_ACCESS_KEY_ID=${BUCKET_ACCESS_KEY_ID}
+      - BUCKET_SECRET_ACCESS_KEY=${BUCKET_SECRET_ACCESS_KEY}
+      - BUCKET_REGION=${BUCKET_REGION:-us-east-1}
     depends_on:
       - storage

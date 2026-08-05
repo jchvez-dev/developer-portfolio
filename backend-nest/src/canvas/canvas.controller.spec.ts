@@ -4,7 +4,6 @@ import { CanvasService } from './canvas.service';
 
 describe('CanvasController', () => {
   let controller: CanvasController;
-  let service: CanvasService;
 
   const mockCanvasService = {
     export: jest.fn(),
@@ -17,7 +16,6 @@ describe('CanvasController', () => {
     }).compile();
 
     controller = module.get<CanvasController>(CanvasController);
-    service = module.get<CanvasService>(CanvasService);
   });
 
   it('calls service.export and returns the result', async () => {
@@ -43,6 +41,6 @@ describe('CanvasController', () => {
     const result = await controller.export(dto);
 
     expect(result).toEqual(expected);
-    expect(service.export).toHaveBeenCalledWith(dto);
+    expect(mockCanvasService.export).toHaveBeenCalledWith(dto);
   });
 });

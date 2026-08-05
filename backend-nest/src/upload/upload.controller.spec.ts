@@ -4,7 +4,6 @@ import { UploadService } from './upload.service';
 
 describe('UploadController', () => {
   let controller: UploadController;
-  let service: UploadService;
 
   const mockUploadService = {
     processUpload: jest.fn(),
@@ -17,7 +16,6 @@ describe('UploadController', () => {
     }).compile();
 
     controller = module.get<UploadController>(UploadController);
-    service = module.get<UploadService>(UploadService);
   });
 
   it('calls service.processUpload and returns the result', async () => {
@@ -40,7 +38,10 @@ describe('UploadController', () => {
     const result = await controller.upload(file, sessionId);
 
     expect(result).toEqual(expected);
-    expect(service.processUpload).toHaveBeenCalledWith(file, sessionId);
+    expect(mockUploadService.processUpload).toHaveBeenCalledWith(
+      file,
+      sessionId,
+    );
   });
 
   it('generates sessionId when not provided', async () => {
@@ -59,7 +60,7 @@ describe('UploadController', () => {
 
     await controller.upload(file, undefined);
 
-    expect(service.processUpload).toHaveBeenCalledWith(
+    expect(mockUploadService.processUpload).toHaveBeenCalledWith(
       file,
       expect.stringMatching(/^sess_[a-f0-9-]+$/),
     );
