@@ -1,32 +1,21 @@
-import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProfileService } from './profile.service';
+import { S3_CLIENT } from '../storage/storage.module';
 
 describe('ProfileService', () => {
   let service: ProfileService;
 
-  const mockConfig = {
-    minio: {
-      endpoint: 'storage',
-      port: 9000,
-      accessKey: 'test',
-      secretKey: 'test',
-      useSSL: false,
-      region: 'us-east-1',
-    },
-  };
+  const mockSend = jest.fn();
 
   beforeEach(async () => {
+    mockSend.mockReset();
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ProfileService,
         {
-          provide: ConfigService,
-          useValue: {
-            get: jest.fn(
-              (key: string) => mockConfig[key as keyof typeof mockConfig],
-            ),
-          },
+          provide: S3_CLIENT,
+          useValue: { send: mockSend },
         },
       ],
     }).compile();
@@ -36,5 +25,26 @@ describe('ProfileService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  describe('getProfile', () => {
+    it('fetches profile.json from the system-assets bucket', async () => {
+      mockSend.mockResolvedValue({
+        Body: {
+          transformToString: jest
+            .fn()
+            .mockResolvedValue(JSON.stringify({ name: 'Juan Chavez' })),
+        },
+      });
+
+      const profile = await service.getProfile();
+
+      expect(profile).toEqual({ name: 'Juan Chavez' });
+      expect(mockSend).toHaveBeenCalledWith(
+        expect.objectContaining({
+          input: { Bucket: 'system-assets', Key: 'profile.json' },
+        }),
+      );
+    });
   });
 });

@@ -44,15 +44,14 @@ The infrastructure uses Docker to orchestrate all services. The storage cluster,
 |---|---|---|
 | `NEST_PORT` | `4000` | Host port mapped to the NestJS API gateway |
 | `FRONTEND_PORT` | `3000` | Host port mapped to the React frontend (Vite dev server) |
-| `MINIO_API_PORT` | `9000` | Host port for the MinIO S3 API |
-| `MINIO_CONSOLE_PORT` | `9001` | Host port for the MinIO web console |
-| `MINIO_ROOT_USER` | — | MinIO admin username (shared by storage and NestJS) |
-| `MINIO_ROOT_PASSWORD` | — | MinIO admin password (shared by storage and NestJS) |
+| `BUCKET_API_PORT` | `9000` | Host port for the local MinIO S3 API (docker-compose only) |
+| `BUCKET_CONSOLE_PORT` | `9001` | Host port for the local MinIO web console (docker-compose only) |
+| `BUCKET_ENDPOINT` | `http://storage:9000` | Full S3 endpoint URL (MinIO local or Supabase `.../storage/v1/s3`) |
+| `BUCKET_PUBLIC_URL` | `http://localhost:9000` | Public base URL for asset downloads (Supabase: `https://<ref>.supabase.co/storage/v1/object/public`) |
+| `BUCKET_ACCESS_KEY_ID` | — | S3 access key ID (MinIO admin user or Supabase S3 key) |
+| `BUCKET_SECRET_ACCESS_KEY` | — | S3 secret access key (MinIO admin password or Supabase S3 secret) |
+| `BUCKET_REGION` | `us-east-1` | S3 region for SDK connections (Supabase: your project region) |
 | `PHP_BACKEND_URL` | `http://backend-php:8000` | Internal URL for the PHP render engine |
-| `MINIO_ENDPOINT` | `storage` | MinIO hostname (`storage` in Docker, `localhost` on host) |
-| `MINIO_PORT` | `9000` | MinIO S3 port (internal container port) |
-| `MINIO_USE_SSL` | `false` | Enable TLS for MinIO SDK connections |
-| `MINIO_PUBLIC_URL` | `http://localhost:9000` | Public URL for MinIO downloads (change in production) |
 | `CORS_ORIGINS` | `http://localhost:3000` | Comma-separated allowed browser origins |
 | `GROQ_API_KEY` | — | API key for Groq LLM provider (AI Career Assistant) |
 | `GROQ_MODEL` | `llama-3.1-8b-instant` | Groq model for chat completions |
@@ -61,6 +60,22 @@ The infrastructure uses Docker to orchestrate all services. The storage cluster,
 | `SMTP_USER` | — | SMTP username (leave empty for Mailpit) |
 | `SMTP_PASS` | — | SMTP password (leave empty for Mailpit) |
 | `CONTACT_EMAIL` | `juan@example.com` | Email address to receive contact form submissions |
+
+### Using Supabase S3 Instead of Local MinIO
+
+The codebase is provider-agnostic: it only needs a full endpoint URL and credentials. To switch from local MinIO to Supabase S3, update the storage variables in `.env` and provision the buckets there:
+
+```dotenv
+BUCKET_ENDPOINT=https://<project-ref>.storage.supabase.co/storage/v1/s3
+BUCKET_PUBLIC_URL=https://<project-ref>.supabase.co/storage/v1/object/public
+BUCKET_ACCESS_KEY_ID=your-supabase-access-key
+BUCKET_SECRET_ACCESS_KEY=your-supabase-secret-key
+BUCKET_REGION=ca-central-1
+```
+
+Path-style requests are always used (required by both MinIO and Supabase).
+
+The following buckets must exist in Supabase with the same names: `system-assets`, `user-uploads`, `production-exports`, `chat-history`, `contact-messages`. The font files in `backend-php/fonts/` must be uploaded to `system-assets/fonts/` (the `storage-init` container only provisions local MinIO). Make `production-exports` (and any bucket served via `BUCKET_PUBLIC_URL`) public.
 
 ### Launching Services
 
@@ -129,8 +144,8 @@ Once running:
 | **AI Chat** | `http://localhost:4000/api/v1/chat` | `POST` — Chat with Groq LLM (SSE token streaming) |
 | **AI Chat History** | `http://localhost:4000/api/v1/chat/:id` | `GET` — Retrieve conversation history |
 | **Contact Form** | `http://localhost:4000/api/v1/contact` | `POST` — Submit contact form with anti-spam (honeypot + rate limiting) |
-| **MinIO S3 API** | `http://localhost:9000` | Used by services to upload/download assets |
-| **MinIO Console** | `http://localhost:9001` | Web UI; log in with `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD` |
+| **MinIO S3 API** | `http://localhost:9000` | Used by services to upload/download assets (local dev only) |
+| **MinIO Console** | `http://localhost:9001` | Web UI; log in with `BUCKET_ACCESS_KEY_ID` / `BUCKET_SECRET_ACCESS_KEY` (local dev only) |
 | **PHP Render** | `http://backend-php:8000` (internal network only) | `POST /internal/render`, no host port exposed |
 | **Mailpit UI** | `http://localhost:8025` | Web UI for inspecting captured emails in dev |
 

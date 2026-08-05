@@ -26,8 +26,10 @@ describe('AppController (e2e)', () => {
       .get('/api/v1/health')
       .expect(200)
       .expect((response) => {
-        expect(response.body.status).toBe('ok');
-        expect(response.body.service).toBe('portafolio-nest');
+        const body = (response as { body: { status: string; service: string } })
+          .body;
+        expect(body.status).toBe('ok');
+        expect(body.service).toBe('portafolio-nest');
       });
   });
 });

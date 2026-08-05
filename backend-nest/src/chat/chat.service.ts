@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 import {
@@ -9,15 +9,18 @@ import {
 } from '@aws-sdk/client-s3';
 import { ChatDto } from './dto/chat.dto';
 import { ChatMessage, Conversation } from './interfaces';
+import { S3_CLIENT } from '../storage/storage.module';
 
 @Injectable()
 export class ChatService implements OnModuleInit {
   private systemPrompt = '';
   private groq: OpenAI;
-  private s3: S3Client;
   private model: string;
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    @Inject(S3_CLIENT) private readonly s3: S3Client,
+  ) {}
 
   async onModuleInit() {
     this.model = this.configService.get<string>('groqModel')!;
@@ -25,25 +28,6 @@ export class ChatService implements OnModuleInit {
     this.groq = new OpenAI({
       baseURL: 'https://api.groq.com/openai/v1',
       apiKey: this.configService.get<string>('groqApiKey'),
-    });
-
-    const minioConfig = this.configService.get<{
-      endpoint: string;
-      port: number;
-      accessKey: string;
-      secretKey: string;
-      useSSL: boolean;
-      region: string;
-    }>('minio')!;
-
-    this.s3 = new S3Client({
-      region: minioConfig.region,
-      endpoint: `http://${minioConfig.endpoint}:${minioConfig.port}`,
-      forcePathStyle: true,
-      credentials: {
-        accessKeyId: minioConfig.accessKey,
-        secretAccessKey: minioConfig.secretKey,
-      },
     });
 
     await this.loadSystemPrompt();
@@ -155,8 +139,8 @@ ${cvContent}`;
   async getConversation(conversationId: string): Promise<Conversation | null> {
     try {
       return await this.loadConversation(conversationId);
-    } catch (error: any) {
-      if (error.name === 'NoSuchKey') {
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === 'NoSuchKey') {
         return null;
       }
       throw error;
@@ -171,8 +155,8 @@ ${cvContent}`;
 
     try {
       await this.s3.send(command);
-    } catch (error: any) {
-      if (error.name === 'NoSuchKey') {
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === 'NoSuchKey') {
         return;
       }
       throw error;

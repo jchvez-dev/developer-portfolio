@@ -20,25 +20,31 @@ export class CanvasService {
     let phpResponse: { objectKey: string };
     try {
       const { data } = await firstValueFrom(
-        this.httpService.post(`${phpUrl}/internal/render`, phpPayload),
+        this.httpService.post<{ objectKey: string }>(
+          `${phpUrl}/internal/render`,
+          phpPayload,
+        ),
       );
       phpResponse = data;
-    } catch (error: any) {
-      const phpMessage = error.response?.data?.message;
+    } catch (error: unknown) {
+      const err = error as {
+        response?: { status?: number; data?: { message?: string } };
+      };
+      const status = err.response?.status ?? HttpStatus.SERVICE_UNAVAILABLE;
       throw new HttpException(
         {
-          statusCode: error.response?.status ?? HttpStatus.SERVICE_UNAVAILABLE,
+          statusCode: status,
           timestamp: new Date().toISOString(),
           path: '/api/v1/canvas/export',
           message:
-            phpMessage ??
+            err.response?.data?.message ??
             'Downstream processing failure on image microservice container node.',
         },
-        error.response?.status ?? HttpStatus.SERVICE_UNAVAILABLE,
+        status,
       );
     }
 
-    const publicUrl = this.configService.get<string>('minioPublicUrl')!;
+    const publicUrl = this.configService.get<string>('bucketPublicUrl')!;
     const downloadUrl = `${publicUrl}/production-exports/${phpResponse.objectKey}`;
 
     return {

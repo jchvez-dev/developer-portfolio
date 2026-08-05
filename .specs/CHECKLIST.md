@@ -1,7 +1,7 @@
 # Project Checklist
 
 > Current implementation status of the Developer Portfolio project.
-> Last updated: 2026-07-22 (v2 backlog items added)
+> Last updated: 2026-08-05
 
 ---
 
@@ -20,6 +20,7 @@
 - [x] PHP container has no public ports (NFR-4.4)
 - [x] Anonymous volume bindings for node_modules and vendor
 - [x] `.env.example` with documented environment variables
+- [x] Provider-agnostic storage via `BUCKET_*` env vars (MinIO locally, Supabase S3 in prod), path-style endpoint, shared `S3_CLIENT` provider and PHP `S3ClientFactory`
 - [x] `.gitignore` global and per-service
 - [x] Mailpit service (SMTP) for dev email notifications
 
@@ -146,6 +147,9 @@
 - [x] `upload.controller.spec.ts`, `upload.service.spec.ts`
 - [x] `chat.controller.spec.ts`, `chat.service.spec.ts`
 - [x] `contact.controller.spec.ts`, `contact.service.spec.ts`
+- [x] `config/configuration.spec.ts` (BUCKET env mapping)
+- [x] `storage/storage.module.spec.ts` (S3Client factory, path-style)
+- [x] Service specs assert S3 bucket/key operations (profile `system-assets`, chat/contact persistence, upload `getImage`)
 - [x] `app.e2e-spec.ts`
 
 ### PHP
@@ -153,6 +157,7 @@
 - [x] `UploadControllerTest.php`
 - [x] `ImageEngineTest.php`
 - [x] `ImageProcessorTest.php`
+- [x] `S3ClientFactoryTest.php` (env-driven S3 client, path-style)
 
 ### Frontend
 - [x] Testing setup (Vitest + Testing Library)

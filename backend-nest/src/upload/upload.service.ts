@@ -1,15 +1,11 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  OnModuleInit,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { firstValueFrom } from 'rxjs';
 import { Readable } from 'stream';
 import { UploadedFile, UploadResult } from './interfaces';
+import { S3_CLIENT } from '../storage/storage.module';
 
 const ALLOWED_MIME_TYPES = [
   'image/jpeg',
@@ -21,34 +17,12 @@ const ALLOWED_MIME_TYPES = [
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 @Injectable()
-export class UploadService implements OnModuleInit {
-  private s3: S3Client;
-
+export class UploadService {
   constructor(
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
+    @Inject(S3_CLIENT) private readonly s3: S3Client,
   ) {}
-
-  onModuleInit() {
-    const minioConfig = this.configService.get<{
-      endpoint: string;
-      port: number;
-      accessKey: string;
-      secretKey: string;
-      useSSL: boolean;
-      region: string;
-    }>('minio')!;
-
-    this.s3 = new S3Client({
-      region: minioConfig.region,
-      endpoint: `http://${minioConfig.endpoint}:${minioConfig.port}`,
-      forcePathStyle: true,
-      credentials: {
-        accessKeyId: minioConfig.accessKey,
-        secretAccessKey: minioConfig.secretKey,
-      },
-    });
-  }
 
   async processUpload(
     file: UploadedFile,
@@ -71,22 +45,30 @@ export class UploadService implements OnModuleInit {
     let phpResponse: { objectKey: string };
     try {
       const { data } = await firstValueFrom(
-        this.httpService.post(`${phpUrl}/internal/process-upload`, formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        }),
+        this.httpService.post<{ objectKey: string }>(
+          `${phpUrl}/internal/process-upload`,
+          formData,
+          {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          },
+        ),
       );
       phpResponse = data;
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const err = error as {
+        response?: { status?: number; data?: { message?: string } };
+      };
+      const status = err.response?.status ?? HttpStatus.SERVICE_UNAVAILABLE;
       throw new HttpException(
         {
-          statusCode: error.response?.status ?? HttpStatus.SERVICE_UNAVAILABLE,
+          statusCode: status,
           timestamp: new Date().toISOString(),
           path: '/api/v1/canvas/upload',
           message:
-            error.response?.data?.message ??
+            err.response?.data?.message ??
             'Downstream processing failure on image microservice container node.',
         },
-        error.response?.status ?? HttpStatus.SERVICE_UNAVAILABLE,
+        status,
       );
     }
 
@@ -116,7 +98,7 @@ export class UploadService implements OnModuleInit {
         body: response.Body as Readable,
         contentType: response.ContentType ?? 'image/webp',
       };
-    } catch (error: any) {
+    } catch {
       throw new HttpException(
         {
           statusCode: HttpStatus.NOT_FOUND,

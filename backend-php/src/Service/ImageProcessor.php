@@ -12,18 +12,7 @@ class ImageProcessor
 
     public function __construct(?S3Client $s3 = null)
     {
-        $endpoint = rtrim(getenv('MINIO_ENDPOINT') ?: 'http://storage:9000', '/');
-
-        $this->s3 = $s3 ?? new S3Client([
-            'version' => 'latest',
-            'region' => 'us-east-1',
-            'endpoint' => $endpoint,
-            'use_path_style_endpoint' => true,
-            'credentials' => [
-                'key' => getenv('MINIO_ROOT_USER') ?: '',
-                'secret' => getenv('MINIO_ROOT_PASSWORD') ?: '',
-            ],
-        ]);
+        $this->s3 = $s3 ?? S3ClientFactory::create();
     }
 
     public function process(string $inputPath, string $objectKey): string
