@@ -44,13 +44,10 @@ export class CanvasService {
       );
     }
 
-    const publicUrl = this.configService.get<string>('bucketPublicUrl')!;
-    const downloadUrl = `${publicUrl}/production-exports/${phpResponse.objectKey}`;
-
     return {
       success: true,
       exportId: jobId,
-      downloadUrl,
+      imagePath: `production-exports/${phpResponse.objectKey}`,
     };
   }
 

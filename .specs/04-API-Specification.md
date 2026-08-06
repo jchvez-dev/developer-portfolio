@@ -144,13 +144,13 @@ Defines the absolute-positioned layers, tracking coordinate maps, dimensions, an
 ```
 
 #### Expected Success Response (`201 Created`)
-Returns an S3 secure presigned URL fetched from MinIO, decoupling download bandwidth from the compute servers.
+Returns the storage path (`imagePath`) of the rendered PNG. The asset is served through the authenticated gateway endpoint `GET /api/v1/canvas/images/<bucket>/<key>`; buckets stay private.
 
 ```JSON
 {
   "success": true,
   "exportId": "canvas_job_8973129",
-  "downloadUrl": "http://localhost:9000/production-exports/verified-postcard-xyz.png?AWSAccessKeyId=rootjuan&Expires=1718911200&Signature=abcdef..."
+  "imagePath": "production-exports/verified-postcard-xyz.png"
 }
 ```
 

@@ -41,7 +41,7 @@ interface ExportPayload {
 interface ExportResult {
   success: boolean;
   exportId: string;
-  downloadUrl: string;
+  imagePath: string;
 }
 
 export async function exportCanvas(

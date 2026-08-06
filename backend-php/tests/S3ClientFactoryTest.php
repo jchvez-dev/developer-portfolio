@@ -16,7 +16,7 @@ class S3ClientFactoryTest extends TestCase
             'BUCKET_SECRET_ACCESS_KEY' => getenv('BUCKET_SECRET_ACCESS_KEY') ?: false,
         ];
 
-        putenv('BUCKET_ENDPOINT=https://ref.storage.supabase.co/storage/v1/s3/');
+        putenv('BUCKET_ENDPOINT=https://s3.example.com/storage/v1/s3/');
         putenv('BUCKET_REGION=ca-central-1');
         putenv('BUCKET_ACCESS_KEY_ID=my-access-key');
         putenv('BUCKET_SECRET_ACCESS_KEY=my-secret-key');

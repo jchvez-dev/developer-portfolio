@@ -9,6 +9,7 @@ import { TextLayerComponent } from "./TextLayer";
 import { ImageLayerComponent } from "./ImageLayer";
 import { BackgroundColorPicker } from "./BackgroundColorPicker";
 import { DeleteLayerModal } from "./DeleteLayerModal";
+import { ExportSuccessModal } from "./ExportSuccessModal";
 import { ArtboardSizePicker } from "./ArtboardSizePicker";
 import { useCanvasStore } from "./canvas/store";
 
@@ -64,7 +65,10 @@ export const CanvasPreview = () => {
 
   const sizeChosen = useCanvasStore((s) => s.sizeChosen);
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<string | null>(null);
+  const [result, setResult] = useState<{
+    imagePath: string;
+    exportId: string;
+  } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   if (!sizeChosen) return <ArtboardSizePicker />;
@@ -86,7 +90,7 @@ export const CanvasPreview = () => {
         },
         layers: [...layers].sort((a, b) => a.zIndex - b.zIndex).map(toExportPayload),
       });
-      setResult(res.downloadUrl);
+      setResult({ imagePath: res.imagePath, exportId: res.exportId });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Export error");
     } finally {
@@ -159,19 +163,12 @@ export const CanvasPreview = () => {
         </Text>
       )}
       {result && (
-        <div className="mt-2">
-          <Text small className="text-green-600">
-            Image generated:
-          </Text>
-          <a
-            href={result}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-blue-600 underline"
-          >
-            {result}
-          </a>
-        </div>
+        <ExportSuccessModal
+          open
+          onClose={() => setResult(null)}
+          imagePath={result.imagePath}
+          exportId={result.exportId}
+        />
       )}
 
       <DeleteLayerModal />

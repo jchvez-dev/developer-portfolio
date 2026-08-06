@@ -2,7 +2,6 @@ import configuration from './configuration';
 
 const KEYS = [
   'BUCKET_ENDPOINT',
-  'BUCKET_PUBLIC_URL',
   'BUCKET_ACCESS_KEY_ID',
   'BUCKET_SECRET_ACCESS_KEY',
   'BUCKET_REGION',
@@ -33,7 +32,6 @@ describe('configuration bucket settings', () => {
     expect(config.bucket.region).toBe('us-east-1');
     expect(config.bucket.accessKey).toBe('');
     expect(config.bucket.secretKey).toBe('');
-    expect(config.bucketPublicUrl).toBe('http://storage:9000');
   });
 
   it('trims trailing slashes from BUCKET_ENDPOINT', () => {
@@ -44,37 +42,16 @@ describe('configuration bucket settings', () => {
     expect(config.bucket.endpoint).toBe('http://storage:9000');
   });
 
-  it('keeps the full Supabase endpoint URL untouched', () => {
+  it('keeps the full S3 endpoint URL untouched', () => {
     setEnv({
-      BUCKET_ENDPOINT: 'https://ref.storage.supabase.co/storage/v1/s3/',
+      BUCKET_ENDPOINT: 'https://s3.example.com/storage/v1/s3/',
     });
 
     const config = configuration();
 
     expect(config.bucket.endpoint).toBe(
-      'https://ref.storage.supabase.co/storage/v1/s3',
+      'https://s3.example.com/storage/v1/s3',
     );
-  });
-
-  it('uses BUCKET_PUBLIC_URL when provided', () => {
-    setEnv({
-      BUCKET_ENDPOINT: 'https://ref.storage.supabase.co/storage/v1/s3',
-      BUCKET_PUBLIC_URL: 'https://ref.supabase.co/storage/v1/object/public',
-    });
-
-    const config = configuration();
-
-    expect(config.bucketPublicUrl).toBe(
-      'https://ref.supabase.co/storage/v1/object/public',
-    );
-  });
-
-  it('falls back to the endpoint when BUCKET_PUBLIC_URL is not set', () => {
-    setEnv({ BUCKET_ENDPOINT: 'http://storage:9000' });
-
-    const config = configuration();
-
-    expect(config.bucketPublicUrl).toBe('http://storage:9000');
   });
 
   it('reads credentials and region overrides from environment', () => {
