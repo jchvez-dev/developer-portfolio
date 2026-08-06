@@ -97,13 +97,13 @@ Instead of using public live cloud bucket services during local development phas
 1. **Layout Compilation:** Client clicks "Export" -> Frontend extracts canvas states and maps layers to a strict structural JSON schema -> Payload posted to `NestJS:4000/api/v1/canvas/export`.
 2. **Schema Validation & Verification:** NestJS validates structure -> Forwards the verified layout map via internal network request to `http://backend-php:8000/internal/render`.
 3. **Rasterization Phase:** PHP parsing engine receives JSON -> Reads resource assets from MinIO -> Imagick compiles vector paths, textures, and typography layouts into a physical image stream.
-4. **Upload & Return:** PHP pushes the generated binary to `MinIO:9000/production-exports` -> Returns the tracking hash identifier back to NestJS -> NestJS returns the public download URL back to the React UI for client retrieval.
+4. **Upload & Return:** PHP pushes the generated binary to `MinIO:9000/production-exports` -> Returns the tracking hash identifier back to NestJS -> NestJS returns the private `imagePath`, served to the React UI through the authenticated image gateway (`GET /api/v1/canvas/images/<bucket>/<key>`).
 
 ### 4.2 "User Asset Upload" Image Processing Life Cycle
 1. **User Upload:** Client selects an image file in the Mini-Canva Studio -> Frontend builds FormData with file + sessionId -> POST to `NestJS:4000/api/v1/canvas/upload`.
 2. **Validation & Proxy:** NestJS validates file type and size -> Generates UUID and session tracking -> Forwards binary via FormData to `http://backend-php:8000/internal/process-upload`.
 3. **Processing Phase:** PHP receives binary -> Opens with Imagick -> Resizes (max 1920px longest side, maintaining aspect ratio) -> Converts to WebP quality 80 -> Uploads result to `MinIO:9000/user-uploads/{sessionId}/{uuid}.webp`.
-4. **Return Phase:** PHP returns objectKey to NestJS -> NestJS constructs public URL -> Returns `{ success, assetUrl, sessionId }` to the React UI.
+4. **Return Phase:** PHP returns objectKey to NestJS -> NestJS returns `{ success, assetUrl, sessionId }` to the React UI, which renders the asset through the authenticated image gateway (`GET /api/v1/canvas/images/<bucket>/<key>`).
 
 ### 4.3 "Contact Form" Submission Life Cycle
 1. **Form Submission:** Client fills contact form (name, email, subject, message) -> POST to `NestJS:4000/api/v1/contact`.

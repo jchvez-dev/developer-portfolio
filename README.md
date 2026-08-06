@@ -46,11 +46,10 @@ The infrastructure uses Docker to orchestrate all services. The storage cluster,
 | `FRONTEND_PORT` | `3000` | Host port mapped to the React frontend (Vite dev server) |
 | `BUCKET_API_PORT` | `9000` | Host port for the local MinIO S3 API (docker-compose only) |
 | `BUCKET_CONSOLE_PORT` | `9001` | Host port for the local MinIO web console (docker-compose only) |
-| `BUCKET_ENDPOINT` | `http://storage:9000` | Full S3 endpoint URL (MinIO local or Supabase `.../storage/v1/s3`) |
-| `BUCKET_PUBLIC_URL` | `http://localhost:9000` | Public base URL for asset downloads (Supabase: `https://<ref>.supabase.co/storage/v1/object/public`) |
-| `BUCKET_ACCESS_KEY_ID` | — | S3 access key ID (MinIO admin user or Supabase S3 key) |
-| `BUCKET_SECRET_ACCESS_KEY` | — | S3 secret access key (MinIO admin password or Supabase S3 secret) |
-| `BUCKET_REGION` | `us-east-1` | S3 region for SDK connections (Supabase: your project region) |
+| `BUCKET_ENDPOINT` | `http://storage:9000` | Full MinIO S3 endpoint URL |
+| `BUCKET_ACCESS_KEY_ID` | — | S3 access key ID (MinIO admin user) |
+| `BUCKET_SECRET_ACCESS_KEY` | — | S3 secret access key (MinIO admin password) |
+| `BUCKET_REGION` | `us-east-1` | S3 region for MinIO SDK connections |
 | `PHP_BACKEND_URL` | `http://backend-php:8000` | Internal URL for the PHP render engine |
 | `CORS_ORIGINS` | `http://localhost:3000` | Comma-separated allowed browser origins |
 | `GROQ_API_KEY` | — | API key for Groq LLM provider (AI Career Assistant) |
@@ -61,21 +60,7 @@ The infrastructure uses Docker to orchestrate all services. The storage cluster,
 | `SMTP_PASS` | — | SMTP password (leave empty for Mailpit) |
 | `CONTACT_EMAIL` | `juan@example.com` | Email address to receive contact form submissions |
 
-### Using Supabase S3 Instead of Local MinIO
-
-The codebase is provider-agnostic: it only needs a full endpoint URL and credentials. To switch from local MinIO to Supabase S3, update the storage variables in `.env` and provision the buckets there:
-
-```dotenv
-BUCKET_ENDPOINT=https://<project-ref>.storage.supabase.co/storage/v1/s3
-BUCKET_PUBLIC_URL=https://<project-ref>.supabase.co/storage/v1/object/public
-BUCKET_ACCESS_KEY_ID=your-supabase-access-key
-BUCKET_SECRET_ACCESS_KEY=your-supabase-secret-key
-BUCKET_REGION=ca-central-1
-```
-
-Path-style requests are always used (required by both MinIO and Supabase).
-
-The following buckets must exist in Supabase with the same names: `system-assets`, `user-uploads`, `production-exports`, `chat-history`, `contact-messages`. The font files in `backend-php/fonts/` must be uploaded to `system-assets/fonts/` (the `storage-init` container only provisions local MinIO). Make `production-exports` (and any bucket served via `BUCKET_PUBLIC_URL`) public.
+Path-style requests are always used (required by MinIO). The following buckets are provisioned by the `storage-init` container: `system-assets`, `user-uploads`, `production-exports`, `chat-history`, `contact-messages`. The font files in `backend-php/fonts/` are uploaded to `system-assets/fonts/`. All buckets are private; every asset (fonts, uploaded images, and exports) is served through the authenticated gateway endpoint `GET /api/v1/canvas/images/<bucket>/<key>`.
 
 ### Launching Services
 

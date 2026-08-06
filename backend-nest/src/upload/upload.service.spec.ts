@@ -12,7 +12,6 @@ describe('UploadService', () => {
 
   const mockConfig: Record<string, string> = {
     phpBackendUrl: 'http://backend-php:8000',
-    bucketPublicUrl: 'http://localhost:9000',
   };
 
   const mockHttpService = {

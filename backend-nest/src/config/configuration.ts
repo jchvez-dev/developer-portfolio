@@ -12,7 +12,6 @@ export default () => {
       secretKey: process.env.BUCKET_SECRET_ACCESS_KEY ?? '',
       region: process.env.BUCKET_REGION ?? 'us-east-1',
     },
-    bucketPublicUrl: process.env.BUCKET_PUBLIC_URL ?? endpoint,
     corsOrigins: (
       process.env.CORS_ORIGINS ??
       `http://localhost:${process.env.FRONTEND_PORT ?? '3000'}`

@@ -20,7 +20,7 @@
 - [x] PHP container has no public ports (NFR-4.4)
 - [x] Anonymous volume bindings for node_modules and vendor
 - [x] `.env.example` with documented environment variables
-- [x] Provider-agnostic storage via `BUCKET_*` env vars (MinIO locally, Supabase S3 in prod), path-style endpoint, shared `S3_CLIENT` provider and PHP `S3ClientFactory`
+- [x] Storage via `BUCKET_*` env vars (MinIO S3), path-style endpoint, shared `S3_CLIENT` provider and PHP `S3ClientFactory`
 - [x] `.gitignore` global and per-service
 - [x] Mailpit service (SMTP) for dev email notifications
 

@@ -33,7 +33,7 @@ describe('CanvasController', () => {
     const expected = {
       success: true,
       exportId: 'canvas_job_123',
-      downloadUrl: 'http://localhost:9000/production-exports/test.png',
+      imagePath: 'production-exports/test.png',
     };
 
     mockCanvasService.export.mockResolvedValue(expected);

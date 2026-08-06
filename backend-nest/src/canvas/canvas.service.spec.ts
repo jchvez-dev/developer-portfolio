@@ -19,7 +19,6 @@ describe('CanvasService', () => {
 
   const mockConfig: Record<string, string> = {
     phpBackendUrl: 'http://backend-php:8000',
-    bucketPublicUrl: 'http://localhost:9000',
   };
 
   const mockHttpService = {
@@ -64,7 +63,7 @@ describe('CanvasService', () => {
       ],
     };
 
-    it('returns success with download URL when PHP responds', async () => {
+    it('returns success with image path when PHP responds', async () => {
       mockHttpService.post.mockReturnValue(
         of({ data: { objectKey: 'test.png' } }),
       );
@@ -73,9 +72,7 @@ describe('CanvasService', () => {
 
       expect(result.success).toBe(true);
       expect(result.exportId).toMatch(/^canvas_job_\d+$/);
-      expect(result.downloadUrl).toBe(
-        'http://localhost:9000/production-exports/test.png',
-      );
+      expect(result.imagePath).toBe('production-exports/test.png');
     });
 
     it('throws HttpException when PHP call fails', async () => {
