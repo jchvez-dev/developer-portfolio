@@ -23,9 +23,9 @@
 - [x] Storage via `BUCKET_*` env vars (MinIO S3), path-style endpoint, shared `S3_CLIENT` provider and PHP `S3ClientFactory`
 - [x] `.gitignore` global and per-service
 - [x] Mailpit service (SMTP) for dev email notifications
-- [x] backend-php prod image Fly.io ready: TTF fonts copied to `/app/fonts` (TextRenderer FONT_DIR) and `PHP_CLI_SERVER_WORKERS=4`
-- [x] `backend-php/fly.toml`: private-only app (no services/http_service section, no public URL), reachable via `<app>.internal` over 6PN; TCP health check on port 8000; VM shared-cpu-1x / 1GB
-- [x] backend-php prod CMD binds `[::]:8000` (IPv6 wildcard) so `.internal` 6PN connections from backend-nest work
+- [x] backend-php prod image ships TTF fonts copied to `/app/fonts` and `/usr/share/fonts` (TextRenderer FONT_DIR) with `PHP_CLI_SERVER_WORKERS=4`
+- [x] Northflank deploy for backend-php: Dockerfile path `./backend-php/Dockerfile`, build context `./backend-php/` (Dockerfile COPY paths are relative to the service folder)
+- [x] backend-php prod CMD binds `[::]:8000` (wildcard) so service-to-service connections from backend-nest work on any container platform
 
 ---
 
