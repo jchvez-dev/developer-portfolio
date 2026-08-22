@@ -1,7 +1,7 @@
 # Project Checklist
 
 > Current implementation status of the Developer Portfolio project.
-> Last updated: 2026-08-21
+> Last updated: 2026-08-22
 
 ---
 
@@ -12,6 +12,7 @@
 - [x] `frontend/Dockerfile.dev` (dev with Vite live-reload)
 - [x] `backend-nest/Dockerfile` (multi-stage prod, node user)
 - [x] `backend-nest/Dockerfile.dev` (dev with nest start --watch)
+- [x] backend-nest Dockerfiles pin pnpm via corepack to match `packageManager` (apk pnpm 11.x broke frozen-lockfile with @pnpm/exe identity check)
 - [x] `backend-php/Dockerfile` (multi-stage prod, PHP 8.4 + Imagick, www-data user)
 - [x] `backend-php/Dockerfile.dev` (dev with PHP CLI + composer)
 - [x] `portafolio-network` (bridge driver)
