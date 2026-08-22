@@ -25,6 +25,7 @@ RUN apk add --no-cache imagemagick imagemagick-dev font-dejavu libjpeg-turbo lib
 COPY --from=builder /app/vendor ./vendor
 COPY public ./public
 COPY src ./src
+COPY fonts ./fonts
 COPY fonts /usr/share/fonts
 
 RUN fc-cache -f
@@ -33,6 +34,8 @@ RUN chown -R www-data:www-data /app
 
 USER www-data
 
+ENV PHP_CLI_SERVER_WORKERS=4
+
 EXPOSE 8000
 
-CMD ["php", "-S", "0.0.0.0:8000", "-t", "public"]
+CMD ["php", "-S", "[::]:8000", "-t", "public"]
