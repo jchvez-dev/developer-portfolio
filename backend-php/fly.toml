@@ -1,0 +1,16 @@
+app = "portafolio-php"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "1gb"
+
+[checks.render_health]
+  type = "tcp"
+  port = 8000
+  interval = "15s"
+  timeout = "2s"
+  grace_period = "10s"
