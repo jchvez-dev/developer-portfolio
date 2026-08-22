@@ -2,7 +2,7 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-RUN apk add --no-cache pnpm
+RUN corepack enable && corepack prepare pnpm@10.10.0 --activate
 
 COPY package.json pnpm-lock.yaml ./
 
@@ -18,7 +18,7 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-RUN apk add --no-cache pnpm
+RUN corepack enable && corepack prepare pnpm@10.10.0 --activate
 
 COPY package.json pnpm-lock.yaml ./
 

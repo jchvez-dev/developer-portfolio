@@ -2,7 +2,9 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-RUN apk add --no-cache libc6-compat curl pnpm
+RUN apk add --no-cache libc6-compat curl \
+    && corepack enable \
+    && corepack prepare pnpm@10.10.0 --activate
 
 ENV PNPM_HOME=/pnpm/store
 RUN mkdir -p /pnpm/store && chown -R node:node /pnpm
