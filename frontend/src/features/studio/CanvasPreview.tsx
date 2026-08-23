@@ -88,7 +88,10 @@ export const CanvasPreview = () => {
           height: canvasHeight,
           backgroundColor,
         },
-        layers: [...layers].sort((a, b) => a.zIndex - b.zIndex).map(toExportPayload),
+        layers: [...layers]
+          .sort((a, b) => a.zIndex - b.zIndex)
+          .map(toExportPayload)
+          .filter((layer): layer is ExportLayer => layer !== undefined),
       });
       setResult({ imagePath: res.imagePath, exportId: res.exportId });
     } catch (e) {

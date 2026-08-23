@@ -12,7 +12,7 @@ function normalizeColor(color: string | null | undefined): string {
 export const useTextColor = () => {
   const { getEditor, exec } = useCkEditor();
   const [textColor, setTextColor] = useState("#000000");
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
     const editor = getEditor();
