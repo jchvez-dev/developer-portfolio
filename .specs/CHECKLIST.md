@@ -183,6 +183,7 @@
 - [x] Iconography: tech logos in badges, semantic icons in cards, arrow in CTA
 - [x] Micro-interactions: hover elevation on badges (translate-y, border, bg, group opacity filter)
 - [x] Live ping: "Available for hire" indicator with animation in Hero
+- [x] Fix TypeScript build errors blocking `pnpm run build` (`tsc -b`) detected during Vercel deploy
 
 ## Backlog / Future Refactor (v2)
 

@@ -26,7 +26,7 @@ beforeEach(() => {
     this: FileReader,
   ) {
     Object.defineProperty(this, "result", { value: "data:image/png;base64," });
-    this.onload?.(new Event("load"));
+    this.onload?.(new ProgressEvent("load") as ProgressEvent<FileReader>);
   });
 });
 

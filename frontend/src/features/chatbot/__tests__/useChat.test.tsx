@@ -186,7 +186,7 @@ describe('useChat', () => {
     async function* generator(): AsyncGenerator<StreamEvent> {
       yield { token: '...', done: false };
       await new Promise((_, reject) => {
-        const _id = setInterval(() => {
+        setInterval(() => {
           reject(new DOMException('Aborted', 'AbortError'));
         }, 10);
       });

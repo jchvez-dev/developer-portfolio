@@ -55,11 +55,11 @@ describe("ExportSuccessModal", () => {
       revokeObjectURL: vi.fn(),
     });
 
-    let createdAnchor: HTMLAnchorElement | null = null;
+    const createdAnchors: HTMLAnchorElement[] = [];
     const origCreateElement = document.createElement.bind(document);
     vi.spyOn(document, "createElement").mockImplementation((tag: string) => {
       const el = origCreateElement(tag);
-      if (tag === "a") createdAnchor = el as HTMLAnchorElement;
+      if (tag === "a") createdAnchors.push(el as HTMLAnchorElement);
       return el;
     });
     const clickSpy = vi
@@ -72,8 +72,8 @@ describe("ExportSuccessModal", () => {
     expect(fetch).toHaveBeenCalledWith(
       `/api/v1/canvas/images/${imagePath}`,
     );
-    expect(createdAnchor?.href).toBe("blob:mock");
-    expect(createdAnchor?.download).toBe(`export-${exportId}.png`);
+    expect(createdAnchors[0]?.href).toBe("blob:mock");
+    expect(createdAnchors[0]?.download).toBe(`export-${exportId}.png`);
     expect(clickSpy).toHaveBeenCalledTimes(1);
   });
 
