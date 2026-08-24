@@ -1,4 +1,5 @@
 import type { LayerType } from "./types";
+import { API_URL } from "../../lib/api";
 
 export interface TextLayerProperties {
   x: number;
@@ -47,7 +48,7 @@ interface ExportResult {
 export async function exportCanvas(
   payload: ExportPayload,
 ): Promise<ExportResult> {
-  const res = await fetch("/api/v1/canvas/export", {
+  const res = await fetch(`${API_URL}/canvas/export`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -64,7 +65,7 @@ export async function uploadImage(
   formData.append("image", file);
   if (sessionId) formData.append("sessionId", sessionId);
 
-  const res = await fetch("/api/v1/canvas/upload", {
+  const res = await fetch(`${API_URL}/canvas/upload`, {
     method: "POST",
     body: formData,
   });

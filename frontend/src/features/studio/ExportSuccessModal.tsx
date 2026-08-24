@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button, Heading, Modal } from "../../components/ui";
+import { API_URL } from "../../lib/api";
 
 interface ExportSuccessModalProps {
   open: boolean;
@@ -20,7 +21,7 @@ export const ExportSuccessModal = ({
     if (downloading) return;
     setDownloading(true);
     try {
-      const res = await fetch(`/api/v1/canvas/images/${imagePath}`);
+      const res = await fetch(`${API_URL}/canvas/images/${imagePath}`);
       if (!res.ok) throw new Error(await res.text());
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
@@ -44,7 +45,7 @@ export const ExportSuccessModal = ({
         </Heading>
         <div className="mb-6 flex h-[500px] w-[500px] items-center justify-center overflow-hidden rounded-lg border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
           <img
-            src={`/api/v1/canvas/images/${imagePath}`}
+            src={`${API_URL}/canvas/images/${imagePath}`}
             alt="Exported canvas"
             className="max-h-full max-w-full object-contain"
           />

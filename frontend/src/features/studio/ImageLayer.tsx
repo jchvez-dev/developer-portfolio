@@ -3,6 +3,7 @@ import { HiArrowsPointingOut, HiPhoto } from "react-icons/hi2";
 import { Button } from "../../components/ui";
 import type { ImageLayerData } from "./types";
 import { useCanvasStore } from "./canvas/store";
+import { API_URL } from "../../lib/api";
 
 interface ImageLayerProps {
   layer: ImageLayerData;
@@ -101,7 +102,7 @@ export const ImageLayerComponent = ({ layer }: ImageLayerProps) => {
     >
       {layer.src ? (
         <img
-          src={`/api/v1/canvas/images/${layer.src}`}
+          src={`${API_URL}/canvas/images/${layer.src}`}
           alt={layer.name}
           className="h-full w-full rounded pointer-events-none select-none"
           style={{ objectFit: "cover" }}

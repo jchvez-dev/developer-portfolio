@@ -1,7 +1,7 @@
 # Project Checklist
 
 > Current implementation status of the Developer Portfolio project.
-> Last updated: 2026-08-22
+> Last updated: 2026-08-24
 
 ---
 
@@ -27,6 +27,14 @@
 - [x] backend-php prod image ships TTF fonts copied to `/app/fonts` and `/usr/share/fonts` (TextRenderer FONT_DIR) with `PHP_CLI_SERVER_WORKERS=4`
 - [x] Northflank deploy for backend-php: Dockerfile path `./backend-php/Dockerfile`, build context `./backend-php/` (Dockerfile COPY paths are relative to the service folder)
 - [x] backend-php prod CMD binds `[::]:8000` (wildcard) so service-to-service connections from backend-nest work on any container platform
+
+### Production Deployment
+- [x] backend-php deployed on Northflank (public URL reachable by backend-nest via `PHP_BACKEND_URL`)
+- [x] frontend deployed on Vercel as static SPA (Vite build, no server-side rewrites)
+- [x] `VITE_API_URL` documented in `.env.example` (relative `/api/v1` fallback only works behind the Vite dev proxy; on Vercel it 404s)
+- [ ] Northflank backend-nest: set `CORS_ORIGINS` including the Vercel frontend origin (`https://developer-portfolio-jchg.vercel.app`)
+- [ ] Northflank backend-nest: set `PHP_BACKEND_URL` to the deployed backend-php service URL (otherwise canvas export returns 503)
+- [ ] Vercel: set build env var `VITE_API_URL=<northflank-backend-nest-url>/api/v1` and redeploy
 
 ---
 
@@ -202,6 +210,7 @@
 - [ ] Data Model-3.5: Chat test suite CT-1 through CT-5
 - [ ] Infra Spec: Pin MinIO image version in docker-compose.yml
 - [ ] Infra Spec: Document Mailpit web UI URL (http://localhost:8025) in .env.example
+- [ ] FADD-5.4: Protect `/internal/render` and `/internal/process-upload` with a shared token header (backend-php is publicly reachable on Northflank, unlike docker-compose where it has no public ports)
 
 ---
 

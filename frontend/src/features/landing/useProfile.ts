@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-
-const API_URL = import.meta.env.VITE_API_URL ?? '/api/v1';
+import { API_URL } from '../../lib/api';
 
 export interface Profile {
   name: string;
