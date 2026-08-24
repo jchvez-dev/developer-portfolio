@@ -1,6 +1,5 @@
 import type { Conversation, StreamEvent } from './types';
-
-const API_URL = import.meta.env.VITE_API_URL ?? '/api/v1';
+import { API_URL } from '../../lib/api';
 
 export async function* fetchStream(
   message: string,
